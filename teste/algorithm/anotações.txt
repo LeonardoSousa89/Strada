@@ -1,0 +1,4 @@
+este é um teste simples de replicação do comportamento
+padrão esperado pelo formulário, se o retorno do cnpj
+for válido, prosseguir com a inscrição do cliente, senão
+retornar um erro e encerrar a inscrição.
