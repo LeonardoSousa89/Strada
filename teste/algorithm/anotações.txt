@@ -1,0 +1,9 @@
+este é um teste simples de replicação do comportamento
+padrão esperado pelo formulário, se o retorno do cnpj
+for válido, prosseguir com a inscrição do cliente, senão
+retornar um erro e encerrar a inscrição.
+
+obter também o ip do usuário com dados do fornecedor e 
+horário do "aceitar" para inserir nos termos do usuário,
+caso aja um questionamento futuro a respeito das permissões
+de uso dos dados.
