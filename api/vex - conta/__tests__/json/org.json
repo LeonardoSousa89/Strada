@@ -1,0 +1,29 @@
+[
+    {
+        "fantasy_name": "fantasy name test",
+        "corporate_name": "corp test",
+        "cnpj": "cnpj test",
+        "org_status": "status test",
+        "cnae_main_code": "cnae main test",
+        "open_date": "01/01/2002 ",
+        "password": "testing password"
+    },
+    {
+        "fantasy_name": "fantasy name test 2",
+        "corporate_name": "corp test 2",
+        "cnpj": "cnpj test 2",
+        "org_status": "status test 2",
+        "cnae_main_code": "cnae main test 2",
+        "open_date": "01/01/2002 ",
+        "password": "testing password 2"
+    },
+    {
+        "fantasy_name": "fantasy name test 3",
+        "corporate_name": "corp test 3",
+        "cnpj": "cnpj test 3",
+        "org_status": "status test 3",
+        "cnae_main_code": "cnae main test 3",
+        "open_date": "01/01/2003 ",
+        "password": "testing password 3"
+    }
+]

@@ -1,0 +1,7 @@
+os termos de uso serão salvos como arquivo
+no firebase, contendo:
+
+- ip (contendo também dados do provedor)
+- geolocalização (se possível)
+- cnpj e nome fantasia ou razão social do cliente
+- e os termos a serem aceitos pelo cliente no contrato
