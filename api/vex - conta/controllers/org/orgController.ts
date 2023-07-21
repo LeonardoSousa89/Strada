@@ -16,6 +16,9 @@ const err = new HandleError()
   pois verifica e obtém as informações, será necessário depurar e dividir 
   as responsabilidades em funções diferentes para depois serem invocadas 
   pelo controlador.
+
+  ele deve ser provisório e na rota de salvar, deve ser verificado a existência
+  ou não da organização, aí sim prossegue com a requisição corretamente. 
 */
 orgController.route('/org/verify-cnpj').get(async (req, res)=>{
 
@@ -80,10 +83,10 @@ orgController.route('/org/save').post(async (req, res)=>{
     const test = await verification.then(e => e)
 
     /** 
-     *  código aqui:
+     *  código aqui:    
      *  
      *      verificar se organização existe,
-     *      se não retornar uma resposta 404
+     *      se não, retornar uma resposta 404
      * 
     */
 
