@@ -1,10 +1,51 @@
-import express, { response } from 'express'
+import express from 'express'
 import OrgService from '../../services/org/orgService'
 import HandleError from '../../interface/error/handleError'
+import axios from 'axios'
+
+import * as dotenv from 'dotenv' 
+
+dotenv.config()
 
 const orgController = express.Router()
 
 const err = new HandleError()
+
+/*[ controlador de verificação de existência e obtenção dos dados do cnpj ]
+  este controlador fere o principío de reponsabilidade única(SOLID),
+  pois verifica e obtém as informações, será necessário depurar e dividir 
+  as responsabilidades em funções diferentes para depois serem invocadas 
+  pelo controlador.
+*/
+orgController.route('/org/verify-cnpj').get(async (req, res)=>{
+
+    let Org = { ...req.query }
+
+    let url=`${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`
+
+    await axios.get(url).then(response => {
+        
+       if(response.data.error){
+
+            res.status(404).json({
+
+                response: response.data,
+                organizationExists: false
+            })
+       }
+       
+       else{
+
+            res.status(200).json({
+
+                headers: response.headers,
+                response: response.data,
+                organizationExists: true
+            })
+       }
+
+    }).catch(_ => res.status(500).json({ error: 'i am sorry, there is an error with server'}))
+})
 
 orgController.route('/org/save').post(async (req, res)=>{
 
@@ -34,6 +75,20 @@ orgController.route('/org/save').post(async (req, res)=>{
         return res.status(400).json({ error: e })
     }
 
+    const verification = new OrgService().verifyCnpj(Org.cnpj)
+
+    const test = await verification.then(e => e)
+
+    /** 
+     *  código aqui:
+     *  
+     *      verificar se organização existe,
+     *      se não retorna uma resposta 404
+     * 
+    */
+
+    if(test === true) return res.status(400).send('cnpj already exists')
+
     const response = new OrgService( 
                     Org.fantasy_name, 
                     Org.corporate_name,
@@ -42,7 +97,7 @@ orgController.route('/org/save').post(async (req, res)=>{
                     Org.cnae_main_code,
                     Org.open_date, 
                     Org.password).save()
-        
+    
     await response.then(__ => res.status(201).json({ msg: 'organization created' }))
 })
 

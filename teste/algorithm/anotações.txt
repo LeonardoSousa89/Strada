@@ -7,3 +7,7 @@ obter também o ip do usuário com dados do fornecedor e
 horário do "aceitar" para inserir nos termos do usuário,
 caso aja um questionamento futuro a respeito das permissões
 de uso dos dados.
+
+inserir na API e no database os seguintes atributos:
+- SETOR
+- CNAE_PRINCIPAL_DESCRICAO

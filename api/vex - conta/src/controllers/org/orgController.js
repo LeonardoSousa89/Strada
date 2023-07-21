@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -16,9 +39,37 @@ exports.orgController = void 0;
 const express_1 = __importDefault(require("express"));
 const orgService_1 = __importDefault(require("../../services/org/orgService"));
 const handleError_1 = __importDefault(require("../../interface/error/handleError"));
+const axios_1 = __importDefault(require("axios"));
+const dotenv = __importStar(require("dotenv"));
+dotenv.config();
 const orgController = express_1.default.Router();
 exports.orgController = orgController;
 const err = new handleError_1.default();
+/*[ controlador de verificação de existência e obtenção dos dados do cnpj ]
+  este controlador fere o principío de reponsabilidade única(SOLID),
+  pois verifica e obtém as informações, será necessário depurar e dividir
+  as responsabilidades em funções diferentes para depois serem invocadas
+  pelo controlador.
+*/
+orgController.route('/org/verify-cnpj').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let Org = Object.assign({}, req.query);
+    let url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
+    yield axios_1.default.get(url).then(response => {
+        if (response.data.error) {
+            res.status(404).json({
+                response: response.data,
+                organizationExists: false
+            });
+        }
+        else {
+            res.status(200).json({
+                headers: response.headers,
+                response: response.data,
+                organizationExists: true
+            });
+        }
+    }).catch(_ => res.status(500).json({ error: 'i am sorry, there is an error with server' }));
+}));
 orgController.route('/org/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
     try {
@@ -41,6 +92,10 @@ orgController.route('/org/save').post((req, res) => __awaiter(void 0, void 0, vo
     catch (e) {
         return res.status(400).json({ error: e });
     }
+    const verification = new orgService_1.default().verifyCnpj(Org.cnpj);
+    const test = yield verification.then(e => e);
+    if (test === true)
+        return res.status(400).send('cnpj already exists');
     const response = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password).save();
     yield response.then(__ => res.status(201).json({ msg: 'organization created' }));
 }));

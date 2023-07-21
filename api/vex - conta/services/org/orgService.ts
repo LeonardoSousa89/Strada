@@ -31,6 +31,17 @@ export default class OrgService extends Org implements DbOperations{
         this.open_date,
         this.password)
 
+    async verifyCnpj(cnpj: string) {
+
+        const existsOrNotexists = await knex.where('cnpj', cnpj)
+                                      .from('vex_schema.org')
+                                      .first()
+
+        if(existsOrNotexists)  return true
+
+        if(!existsOrNotexists) return false
+    }
+    
     async save() {
 
         await knex.insert(this.organization).from('vex_schema.org')

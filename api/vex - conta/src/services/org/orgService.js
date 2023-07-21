@@ -19,6 +19,17 @@ class OrgService extends org_1.default {
         super(fantasy_name, corporate_name, cnpj, org_status, cnae_main_code, open_date, password);
         this.organization = new org_1.default(this.fantasy_name, this.corporate_name, this.cnpj, this.org_status, this.cnae_main_code, this.open_date, this.password);
     }
+    verifyCnpj(cnpj) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const existsOrNotexists = yield knex_1.default.where('cnpj', cnpj)
+                .from('vex_schema.org')
+                .first();
+            if (existsOrNotexists)
+                return true;
+            if (!existsOrNotexists)
+                return false;
+        });
+    }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
             yield knex_1.default.insert(this.organization).from('vex_schema.org');
