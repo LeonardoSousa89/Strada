@@ -83,7 +83,7 @@ orgController.route('/org/save').post(async (req, res)=>{
      *  código aqui:
      *  
      *      verificar se organização existe,
-     *      se não retorna uma resposta 404
+     *      se não retornar uma resposta 404
      * 
     */
 
