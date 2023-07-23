@@ -5,34 +5,28 @@ import axios from 'axios'
 
 import * as dotenv from 'dotenv' 
 
+import { cryptograph } from '../../security/cryptography/bcrypt'
+
 dotenv.config()
 
 const orgController = express.Router()
 
 const err = new HandleError()
 
-/*[ controlador de verificação de existência e obtenção dos dados do cnpj ]
-  este controlador fere o principío de reponsabilidade única(SOLID),
-  pois verifica e obtém as informações, será necessário depurar e dividir 
-  as responsabilidades em funções diferentes para depois serem invocadas 
-  pelo controlador.
-
-  ele deve ser provisório e na rota de salvar, deve ser verificado a existência
-  ou não da organização, aí sim prossegue com a requisição corretamente. 
-*/
+/* [ controlador de verificação de existência do cnpj] */
 orgController.route('/org/verify-cnpj').get(async (req, res)=>{
 
     let Org = { ...req.query }
 
-    let url=`${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`
+    let url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`
 
+    //depurar, testar e delegar esta verificação a uma outra função **
     await axios.get(url).then(response => {
         
        if(response.data.error){
 
             res.status(404).json({
 
-                response: response.data,
                 organizationExists: false
             })
        }
@@ -41,13 +35,14 @@ orgController.route('/org/verify-cnpj').get(async (req, res)=>{
 
             res.status(200).json({
 
-                headers: response.headers,
-                response: response.data,
                 organizationExists: true
             })
        }
 
-    }).catch(_ => res.status(500).json({ error: 'i am sorry, there is an error with server'}))
+    }).catch(_ => res.status(500)
+                     .json({ 
+                        error: 'i am sorry, there is an error with server'
+                    }))
 })
 
 orgController.route('/org/save').post(async (req, res)=>{
@@ -78,19 +73,42 @@ orgController.route('/org/save').post(async (req, res)=>{
         return res.status(400).json({ error: e })
     }
 
-    const verification = new OrgService().verifyCnpj(Org.cnpj)
+    //verifica se o cnpj passado na url da requisição, existe através de uma api externa
+    //depurar, testar e delegar esta verificação a uma outra função **
+    let cnpj = { ...req.query }
 
-    const test = await verification.then(e => e)
+    let url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${cnpj.cnpj}`
+    
+    let cnpjRequestResponse: any = ''
 
-    /** 
-     *  código aqui:    
-     *  
-     *      verificar se organização existe,
-     *      se não, retornar uma resposta 404
-     * 
-    */
+    try{
 
-    if(test === true) return res.status(400).send('cnpj already exists')
+        cnpjRequestResponse = await axios.get(url)
+    }catch(__){
+
+        return res.status(500)
+                  .json({ 
+                    error: 'i am sorry, there is an error with server' 
+                })
+    }
+ 
+    if(cnpjRequestResponse.data.error) return res.status(404)
+                                                 .json({ error: 'cnpj not found' })
+
+    //verifica se o cnpj no body da requisição já está cadastrado no banco de dados do sistema
+    //depurar, testar e delegar esta verificação a uma outra função **
+    const verificationCnpj = new OrgService().verifyCnpj(Org.cnpj)
+
+    const cnpjDbResponse = await verificationCnpj.then(e => e)
+    
+    if(cnpjDbResponse === true) return res.status(400)
+                                          .json({ 
+                                            error: 'cnpj already exists' 
+                                        }) 
+
+    try{
+    
+    Org.password = cryptograph(Org.password)
 
     const response = new OrgService( 
                     Org.fantasy_name, 
@@ -101,7 +119,18 @@ orgController.route('/org/save').post(async (req, res)=>{
                     Org.open_date, 
                     Org.password).save()
     
-    await response.then(__ => res.status(201).json({ msg: 'organization created' }))
+
+        return await response.then(__ => res.status(201)
+                                            .json({ 
+                                                msg: 'organization created' 
+                                            }))
+    }catch(e){
+
+        return res.status(500)
+                  .json({ 
+                    error: 'i am sorry, there is an error with server' 
+                })
+    }                                        
 })
 
 orgController.route('/org/update/:id').put(async (req, res)=>{
@@ -130,9 +159,24 @@ orgController.route('/org/update/:id').put(async (req, res)=>{
     }catch(e){
 
         return res.status(400).json({ error: e })
-    }
+    } 
 
-    const response = new OrgService(  
+    //verifica se o cnpj no body da requisição já está cadastrado no banco de dados do sistema
+    //depurar, testar e delegar esta verificação a uma outra função **
+    const verificationCnpj = new OrgService().verifyCnpj(Org.cnpj)
+
+    const cnpjDbResponse = await verificationCnpj.then(e => e)
+    
+    if(cnpjDbResponse === false) return res.status(404)
+                                           .json({ 
+                                                error: 'cnpj not exists' 
+                                        }) 
+
+    try{
+    
+    Org.password = cryptograph(Org.password)
+
+    const response = new OrgService( 
                     Org.fantasy_name, 
                     Org.corporate_name,
                     Org.cnpj, 
@@ -141,7 +185,18 @@ orgController.route('/org/update/:id').put(async (req, res)=>{
                     Org.open_date, 
                     Org.password).update(req.params.id)
 
-    await response.then(__ => res.status(201).json({ msg: 'organization updated' }))
+        return await response.then(__ => res.status(201)
+                                            .json({ 
+                                                msg: 'organization updated' 
+                                            }))
+
+    }catch(e){
+
+        return res.status(500)
+                  .json({ 
+                    error: 'i am sorry, there is an error with server' 
+                })
+    }   
 })
 
 orgController.route('/org/get-all').get(async (req, res)=>{

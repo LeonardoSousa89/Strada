@@ -1,5 +1,5 @@
 import Org from "../../entities/org/org";
-import { DbOperations} from "../../interface/operations";
+import { DbOperations, Verifications} from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
 
 export default class OrgService extends Org implements DbOperations{
@@ -41,7 +41,7 @@ export default class OrgService extends Org implements DbOperations{
 
         if(!existsOrNotexists) return false
     }
-    
+
     async save() {
 
         await knex.insert(this.organization).from('vex_schema.org')

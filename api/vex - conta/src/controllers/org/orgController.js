@@ -41,34 +41,31 @@ const orgService_1 = __importDefault(require("../../services/org/orgService"));
 const handleError_1 = __importDefault(require("../../interface/error/handleError"));
 const axios_1 = __importDefault(require("axios"));
 const dotenv = __importStar(require("dotenv"));
+const bcrypt_1 = require("../../security/cryptography/bcrypt");
 dotenv.config();
 const orgController = express_1.default.Router();
 exports.orgController = orgController;
 const err = new handleError_1.default();
-/*[ controlador de verificação de existência e obtenção dos dados do cnpj ]
-  este controlador fere o principío de reponsabilidade única(SOLID),
-  pois verifica e obtém as informações, será necessário depurar e dividir
-  as responsabilidades em funções diferentes para depois serem invocadas
-  pelo controlador.
-*/
+/* [ controlador de verificação de existência do cnpj] */
 orgController.route('/org/verify-cnpj').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let Org = Object.assign({}, req.query);
     let url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
+    //depurar, testar e delegar esta verificação a uma outra função **
     yield axios_1.default.get(url).then(response => {
         if (response.data.error) {
             res.status(404).json({
-                response: response.data,
                 organizationExists: false
             });
         }
         else {
             res.status(200).json({
-                headers: response.headers,
-                response: response.data,
                 organizationExists: true
             });
         }
-    }).catch(_ => res.status(500).json({ error: 'i am sorry, there is an error with server' }));
+    }).catch(_ => res.status(500)
+        .json({
+        error: 'i am sorry, there is an error with server'
+    }));
 }));
 orgController.route('/org/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
@@ -92,12 +89,46 @@ orgController.route('/org/save').post((req, res) => __awaiter(void 0, void 0, vo
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    const verification = new orgService_1.default().verifyCnpj(Org.cnpj);
-    const test = yield verification.then(e => e);
-    if (test === true)
-        return res.status(400).send('cnpj already exists');
-    const response = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password).save();
-    yield response.then(__ => res.status(201).json({ msg: 'organization created' }));
+    //verifica se o cnpj passado na url da requisição, existe através de uma api externa
+    //depurar, testar e delegar esta verificação a uma outra função **
+    let cnpj = Object.assign({}, req.query);
+    let url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${cnpj.cnpj}`;
+    let cnpjRequestResponse = '';
+    try {
+        cnpjRequestResponse = yield axios_1.default.get(url);
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
+    if (cnpjRequestResponse.data.error)
+        return res.status(404)
+            .json({ error: 'cnpj not found' });
+    //verifica se o cnpj no body da requisição já está cadastrado no banco de dados do sistema
+    //depurar, testar e delegar esta verificação a uma outra função **
+    const verificationCnpj = new orgService_1.default().verifyCnpj(Org.cnpj);
+    const cnpjDbResponse = yield verificationCnpj.then(e => e);
+    if (cnpjDbResponse === true)
+        return res.status(400)
+            .json({
+            error: 'cnpj already exists'
+        });
+    try {
+        Org.password = (0, bcrypt_1.cryptograph)(Org.password);
+        const response = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password).save();
+        return yield response.then(__ => res.status(201)
+            .json({
+            msg: 'organization created'
+        }));
+    }
+    catch (e) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgController.route('/org/update/:id').put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
@@ -121,8 +152,29 @@ orgController.route('/org/update/:id').put((req, res) => __awaiter(void 0, void 
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    const response = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password).update(req.params.id);
-    yield response.then(__ => res.status(201).json({ msg: 'organization updated' }));
+    //verifica se o cnpj no body da requisição já está cadastrado no banco de dados do sistema
+    //depurar, testar e delegar esta verificação a uma outra função **
+    const verificationCnpj = new orgService_1.default().verifyCnpj(Org.cnpj);
+    const cnpjDbResponse = yield verificationCnpj.then(e => e);
+    if (cnpjDbResponse === false)
+        return res.status(404)
+            .json({
+            error: 'cnpj not exists'
+        });
+    try {
+        Org.password = (0, bcrypt_1.cryptograph)(Org.password);
+        const response = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password).update(req.params.id);
+        return yield response.then(__ => res.status(201)
+            .json({
+            msg: 'organization updated'
+        }));
+    }
+    catch (e) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server' + e
+        });
+    }
 }));
 orgController.route('/org/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = new orgService_1.default().getAll();
