@@ -172,13 +172,21 @@ orgController.route('/org/update/:id').put((req, res) => __awaiter(void 0, void 
     catch (e) {
         return res.status(500)
             .json({
-            error: 'i am sorry, there is an error with server' + e
+            error: 'i am sorry, there is an error with server'
         });
     }
 }));
 orgController.route('/org/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = new orgService_1.default().getAll();
-    yield response.then(data => res.status(200).json(data));
+    yield response.then(data => {
+        if (data.length === 0)
+            return res.status(404).json({ error: 'not data' });
+        return res.status(200).json(data);
+    })
+        .catch(__ => res.status(500)
+        .json({
+        error: 'i am sorry, there is an error with server'
+    }));
 }));
 orgController.route('/org/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = new orgService_1.default().getById(req.params.id);

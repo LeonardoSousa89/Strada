@@ -203,13 +203,26 @@ orgController.route('/org/get-all').get(async (req, res)=>{
 
     const response = new OrgService().getAll()
 
-    await response.then(data => res.status(200).json(data))
+    
+        await response.then(data => {
+    
+            if(data.length === 0) return res.status(404)
+                                            .json({ 
+                                                error: 'not data' 
+                                            })
+            
+            return res.status(200).json(data)
+    
+        })
+        .catch(__ => res.status(500)
+                        .json({  
+                            error: 'i am sorry, there is an error with server'  
+                        }))
 })
 
 orgController.route('/org/get-by-id/:id').get(async (req, res)=>{
 
     const response = new OrgService().getById(req.params.id)  
-    
     await response.then(data => res.status(200).json(data))
 })
 
