@@ -177,9 +177,10 @@ orgController.route('/org/update/:id').put((req, res) => __awaiter(void 0, void 
     }
 }));
 orgController.route('/org/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = new orgService_1.default().getAll();
+    const Org = Object.assign({}, req.query);
+    const response = new orgService_1.default().getAll(Org.size, Org.page);
     yield response.then(data => {
-        if (data.length === 0)
+        if (data.data.length === 0)
             return res.status(404)
                 .json({
                 error: 'not data'
@@ -188,7 +189,7 @@ orgController.route('/org/get-all').get((req, res) => __awaiter(void 0, void 0, 
     })
         .catch(__ => res.status(500)
         .json({
-        error: 'i am sorry, there is an error with server'
+        error: 'i am sorry, there is an error with server' + __
     }));
 }));
 orgController.route('/org/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {

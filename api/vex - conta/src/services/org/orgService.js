@@ -14,6 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const org_1 = __importDefault(require("../../entities/org/org"));
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
+const knex_paginate_1 = require("knex-paginate");
+(0, knex_paginate_1.attachPaginate)();
 class OrgService extends org_1.default {
     constructor(fantasy_name, corporate_name, cnpj, org_status, cnae_main_code, open_date, password) {
         super(fantasy_name, corporate_name, cnpj, org_status, cnae_main_code, open_date, password);
@@ -51,7 +53,7 @@ class OrgService extends org_1.default {
             yield knex_1.default.where('org_id', id).update(this.organization).from('vex_schema.org');
         });
     }
-    getAll() {
+    getAll(size, page) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield knex_1.default.select(['org_id',
                 'fantasy_name',
@@ -60,7 +62,11 @@ class OrgService extends org_1.default {
                 'org_status',
                 'cnae_main_code',
                 'open_date'])
-                .from('vex_schema.org');
+                .from('vex_schema.org')
+                .paginate({
+                perPage: size,
+                currentPage: page
+            });
             return data;
         });
     }

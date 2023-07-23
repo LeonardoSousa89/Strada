@@ -1,6 +1,10 @@
 import Org from "../../entities/org/org";
-import { DbOperations, Verifications} from "../../interface/operations";
+import { DbOperations } from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
+
+import { attachPaginate } from 'knex-paginate'
+
+attachPaginate()
 
 export default class OrgService extends Org implements DbOperations{
 
@@ -63,7 +67,7 @@ export default class OrgService extends Org implements DbOperations{
         await knex.where('org_id', id).update(this.organization).from('vex_schema.org')
     }
 
-    async getAll() {
+    async getAll(size?: any, page?:any) {
 
         const data = await knex.select(['org_id',
                                         'fantasy_name', 
@@ -73,6 +77,10 @@ export default class OrgService extends Org implements DbOperations{
                                         'cnae_main_code',
                                         'open_date'])
                                .from('vex_schema.org') 
+                               .paginate({
+                                    perPage: size,
+                                    currentPage: page
+                               })
     
         return data
     }

@@ -201,12 +201,13 @@ orgController.route('/org/update/:id').put(async (req, res)=>{
 
 orgController.route('/org/get-all').get(async (req, res)=>{
 
-    const response = new OrgService().getAll()
+    const Org = { ...req.query }
 
+    const response = new OrgService().getAll(Org.size, Org.page)
     
     await response.then(data => {
     
-        if(data.length === 0) return res.status(404)
+        if(data.data.length === 0) return res.status(404)
                                         .json({ 
                                             error: 'not data' 
                                         })
@@ -216,7 +217,7 @@ orgController.route('/org/get-all').get(async (req, res)=>{
         })
         .catch(__ => res.status(500)
                         .json({  
-                            error: 'i am sorry, there is an error with server'  
+                            error: 'i am sorry, there is an error with server'+__  
                         }))
 })
 
