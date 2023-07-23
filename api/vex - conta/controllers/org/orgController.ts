@@ -209,7 +209,7 @@ orgController.route('/org/get-all').get(async (req, res)=>{
     
         if(data.data.length === 0) return res.status(404)
                                         .json({ 
-                                            error: 'not data' 
+                                            error: 'no data' 
                                         })
             
             return res.status(200).json(data)
