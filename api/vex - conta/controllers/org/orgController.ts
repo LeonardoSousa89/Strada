@@ -20,7 +20,7 @@ orgController.route('/org/verify-cnpj').get(async (req, res)=>{
 
     let url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`
 
-    //depurar, testar e delegar esta verificação a uma outra função **
+    //depurar, testar e delegar esta verificação a uma outra função ou interface **
     await axios.get(url).then(response => {
         
        if(response.data.error){
@@ -74,7 +74,7 @@ orgController.route('/org/save').post(async (req, res)=>{
     }
 
     //verifica se o cnpj passado na url da requisição, existe através de uma api externa
-    //depurar, testar e delegar esta verificação a uma outra função **
+    //depurar, testar e delegar esta verificação a uma outra função ou interface **
     let cnpj = { ...req.query }
 
     let url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${cnpj.cnpj}`
@@ -96,7 +96,7 @@ orgController.route('/org/save').post(async (req, res)=>{
                                                  .json({ error: 'cnpj not found' })
 
     //verifica se o cnpj no body da requisição já está cadastrado no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função **
+    //depurar, testar e delegar esta verificação a uma outra função ou interface **
     const verificationCnpj = new OrgService().verifyCnpj(Org.cnpj)
 
     const cnpjDbResponse = await verificationCnpj.then(e => e)
@@ -161,15 +161,15 @@ orgController.route('/org/update/:id').put(async (req, res)=>{
         return res.status(400).json({ error: e })
     } 
 
-    //verifica se o cnpj no body da requisição já está cadastrado no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função **
-    const verificationCnpj = new OrgService().verifyCnpj(Org.cnpj)
+    //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
+    //depurar, testar e delegar esta verificação a uma outra função ou interface **
+    const verificationId = new OrgService().verifyId(req.params.id)
 
-    const cnpjDbResponse = await verificationCnpj.then(e => e)
+    const dataIdDbResponse = await verificationId.then(e => e)
     
-    if(cnpjDbResponse === false) return res.status(404)
-                                           .json({ 
-                                                error: 'cnpj not exists' 
+    if(dataIdDbResponse === false) return res.status(404)
+                                             .json({ 
+                                                error: 'organization not found' 
                                         }) 
 
     try{
@@ -240,9 +240,27 @@ orgController.route('/org/get-by-id/:id').get(async (req, res)=>{
 
 orgController.route('/org/delete-by-id/:id').delete(async (req, res)=>{
 
-    const response = new OrgService().deleteByid(req.params.id)  
+    const Org = { ...req.params }
+
+    //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
+    //depurar, testar e delegar esta verificação a uma outra função ou interface **
+    const verificationId = new OrgService().verifyId(Org.id)
+
+    const dataIdDbResponse = await verificationId.then(e => e)
     
-    await response.then(__ => res.status(204).json())
+    if(dataIdDbResponse === false) return res.status(404)
+                                             .json({ 
+                                                error: 'organization not found' 
+                                        })
+
+    const response = new OrgService().deleteByid(Org.id)  
+
+    return await response.then(__ => res.status(204)
+                                        .json({}))
+                                        .catch(__ => res.status(500)
+                                                        .json({  
+                                                            error: 'i am sorry, there is an error with server'  
+                                                        }))
 })
 
 export { orgController }

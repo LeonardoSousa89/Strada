@@ -42,6 +42,17 @@ export default class OrgService extends Org implements DbOperations{
         if(!existsOrNotexists) return false
     }
 
+    async verifyId(id: string | number) {
+
+        const existsOrNotexists = await knex.where('org_id', id)
+                                      .from('vex_schema.org')
+                                      .first()
+
+        if(existsOrNotexists)  return true
+
+        if(!existsOrNotexists) return false
+    }
+
     async save() {
 
         await knex.insert(this.organization).from('vex_schema.org')

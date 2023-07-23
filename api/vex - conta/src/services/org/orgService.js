@@ -30,6 +30,17 @@ class OrgService extends org_1.default {
                 return false;
         });
     }
+    verifyId(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const existsOrNotexists = yield knex_1.default.where('org_id', id)
+                .from('vex_schema.org')
+                .first();
+            if (existsOrNotexists)
+                return true;
+            if (!existsOrNotexists)
+                return false;
+        });
+    }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
             yield knex_1.default.insert(this.organization).from('vex_schema.org');
