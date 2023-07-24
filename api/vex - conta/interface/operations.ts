@@ -4,7 +4,7 @@ export interface DbOperations {
     update(id: number | string): void
     getAll(): any  
     getById(id: number | string): any
-    deleteByid(id: number | string): void,
+    deleteById(id: number | string): void,
 }
 
 export interface Verifications {

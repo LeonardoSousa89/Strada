@@ -1,29 +1,34 @@
 [
-    {
-        "fantasy_name": "**",
-        "corporate_name": "FACEBOOK SERVICOS ONLINE DO BRASIL LTDA.",
-        "cnpj": "13347016000117",
-        "org_status": "ATIVA",
-        "cnae_main_code": "7312200",
-        "open_date": "14/02/2011",
-        "password": "FACEBOOK"
-    },
-    {
-        "fantasy_name": "**",
-        "corporate_name": "GOOGLE INTERNATIONAL LLC",
-        "cnpj": "06947283000160",
-        "org_status": "ATIVA",
-        "cnae_main_code": "6462000",
-        "open_date": "26/08/2004",
-        "password": "GOOGLE"
-    },
-    {
-        "fantasy_name": "**",
-        "corporate_name": "MICROSOFT DO BRASIL IMPORTACAO E COMERCIO DE SOFTWARE E VIDEO GAMES LTDA",
-        "cnpj": "04712500000107",
-        "org_status": "ATIVA",
-        "cnae_main_code": "6203100",
-        "open_date": "15/10/2001",
-        "password": "MICROSOFT"
-    }
+    [
+        {
+            "fantasy_name": "**",
+            "corporate_name": "FACEBOOK SERVICOS ONLINE DO BRASIL LTDA.",
+            "cnpj": "13347016000117",
+            "org_status": "ATIVA",
+            "cnae_main_code": "7312200",
+            "open_date": "14/02/2011",
+            "password": "FACEBOOK"
+        },
+        {
+            "fantasy_name": "**",
+            "corporate_name": "GOOGLE INTERNATIONAL LLC",
+            "cnpj": "06947283000160",
+            "org_status": "ATIVA",
+            "cnae_main_code": "6462000",
+            "open_date": "26/08/2004",
+            "password": "GOOGLE"
+        },
+        {
+            "fantasy_name": "**",
+            "corporate_name": "MICROSOFT DO BRASIL IMPORTACAO E COMERCIO DE SOFTWARE E VIDEO GAMES LTDA",
+            "cnpj": "04712500000107",
+            "org_status": "ATIVA",
+            "cnae_main_code": "6203100",
+            "open_date": "15/10/2001",
+            "password": "MICROSOFT"
+        }
+    ],
+    [],
+    [],
+    []
 ]

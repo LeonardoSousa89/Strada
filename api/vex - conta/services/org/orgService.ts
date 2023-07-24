@@ -2,10 +2,6 @@ import Org from "../../entities/org/org";
 import { DbOperations } from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
 
-import { attachPaginate } from 'knex-paginate'
-
-attachPaginate()
-
 export default class OrgService extends Org implements DbOperations{
 
     constructor(
@@ -77,10 +73,6 @@ export default class OrgService extends Org implements DbOperations{
                                         'cnae_main_code',
                                         'open_date'])
                                .from('vex_schema.org') 
-                               .paginate({
-                                    perPage: size,
-                                    currentPage: page
-                               })
     
         return data
     }
@@ -99,7 +91,7 @@ export default class OrgService extends Org implements DbOperations{
         return data
     }
 
-    async deleteByid(id: number | string) {
+    async deleteById(id: number | string) {
         
         await knex.where('org_id', id).delete().from('vex_schema.org') 
     }

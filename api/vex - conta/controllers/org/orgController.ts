@@ -13,6 +13,12 @@ const orgController = express.Router()
 
 const err = new HandleError()
 
+/**
+ * erro do knex-paginate usado em mais de um arquivo:
+ * 
+ * Error: Can't extend QueryBuilder with existing method ('paginate')
+ */
+
 /* [ controlador de verificação de existência do cnpj] */
 orgController.route('/org/verify-cnpj').get(async (req, res)=>{
 
@@ -207,7 +213,7 @@ orgController.route('/org/get-all').get(async (req, res)=>{
     
     await response.then(data => {
     
-        if(data.data.length === 0) return res.status(404)
+        if(data.length === 0) return res.status(404)
                                         .json({ 
                                             error: 'no data' 
                                         })
@@ -254,7 +260,7 @@ orgController.route('/org/delete-by-id/:id').delete(async (req, res)=>{
                                                 error: 'organization not found' 
                                         })
 
-    const response = new OrgService().deleteByid(Org.id)  
+    const response = new OrgService().deleteById(Org.id)  
 
     return await response.then(__ => res.status(204)
                                         .json({}))
