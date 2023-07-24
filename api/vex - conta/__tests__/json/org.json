@@ -28,7 +28,39 @@
             "password": "MICROSOFT"
         }
     ],
-    [],
+    [
+        {
+            "zip_code": "04538132",
+            "street_type":"AVENIDA",
+            "public_place":"BRIG FARIA LIMA",
+            "org_number":"3732", 
+            "complement": "ANDAR 1 A 4 6 A 12 14E15",
+            "neighborhood": "ITAIM BIBI",
+            "county": "SÃO PAULO",
+            "country": "BRASIL"
+        },
+        {
+            "zip_code": "**",
+            "street_type":"**",
+            "public_place":"1600 AMPHITHETATER PARKWAY",
+            "org_number":"S/N", 
+            "complement": "**",
+            "neighborhood": "**",
+            "county": "Exterior",
+            "country": "USA"
+        },
+        {
+            "zip_code": "04543907",
+            "street_type":"AVENIDA",
+            "public_place":"PRESIDENTE JUSCELINO KUBITSCHEK 1909",
+            "org_number":"1909", 
+            "complement": "CONJ 181 ANDAR 18 TORRE SUL",
+            "neighborhood": "VILA NOVA CONCEICAO",
+            "county": "SÃO PAULO",
+            "country": "BRASIL"
+        }
+        
+    ],
     [],
     []
 ]

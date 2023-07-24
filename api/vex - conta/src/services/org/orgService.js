@@ -21,23 +21,23 @@ class OrgService extends org_1.default {
     }
     verifyCnpj(cnpj) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotexists = yield knex_1.default.where('cnpj', cnpj)
+            const existsOrNotExists = yield knex_1.default.where('cnpj', cnpj)
                 .from('vex_schema.org')
                 .first();
-            if (existsOrNotexists)
+            if (existsOrNotExists)
                 return true;
-            if (!existsOrNotexists)
+            if (!existsOrNotExists)
                 return false;
         });
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotexists = yield knex_1.default.where('org_id', id)
+            const existsOrNotExists = yield knex_1.default.where('org_id', id)
                 .from('vex_schema.org')
                 .first();
-            if (existsOrNotexists)
+            if (existsOrNotExists)
                 return true;
-            if (!existsOrNotexists)
+            if (!existsOrNotExists)
                 return false;
         });
     }

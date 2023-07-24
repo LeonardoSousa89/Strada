@@ -11,7 +11,7 @@ dotenv.config()
 
 const orgController = express.Router()
 
-const err = new HandleError()
+const err = new HandleError() 
 
 /**
  * erro do knex-paginate usado em mais de um arquivo:
@@ -218,12 +218,12 @@ orgController.route('/org/get-all').get(async (req, res)=>{
                                             error: 'no data' 
                                         })
             
-            return res.status(200).json(data)
+        return res.status(200).json(data)
     
         })
         .catch(__ => res.status(500)
                         .json({  
-                            error: 'i am sorry, there is an error with server'+__  
+                            error: 'i am sorry, there is an error with server'  
                         }))
 })
 

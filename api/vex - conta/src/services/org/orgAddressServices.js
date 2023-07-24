@@ -15,9 +15,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const orgAddress_1 = __importDefault(require("../../entities/org/orgAddress"));
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 class OrgAddressService extends orgAddress_1.default {
-    constructor(zip_code, street_type, public_place, number, complement, neighborhood, county, country) {
-        super(zip_code, street_type, public_place, number, complement, neighborhood, county, country);
-        this.organizationAddress = new orgAddress_1.default(this.zip_code, this.street_type, this.public_place, this.number, this.complement, this.neighborhood, this.county, this.country);
+    constructor(zip_code, street_type, public_place, org_number, complement, neighborhood, county, country) {
+        super(zip_code, street_type, public_place, org_number, complement, neighborhood, county, country);
+        this.organizationAddress = new orgAddress_1.default(this.zip_code, this.street_type, this.public_place, this.org_number, this.complement, this.neighborhood, this.county, this.country);
+    }
+    verifyId(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const existsOrNotExists = yield knex_1.default.where('org_address_id', id)
+                .from('vex_schema.org_address')
+                .first();
+            if (existsOrNotExists)
+                return true;
+            if (!existsOrNotExists)
+                return false;
+        });
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {

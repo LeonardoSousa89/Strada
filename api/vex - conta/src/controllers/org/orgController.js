@@ -194,7 +194,7 @@ orgController.route('/org/get-all').get((req, res) => __awaiter(void 0, void 0, 
     })
         .catch(__ => res.status(500)
         .json({
-        error: 'i am sorry, there is an error with server' + __
+        error: 'i am sorry, there is an error with server'
     }));
 }));
 orgController.route('/org/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {

@@ -5,20 +5,20 @@ import knex from "../../repositories/knex/knex";
 export default class OrgAddressService extends OrgAddress implements DbOperations{
 
   constructor(
-    zip_code: string,
-    street_type: string,
-    public_place: string,
-    number: string,
-    complement: string,
-    neighborhood: string,
-    county: string,
-    country: string){
+    zip_code?: string,
+    street_type?: string,
+    public_place?: string,
+    org_number?: string,
+    complement?: string,
+    neighborhood?: string,
+    county?: string,
+    country?: string){
 
     super(
         zip_code,
         street_type, 
         public_place, 
-        number, 
+        org_number, 
         complement, 
         neighborhood, 
         county, 
@@ -29,11 +29,23 @@ export default class OrgAddressService extends OrgAddress implements DbOperation
     this.zip_code,
     this.street_type, 
     this.public_place, 
-    this.number, 
+    this.org_number, 
     this.complement, 
     this.neighborhood, 
     this.county, 
     this.country)
+
+  
+  async verifyId(id: string | number) {
+
+    const existsOrNotExists = await knex.where('org_address_id', id)
+                                    .from('vex_schema.org_address')
+                                    .first()
+
+    if(existsOrNotExists)  return true
+
+    if(!existsOrNotExists) return false
+  }
 
   async save() {
       

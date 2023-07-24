@@ -33,24 +33,24 @@ export default class OrgService extends Org implements DbOperations{
 
     async verifyCnpj(cnpj: string) {
 
-        const existsOrNotexists = await knex.where('cnpj', cnpj)
+        const existsOrNotExists = await knex.where('cnpj', cnpj)
                                       .from('vex_schema.org')
                                       .first()
 
-        if(existsOrNotexists)  return true
+        if(existsOrNotExists)  return true
 
-        if(!existsOrNotexists) return false
+        if(!existsOrNotExists) return false
     }
 
     async verifyId(id: string | number) {
 
-        const existsOrNotexists = await knex.where('org_id', id)
+        const existsOrNotExists = await knex.where('org_id', id)
                                       .from('vex_schema.org')
                                       .first()
 
-        if(existsOrNotexists)  return true
+        if(existsOrNotExists)  return true
 
-        if(!existsOrNotexists) return false
+        if(!existsOrNotExists) return false
     }
 
     async save() {
