@@ -1,5 +1,5 @@
 import express from 'express'
-import OrgAddressService from '../../services/org/orgAddressServices'
+import OrgAddressService from '../../services/org/orgAddressService'
 import HandleError from '../../interface/error/handleError'
 
 const orgAddressController = express.Router()

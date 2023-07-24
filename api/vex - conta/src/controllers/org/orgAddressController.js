@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.orgAddressController = void 0;
 const express_1 = __importDefault(require("express"));
-const orgAddressServices_1 = __importDefault(require("../../services/org/orgAddressServices"));
+const orgAddressService_1 = __importDefault(require("../../services/org/orgAddressService"));
 const handleError_1 = __importDefault(require("../../interface/error/handleError"));
 const orgAddressController = express_1.default.Router();
 exports.orgAddressController = orgAddressController;
@@ -45,7 +45,7 @@ orgAddressController.route('/org/address/save').post((req, res) => __awaiter(voi
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    const response = new orgAddressServices_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country).save();
+    const response = new orgAddressService_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country).save();
     return yield response.then(__ => res.status(201)
         .json({
         msg: 'organization address saved'
@@ -78,14 +78,14 @@ orgAddressController.route('/org/address/update/:id').put((req, res) => __awaite
     }
     //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
     //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationId = new orgAddressServices_1.default().verifyId(req.params.id);
+    const verificationId = new orgAddressService_1.default().verifyId(req.params.id);
     const dataIdDbResponse = yield verificationId.then(e => e);
     if (dataIdDbResponse === false)
         return res.status(404)
             .json({
             error: 'organization address not found'
         });
-    const response = new orgAddressServices_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country).update(req.params.id);
+    const response = new orgAddressService_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country).update(req.params.id);
     return yield response.then(__ => res.status(201)
         .json({
         msg: 'organization address saved'
@@ -96,7 +96,7 @@ orgAddressController.route('/org/address/update/:id').put((req, res) => __awaite
     }));
 }));
 orgAddressController.route('/org/address/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = new orgAddressServices_1.default().getAll();
+    const response = new orgAddressService_1.default().getAll();
     yield response.then(data => {
         if (data.length === 0)
             return res.status(404)
@@ -111,7 +111,7 @@ orgAddressController.route('/org/address/get-all').get((req, res) => __awaiter(v
     }));
 }));
 orgAddressController.route('/org/address/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = new orgAddressServices_1.default().getById(req.params.id);
+    const response = new orgAddressService_1.default().getById(req.params.id);
     yield response.then(data => {
         if (data.length === 0)
             return res.status(404)
@@ -127,10 +127,10 @@ orgAddressController.route('/org/address/get-by-id/:id').get((req, res) => __awa
 }));
 orgAddressController.route('/org/address/delete-by-id/:id').delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgAddress = Object.assign({}, req.params);
-    const response = new orgAddressServices_1.default().deleteById(OrgAddress.id);
+    const response = new orgAddressService_1.default().deleteById(OrgAddress.id);
     //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
     //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationId = new orgAddressServices_1.default().verifyId(OrgAddress.id);
+    const verificationId = new orgAddressService_1.default().verifyId(OrgAddress.id);
     const dataIdDbResponse = yield verificationId.then(e => e);
     if (dataIdDbResponse === false)
         return res.status(404)

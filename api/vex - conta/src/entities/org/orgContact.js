@@ -1,9 +1,10 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class OrgContact {
-    constructor(org_contact_id, telephone, ddd, email) {
-        this.org_contact_id = org_contact_id;
+    constructor(telephone, ddd, email) {
         this.telephone = telephone;
         this.ddd = ddd;
         this.email = email;
     }
 }
+exports.default = OrgContact;

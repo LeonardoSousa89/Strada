@@ -9,10 +9,5 @@ export interface DbOperations {
 
 export interface Verifications {
     
-    verify(elementToBeVerified?: any, 
-           elementInDatabase?: any, 
-           table?: any, 
-           url?: string,
-           callback?: any): any
-           
+    verify(): any
 }
