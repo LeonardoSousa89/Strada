@@ -78,7 +78,26 @@
             "email": "cadastro@microsoft.com"
         }
     ],
-    [],
+    [
+        {
+            "first_name": "Jonh",
+            "last_name": "D. Carmack II",
+            "email": "carmack@gmail.com",
+            "password": "idsoftware"
+        },
+        {
+            "first_name": "Steve",
+            "last_name": "Ditko",
+            "email": "ditko@gmail.com",
+            "password": "marvel60s"
+        },
+        {
+            "first_name": "Paul",
+            "last_name": "Allan",
+            "email": "allanandbiill@outlook.com",
+            "password": "microsoft99"
+        }
+    ],
     [],
     [],
     [],
