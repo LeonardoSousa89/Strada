@@ -53,7 +53,7 @@ orgAddressController.route('/org/address/save').post(async(req, res)=> {
                                         }))
                                         .catch(__ => res.status(500)
                                                         .json({ 
-                                                            error: 'i am sorry, there is an error with server'+__ 
+                                                            error: 'i am sorry, there is an error with server'
                                                         }))                                         
 })
 
@@ -105,11 +105,11 @@ orgAddressController.route('/org/address/update/:id').put(async(req, res)=> {
                                                                                   
     return await response.then(__ => res.status(201)
                                         .json({ 
-                                            msg: 'organization address saved' 
+                                            msg: 'organization address updated' 
                                         }))
                                         .catch(__ => res.status(500)
                                                         .json({ 
-                                                            error: 'i am sorry, there is an error with server'+__ 
+                                                            error: 'i am sorry, there is an error with server'
                                                         }))                                         
 })
 

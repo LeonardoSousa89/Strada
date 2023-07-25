@@ -1,10 +1,11 @@
 export interface DbOperations {
 
     save(): void  
-    update(id: number | string): void
+    update(): void
     getAll(): any  
-    getById(id: number | string): any
-    deleteById(id: number | string): void,
+    getById(): any
+    deleteAll(): void
+    deleteById(): void,
 }
 
 export interface Verifications {

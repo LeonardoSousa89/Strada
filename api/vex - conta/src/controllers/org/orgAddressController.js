@@ -52,7 +52,7 @@ orgAddressController.route('/org/address/save').post((req, res) => __awaiter(voi
     }))
         .catch(__ => res.status(500)
         .json({
-        error: 'i am sorry, there is an error with server' + __
+        error: 'i am sorry, there is an error with server'
     }));
 }));
 orgAddressController.route('/org/address/update/:id').put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -88,11 +88,11 @@ orgAddressController.route('/org/address/update/:id').put((req, res) => __awaite
     const response = new orgAddressService_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country).update(req.params.id);
     return yield response.then(__ => res.status(201)
         .json({
-        msg: 'organization address saved'
+        msg: 'organization address updated'
     }))
         .catch(__ => res.status(500)
         .json({
-        error: 'i am sorry, there is an error with server' + __
+        error: 'i am sorry, there is an error with server'
     }));
 }));
 orgAddressController.route('/org/address/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {

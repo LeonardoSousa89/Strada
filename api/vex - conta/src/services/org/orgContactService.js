@@ -56,6 +56,7 @@ class OrgContactService extends orgContact_1.default {
             return data;
         });
     }
+    deleteAll() { }
     deleteById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             yield knex_1.default.where('org_contact_id', id)

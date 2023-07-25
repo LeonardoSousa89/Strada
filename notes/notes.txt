@@ -2,3 +2,10 @@
 
 https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
 
+
+/* problmas e bugs */
+
+//knex-paginate
+Error: Can't extend QueryBuilder with existing method ('paginate')
+
+obs* perguntar nos grupos se alguém sabe como resolver

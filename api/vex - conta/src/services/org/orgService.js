@@ -78,6 +78,7 @@ class OrgService extends org_1.default {
             return data;
         });
     }
+    deleteAll() { }
     deleteById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             yield knex_1.default.where('org_id', id).delete().from('vex_schema.org');

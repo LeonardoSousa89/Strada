@@ -58,7 +58,7 @@ export default class OrgService extends Org implements DbOperations{
         await knex.insert(this.organization).from('vex_schema.org')
     }
 
-    async update(id: number | string) {
+    async update(id?: number | string) {
         
         await knex.where('org_id', id).update(this.organization).from('vex_schema.org')
     }
@@ -77,7 +77,7 @@ export default class OrgService extends Org implements DbOperations{
         return data
     }
 
-    async getById(id: number | string) {
+    async getById(id?: number | string) {
         
         const data = await knex.where('org_id', id)
                                .select(['org_id',
@@ -91,7 +91,9 @@ export default class OrgService extends Org implements DbOperations{
         return data
     }
 
-    async deleteById(id: number | string) {
+    deleteAll(): void {}
+
+    async deleteById(id?: number | string) {
         
         await knex.where('org_id', id).delete().from('vex_schema.org') 
     }

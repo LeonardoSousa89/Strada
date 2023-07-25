@@ -52,7 +52,7 @@ export default class OrgAddressService extends OrgAddress implements DbOperation
     await knex.insert(this.organizationAddress).from('vex_schema.org_address')
   }
 
-  async update(id: string | number) {
+  async update(id?: string | number) {
       
     await knex.where('org_address_id', id)
               .update(this.organizationAddress)
@@ -66,7 +66,7 @@ export default class OrgAddressService extends OrgAddress implements DbOperation
     return data
   }
 
-  async getById(id: string | number) {
+  async getById(id?: string | number) {
       
     const data = await knex.where('org_address_id', id)
                            .select('*')
@@ -74,7 +74,9 @@ export default class OrgAddressService extends OrgAddress implements DbOperation
     return data
   }
 
-  async deleteById(id: string | number) {
+  deleteAll(): void {}
+
+  async deleteById(id?: string | number) {
       
     await knex.where('org_address_id', id)
               .delete()
