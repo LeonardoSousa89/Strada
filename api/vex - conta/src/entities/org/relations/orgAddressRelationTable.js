@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class OrgAddressRelationTable {
-    constructor(org_address_id, org_id) {
-        this.org_address_id = org_address_id;
-        this.org_id = org_id;
+    constructor(org_address_relation_id, org_relation_id) {
+        this.org_address_relation_id = org_address_relation_id;
+        this.org_relation_id = org_relation_id;
     }
 }
 exports.default = OrgAddressRelationTable;

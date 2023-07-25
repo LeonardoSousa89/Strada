@@ -5,17 +5,17 @@ import knex from "../../../repositories/knex/knex";
 export default class OrgAddressRelationTableService extends OrgAddressRelationTable implements DbOperations{
 
   constructor(
-    org_address_id?: number,
-    org_id?: number){
+    org_address_relation_id?: number,
+    org_relation_id?: number){
 
     super(
-        org_address_id,
-        org_id)
+        org_address_relation_id,
+        org_relation_id)
   }
   
   organizationAddressRelationTable = new OrgAddressRelationTable(
-    this.org_address_id,
-    this.org_id)
+    this.org_address_relation_id,
+    this.org_relation_id)
 
   async save() {
       

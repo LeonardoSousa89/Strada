@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const orgAddressRelationTable_1 = __importDefault(require("../../../entities/org/relations/orgAddressRelationTable"));
 const knex_1 = __importDefault(require("../../../repositories/knex/knex"));
 class OrgAddressRelationTableService extends orgAddressRelationTable_1.default {
-    constructor(org_address_id, org_id) {
-        super(org_address_id, org_id);
-        this.organizationAddressRelationTable = new orgAddressRelationTable_1.default(this.org_address_id, this.org_id);
+    constructor(org_address_relation_id, org_relation_id) {
+        super(org_address_relation_id, org_relation_id);
+        this.organizationAddressRelationTable = new orgAddressRelationTable_1.default(this.org_address_relation_id, this.org_relation_id);
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {

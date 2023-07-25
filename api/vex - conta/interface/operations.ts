@@ -5,7 +5,7 @@ export interface DbOperations {
     getAll(): any  
     getById(): any
     deleteAll(): void
-    deleteById(): void,
+    deleteById(): void
 }
 
 export interface Verifications {

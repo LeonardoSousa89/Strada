@@ -5,17 +5,17 @@ import knex from "../../../repositories/knex/knex";
 export default class OrgContactRelationTableService extends OrgContactRelationTable implements DbOperations{
 
   constructor(
-    org_contact_id?: number,
-    org_id?: number){
+    org_contact_relation_id?: number,
+    org_relation_id?: number){
 
     super(
-        org_contact_id,
-        org_id)
+        org_contact_relation_id,
+        org_relation_id)
   }
   
   orgContactRelationTableService = new OrgContactRelationTable(
-    this.org_contact_id,
-    this.org_id)
+    this.org_contact_relation_id,
+    this.org_relation_id)
 
   async save() {
       

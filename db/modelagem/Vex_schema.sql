@@ -42,26 +42,25 @@ CREATE TABLE IF NOT EXISTS vex_schema.org_contact (
 );
 
 CREATE TABLE IF NOT EXISTS vex_schema.org_address_relation_table (
-    org_address_id INT,
-    org_id INT,
-    FOREIGN KEY(org_address_id) REFERENCES vex_schema.org_address (org_address_id),
-    FOREIGN KEY(org_id) REFERENCES vex_schema.org (org_id)
+    org_address_relation_id INT,
+    org_relation_id INT,
+    FOREIGN KEY(org_address_relation_id) REFERENCES vex_schema.org_address (org_address_id),
+    FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
 );
 
 CREATE TABLE IF NOT EXISTS vex_schema.org_contact_relation_table (
-    org_contact_id INT,
-    org_id INT,
-    FOREIGN KEY(org_contact_id) REFERENCES vex_schema.org_contact (org_contact_id),
-    FOREIGN KEY(org_id) REFERENCES vex_schema.org (org_id)
+    org_contact_relation_id INT,
+    org_relation_id INT,
+    FOREIGN KEY(org_contact_relation_id) REFERENCES vex_schema.org_contact (org_contact_id),
+    FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
 );
 
 CREATE TABLE IF NOT EXISTS vex_schema.org_driver_relation_table (
-    org_id INT,
-    driver_id INT,
-    FOREIGN KEY(org_id) REFERENCES vex_schema.org (org_id),
-    FOREIGN KEY(driver_id) REFERENCES vex_schema.driver (driver_id)
+    org_relation_id INT,
+    driver_relation_id INT,
+    FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id),
+    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id)
 );
-
 
 
 /* Motorista e suas relações */
@@ -100,33 +99,32 @@ CREATE TABLE IF NOT EXISTS vex_schema.information (
 );
 
 CREATE TABLE IF NOT EXISTS vex_schema.driver_document_relation_table (
-    driver_document_id INT,
-    driver_id INT,
-    FOREIGN KEY(driver_document_id) REFERENCES vex_schema.driver_document (driver_document_id),
-    FOREIGN KEY(driver_id) REFERENCES vex_schema.driver (driver_id)
+    driver_document_relation_id INT,
+    driver_relation_id INT,
+    FOREIGN KEY(driver_document_relation_id) REFERENCES vex_schema.driver_document (driver_document_id),
+    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id)
 );
 
 CREATE TABLE IF NOT EXISTS vex_schema.driver_contact_relation_table (
-    driver_contact_id INT,
-    driver_id INT,
-    FOREIGN KEY(driver_contact_id) REFERENCES vex_schema.driver_contact (driver_contact_id),
-    FOREIGN KEY(driver_id) REFERENCES vex_schema.driver (driver_id)
+    driver_contact_relation_id INT,
+    driver_relation_id INT,
+    FOREIGN KEY(driver_contact_relation_id) REFERENCES vex_schema.driver_contact (driver_contact_id),
+    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id)
 );
 
 CREATE TABLE IF NOT EXISTS vex_schema.driver_address_relation_table (
-    driver_address_id INT,
-    driver_id INT,
-    FOREIGN KEY(driver_address_id) REFERENCES vex_schema.driver_address (driver_address_id),
-    FOREIGN KEY(driver_id) REFERENCES vex_schema.driver (driver_id)
+    driver_address_relation_id INT,
+    driver_relation_id INT,
+    FOREIGN KEY(driver_address_relation_id) REFERENCES vex_schema.driver_address (driver_address_id),
+    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id)
 );
 
 CREATE TABLE IF NOT EXISTS vex_schema.driver_information_relation_table (
-    driver_id INT,
-    information_id INT,
-    FOREIGN KEY(driver_id) REFERENCES vex_schema.driver (driver_id),
-    FOREIGN KEY(information_id) REFERENCES vex_schema.information (information_id)
+    driver_relation_id INT,
+    information_relation_id INT,
+    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id),
+    FOREIGN KEY(information_relation_id) REFERENCES vex_schema.information (information_id)
 );
-
 
 SELECT * FROM vex_schema.org;
 SELECT * FROM vex_schema.org_address;
@@ -144,3 +142,25 @@ SELECT * FROM vex_schema.driver_address_relation_table;
 SELECT * FROM vex_schema.driver_information_relation_table;
 
 SELECT * FROM vex_schema.information;
+
+SELECT  org.org_id, 
+        org.fantasy_name, 
+        org.cnpj, 
+        org.org_status,
+        org.cnae_main_code,
+        org.open_date,
+        address.org_address_id, 
+        address.zip_code, 
+        address.street_type,
+        address.public_place,
+        address.org_number,
+        address.complement,
+        address.neighborhood,
+        address.county,
+        address.country
+FROM vex_schema.org_address_relation_table
+INNER JOIN vex_schema.org_address address
+ON org_address_relation_table.org_address_relation_id = address.org_address_id
+INNER JOIN vex_schema.org org
+ON org_address_relation_table.org_relation_id = org.org_id
+WHERE org.org_id = 37;

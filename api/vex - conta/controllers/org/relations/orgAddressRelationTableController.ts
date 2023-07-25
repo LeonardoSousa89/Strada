@@ -20,32 +20,32 @@ orgAddressRelationTableController.route('/org/address/relation-table/save').post
 
     try{
 
-        err.exceptionFieldNullOrUndefined(Org.org_address_id, 'org address id is undefined or null')
-        err.exceptionFieldNullOrUndefined(Org.org_id, 'org id is undefined or null')
+        err.exceptionFieldNullOrUndefined(Org.org_address_relation_id, 'org address id is undefined or null')
+        err.exceptionFieldNullOrUndefined(Org.org_relation_id, 'org id is undefined or null')
     
-        err.exceptionFieldIsEqualZero(Org.org_address_id, 'org address id code can not be 0')
-        err.exceptionFieldIsEqualZero(Org.org_id, 'org id can not be 0')
+        err.exceptionFieldIsEqualZero(Org.org_address_relation_id, 'org address id code can not be 0')
+        err.exceptionFieldIsEqualZero(Org.org_relation_id, 'org id can not be 0')
     }catch(e){
 
         return res.status(400).json({ error: e })
     }
 
-    const verifyOrgIdExixts = await new OrgService().verifyId(Org.org_id)
+    const verifyOrgIdExixts = await new OrgService().verifyId(Org.org_relation_id)
 
     if(verifyOrgIdExixts == false) return res.status(404)
                                              .json({
                                                 error: "organization id not found"
                                             })
     
-    const verifyOrgAddressIdExixts = await new OrgAddressService().verifyId(Org.org_address_id)
+    const verifyOrgAddressIdExixts = await new OrgAddressService().verifyId(Org.org_address_relation_id)
 
     if(verifyOrgAddressIdExixts == false) return res.status(404)
                                               .json({
                                                     error: "organization address id not found"
                                                 })                                                                
 
-    const response = new OrgAddressRelationTableService(Org.org_address_id,
-                                           Org.org_id).save()
+    const response = new OrgAddressRelationTableService(Org.org_address_relation_id,
+                                           Org.org_relation_id).save()
 
     return await response.then(__ => res.status(201)
                                         .json({ 

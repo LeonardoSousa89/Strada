@@ -29,27 +29,27 @@ const err = new handleError_1.default();
 orgContactRelationTableController.route('/org/contact/relation-table/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
     try {
-        err.exceptionFieldNullOrUndefined(Org.org_contact_id, 'org contact id is undefined or null');
-        err.exceptionFieldNullOrUndefined(Org.org_id, 'org id is undefined or null');
-        err.exceptionFieldIsEqualZero(Org.org_contact_id, 'org contact id code can not be 0');
-        err.exceptionFieldIsEqualZero(Org.org_id, 'org id can not be 0');
+        err.exceptionFieldNullOrUndefined(Org.org_contact_relation_id, 'org contact id is undefined or null');
+        err.exceptionFieldNullOrUndefined(Org.org_relation_id, 'org id is undefined or null');
+        err.exceptionFieldIsEqualZero(Org.org_contact_relation_id, 'org contact id code can not be 0');
+        err.exceptionFieldIsEqualZero(Org.org_relation_id, 'org id can not be 0');
     }
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    const verifyOrgIdExixts = yield new orgService_1.default().verifyId(Org.org_id);
+    const verifyOrgIdExixts = yield new orgService_1.default().verifyId(Org.org_relation_id);
     if (verifyOrgIdExixts == false)
         return res.status(404)
             .json({
             error: "organization id not found"
         });
-    const verifyOrgContactIdExixts = yield new orgContactService_1.default().verifyId(Org.org_contact_id);
+    const verifyOrgContactIdExixts = yield new orgContactService_1.default().verifyId(Org.org_contact_relation_id);
     if (verifyOrgContactIdExixts == false)
         return res.status(404)
             .json({
             error: "organization contact id not found"
         });
-    const response = new orgContactRelationTableService_1.default(Org.org_contact_id, Org.org_id).save();
+    const response = new orgContactRelationTableService_1.default(Org.org_contact_relation_id, Org.org_relation_id).save();
     return yield response.then(__ => res.status(201)
         .json({
         msg: 'organization contact relation saved'
