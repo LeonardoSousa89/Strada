@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.joinOrgAndContactProjection = exports.joinOrgAndAddressProjection = exports.organizationProjection = void 0;
+exports.joinOrgAndDriverProjection = exports.joinOrgAndContactProjection = exports.joinOrgAndAddressProjection = exports.organizationProjection = void 0;
 const organizationProjection = [
     'org.org_id',
     'org.fantasy_name',
@@ -30,3 +30,10 @@ const joinOrgAndContactProjection = [
     'org_contact.email'
 ];
 exports.joinOrgAndContactProjection = joinOrgAndContactProjection;
+const joinOrgAndDriverProjection = [
+    'driver.driver_id',
+    'driver.first_name',
+    'driver.last_name',
+    'driver.email'
+];
+exports.joinOrgAndDriverProjection = joinOrgAndDriverProjection;
