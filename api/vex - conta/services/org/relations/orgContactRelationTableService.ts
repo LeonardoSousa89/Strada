@@ -19,7 +19,8 @@ export default class OrgContactRelationTableService extends OrgContactRelationTa
 
   async save() {
       
-    await knex.insert(this.orgContactRelationTableService).from('vex_schema.org_contact_relation_table')
+    await knex.insert(this.orgContactRelationTableService)
+              .from('vex_schema.org_contact_relation_table')
   }
 
   update(id?: string | number): void {
@@ -28,7 +29,8 @@ export default class OrgContactRelationTableService extends OrgContactRelationTa
 
   async getAll(size?: any, page?:any) {
       
-    const data = await knex.select('*').from('vex_schema.org_contact_relation_table') 
+    const data = await knex.select('*')
+                           .from('vex_schema.org_contact_relation_table') 
     
     return data
   }

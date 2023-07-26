@@ -34,7 +34,7 @@ OrgJoinQueryController.route('/org/join/data').get(async(req, res)=>{
         })
         .catch(__ => res.status(500)
                         .json({  
-                            error: 'i am sorry, there is an error with server'  +__
+                            error: 'i am sorry, there is an error with server'
                         }))
 })
 

@@ -19,6 +19,17 @@ class DriverService extends driver_1.default {
         super(first_name, last_name, email, password);
         this.driver = new driver_1.default(this.first_name, this.last_name, this.email, this.password);
     }
+    verifyId(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const existsOrNotExists = yield knex_1.default.where('driver_id', id)
+                .from('vex_schema.driver')
+                .first();
+            if (existsOrNotExists)
+                return true;
+            if (!existsOrNotExists)
+                return false;
+        });
+    }
     verifyEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             const existsOrNotExists = yield knex_1.default.where('email', email)

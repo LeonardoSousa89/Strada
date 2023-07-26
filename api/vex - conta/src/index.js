@@ -7,12 +7,13 @@ var port = 8765;
 const morgan_1 = __importDefault(require("morgan"));
 const express_1 = __importDefault(require("express"));
 const orgController_1 = require("./controllers/org/orgController");
+const orgJoinQueryController_1 = require("./controllers/query/orgJoinQueryController");
 const orgAddressController_1 = require("./controllers/org/orgAddressController");
 const orgContactController_1 = require("./controllers/org/orgContactController");
 const orgAddressRelationTableController_1 = require("./controllers/org/relations/orgAddressRelationTableController");
-const driverController_1 = require("./controllers/driver/driverController");
 const orgContactRelationTableController_1 = require("./controllers/org/relations/orgContactRelationTableController");
-const orgJoinQueryController_1 = require("./controllers/query/orgJoinQueryController");
+const orgDriverRelationTableController_1 = require("./controllers/relations/orgDriverRelationTableController");
+const driverController_1 = require("./controllers/driver/driverController");
 const app = (0, express_1.default)();
 app.use((0, morgan_1.default)('dev'));
 app.use(express_1.default.json());
@@ -24,6 +25,7 @@ app.use('/', [
     orgContactController_1.orgContactController,
     orgAddressRelationTableController_1.orgAddressRelationTableController,
     orgContactRelationTableController_1.orgContactRelationTableController,
+    orgDriverRelationTableController_1.orgDriverRelationTableController,
     driverController_1.driverController
 ]);
 app.listen(port);
