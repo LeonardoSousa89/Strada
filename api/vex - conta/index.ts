@@ -10,6 +10,7 @@ import { orgAddressRelationTableController } from './controllers/org/relations/o
 import { orgContactRelationTableController } from './controllers/org/relations/orgContactRelationTableController'
 import { orgDriverRelationTableController } from './controllers/relations/orgDriverRelationTableController'
 import { driverController } from './controllers/driver/driverController'
+import { driverAddressController } from './controllers/driver/driverAddressController'
 
 const app = express()
 
@@ -24,7 +25,8 @@ app.use('/', [
               orgAddressRelationTableController,
               orgContactRelationTableController,
               orgDriverRelationTableController,
-              driverController
+              driverController,
+              driverAddressController
             ])
 
 app.listen(port)

@@ -98,6 +98,23 @@
             "password": "microsoft99"
         }
     ],
+    [
+        {
+            "zip_code": "66205",
+            "state": "Kansas",
+            "city": "Roeland Park"
+        },
+        {
+            "zip_code": "15907",
+            "state": "Pensilvania",
+            "city": "Jonhstown"
+        },
+        {
+            "zip_code": "98103",
+            "state": "Washington",
+            "city": "Seattle"
+        }
+    ],
     [],
     [],
     [],

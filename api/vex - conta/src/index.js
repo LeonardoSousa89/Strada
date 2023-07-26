@@ -14,6 +14,7 @@ const orgAddressRelationTableController_1 = require("./controllers/org/relations
 const orgContactRelationTableController_1 = require("./controllers/org/relations/orgContactRelationTableController");
 const orgDriverRelationTableController_1 = require("./controllers/relations/orgDriverRelationTableController");
 const driverController_1 = require("./controllers/driver/driverController");
+const driverAddressController_1 = require("./controllers/driver/driverAddressController");
 const app = (0, express_1.default)();
 app.use((0, morgan_1.default)('dev'));
 app.use(express_1.default.json());
@@ -26,6 +27,7 @@ app.use('/', [
     orgAddressRelationTableController_1.orgAddressRelationTableController,
     orgContactRelationTableController_1.orgContactRelationTableController,
     orgDriverRelationTableController_1.orgDriverRelationTableController,
-    driverController_1.driverController
+    driverController_1.driverController,
+    driverAddressController_1.driverAddressController
 ]);
 app.listen(port);
