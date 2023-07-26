@@ -6,16 +6,19 @@ export default class DriverAddressRelationTableService extends DriveAddressRelat
 
   constructor(
     driver_address_relation_id?: number,
-    driver_relation_id?: number){
+    driver_relation_id?: number,
+    org_relation_id?: number){
 
     super(
         driver_address_relation_id,
-        driver_relation_id)
+        driver_relation_id,
+        org_relation_id)
   }
   
   driveAddressRelationTable = new DriveAddressRelationTable(
     this.driver_address_relation_id,
-    this.driver_relation_id)
+    this.driver_relation_id,
+    this.org_relation_id)
 
   async save() {
       

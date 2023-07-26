@@ -18,6 +18,7 @@ const driveAddressRelationTableService_1 = __importDefault(require("../../../ser
 const handleError_1 = __importDefault(require("../../../interface/error/handleError"));
 const driverService_1 = __importDefault(require("../../../services/driver/driverService"));
 const driverAddressService_1 = __importDefault(require("../../../services/driver/driverAddressService"));
+const orgService_1 = __importDefault(require("../../../services/org/orgService"));
 const driverAddressRelationTableController = express_1.default.Router();
 exports.driverAddressRelationTableController = driverAddressRelationTableController;
 const err = new handleError_1.default();
@@ -31,8 +32,10 @@ driverAddressRelationTableController.route('/org/driver/address/relation-table/s
     try {
         err.exceptionFieldNullOrUndefined(Driver.driver_address_relation_id, 'driver address id is undefined or null');
         err.exceptionFieldNullOrUndefined(Driver.driver_relation_id, 'driver id is undefined or null');
+        err.exceptionFieldNullOrUndefined(Driver.org_relation_id, 'org id is undefined or null');
         err.exceptionFieldIsEqualZero(Driver.driver_address_relation_id, 'driver address id code can not be 0');
         err.exceptionFieldIsEqualZero(Driver.driver_relation_id, 'driver id can not be 0');
+        err.exceptionFieldIsEqualZero(Driver.org_relation_id, 'org id can not be 0');
     }
     catch (e) {
         return res.status(400).json({ error: e });
@@ -49,8 +52,14 @@ driverAddressRelationTableController.route('/org/driver/address/relation-table/s
             .json({
             error: "driver address id not found"
         });
+    const verifyOrgIdExixts = yield new orgService_1.default().verifyId(Driver.org_relation_id);
+    if (verifyOrgIdExixts == false)
+        return res.status(404)
+            .json({
+            error: "org id not found"
+        });
     try {
-        const driverAndAddressRelation = new driveAddressRelationTableService_1.default(Driver.driver_address_relation_id, Driver.driver_relation_id);
+        const driverAndAddressRelation = new driveAddressRelationTableService_1.default(Driver.driver_address_relation_id, Driver.driver_relation_id, Driver.org_relation_id);
         yield driverAndAddressRelation.save();
         return res.status(201)
             .json({

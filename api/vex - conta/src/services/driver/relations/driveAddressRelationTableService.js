@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const driverAddressRelationTable_1 = __importDefault(require("../../../entities/driver/relations/driverAddressRelationTable"));
 const knex_1 = __importDefault(require("../../../repositories/knex/knex"));
 class DriverAddressRelationTableService extends driverAddressRelationTable_1.default {
-    constructor(driver_address_relation_id, driver_relation_id) {
-        super(driver_address_relation_id, driver_relation_id);
-        this.driveAddressRelationTable = new driverAddressRelationTable_1.default(this.driver_address_relation_id, this.driver_relation_id);
+    constructor(driver_address_relation_id, driver_relation_id, org_relation_id) {
+        super(driver_address_relation_id, driver_relation_id, org_relation_id);
+        this.driveAddressRelationTable = new driverAddressRelationTable_1.default(this.driver_address_relation_id, this.driver_relation_id, this.org_relation_id);
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {

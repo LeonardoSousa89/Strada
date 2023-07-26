@@ -10,6 +10,8 @@ CREATE DATABASE vex;
 CREATE SCHEMA vex_schema;
 DROP SCHEMA vex;
 
+
+
 /* Organização e suas relações */
 CREATE TABLE IF NOT EXISTS vex_schema.org (
     org_id SERIAL PRIMARY KEY,
@@ -98,33 +100,64 @@ CREATE TABLE IF NOT EXISTS vex_schema.information (
     notes VARCHAR(250) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS vex_schema.driver_address_relation_table (
+
+    driver_address_relation_id INT,
+    driver_relation_id INT,
+    org_relation_id INT,
+    FOREIGN KEY(driver_address_relation_id) REFERENCES vex_schema.driver_address (driver_address_id),
+    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id),
+    FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
+);
+
 CREATE TABLE IF NOT EXISTS vex_schema.driver_document_relation_table (
     driver_document_relation_id INT,
     driver_relation_id INT,
+    org_relation_id INT,
     FOREIGN KEY(driver_document_relation_id) REFERENCES vex_schema.driver_document (driver_document_id),
-    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id)
+    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id),
+    FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
 );
 
 CREATE TABLE IF NOT EXISTS vex_schema.driver_contact_relation_table (
     driver_contact_relation_id INT,
     driver_relation_id INT,
+    org_relation_id INT,
     FOREIGN KEY(driver_contact_relation_id) REFERENCES vex_schema.driver_contact (driver_contact_id),
-    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id)
-);
-
-CREATE TABLE IF NOT EXISTS vex_schema.driver_address_relation_table (
-    driver_address_relation_id INT,
-    driver_relation_id INT,
-    FOREIGN KEY(driver_address_relation_id) REFERENCES vex_schema.driver_address (driver_address_id),
-    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id)
+    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id),
+    FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
 );
 
 CREATE TABLE IF NOT EXISTS vex_schema.driver_information_relation_table (
     driver_relation_id INT,
     information_relation_id INT,
+    org_relation_id INT,
     FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id),
-    FOREIGN KEY(information_relation_id) REFERENCES vex_schema.information (information_id)
-);
+    FOREIGN KEY(information_relation_id) REFERENCES vex_schema.information (information_id),
+    FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
+); 
+
+
+
+DROP TABLE vex_schema.org;
+DROP TABLE vex_schema.org_address;
+DROP TABLE vex_schema.org_contact;
+DROP TABLE vex_schema.org_address_relation_table;
+DROP TABLE vex_schema.org_contact_relation_table;
+DROP TABLE vex_schema.org_driver_relation_table;
+
+DROP TABLE vex_schema.driver;
+DROP TABLE vex_schema.driver_address;
+DROP TABLE vex_schema.driver_contact;
+DROP TABLE vex_schema.driver_document;
+DROP TABLE vex_schema.driver_address_relation_table;
+DROP TABLE vex_schema.driver_document_relation_table;
+DROP TABLE vex_schema.driver_contact_relation_table;
+DROP TABLE vex_schema.driver_information_relation_table;
+
+DROP TABLE vex_schema.information;
+
+
 
 SELECT * FROM vex_schema.org;
 SELECT * FROM vex_schema.org_address;
@@ -137,8 +170,9 @@ SELECT * FROM vex_schema.driver;
 SELECT * FROM vex_schema.driver_address;
 SELECT * FROM vex_schema.driver_contact;
 SELECT * FROM vex_schema.driver_document;
-SELECT * FROM vex_schema.driver_document_relation_table;
 SELECT * FROM vex_schema.driver_address_relation_table;
+SELECT * FROM vex_schema.driver_document_relation_table;
+SELECT * FROM vex_schema.driver_contact_relation_table;
 SELECT * FROM vex_schema.driver_information_relation_table;
 
 SELECT * FROM vex_schema.information;
