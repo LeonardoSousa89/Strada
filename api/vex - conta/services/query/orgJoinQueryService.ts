@@ -42,7 +42,7 @@ export default class OrgJoinQuery implements DbOperations {
                                           'org_contact.org_contact_id')
                                         .where('org.org_id', org_id)
 
-        const orgAndDriver = await  knex.select(joinOrgAndDriverProjection)
+        const orgAndDriver = await knex.select(joinOrgAndDriverProjection)
                                         .from('vex_schema.org_driver_relation_table')
                                         .innerJoin('vex_schema.org', 
                                           'org_driver_relation_table.org_relation_id', 
