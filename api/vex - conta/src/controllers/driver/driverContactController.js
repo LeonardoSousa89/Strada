@@ -36,7 +36,7 @@ driverContactController.route('/org/driver/contact/save').post((req, res) => __a
     try {
         const driverContact = new driverContactService_1.default(Driver.telephone);
         yield driverContact.save();
-        return res.status(201).json({ msg: 'driver telephone save   ' });
+        return res.status(201).json({ msg: 'driver telephone save' });
     }
     catch (__) {
         return res.status(500)
@@ -52,7 +52,8 @@ driverContactController.route('/org/driver/contact/update/:id').put((req, res) =
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    const driverTelephoneExistsOrNotExists = yield new driverContactService_1.default().verifyId(req.params.id);
+    const driverTelephoneExistsOrNotExists = yield new driverContactService_1.default()
+        .verifyId(req.params.id);
     if (driverTelephoneExistsOrNotExists === false)
         return res.status(404)
             .json({
