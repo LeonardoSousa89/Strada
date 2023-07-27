@@ -34,7 +34,7 @@ class OrgJoinQuery {
                 .innerJoin('vex_schema.org', 'org_contact_relation_table.org_relation_id', 'org.org_id')
                 .innerJoin('vex_schema.org_contact', 'org_contact_relation_table.org_contact_relation_id', 'org_contact.org_contact_id')
                 .where('org.org_id', org_id);
-            const orgAndDriver = yield knex_1.default.select(OrgProjection_1.joinOrgAndDriverProjection)
+            const employees = yield knex_1.default.select(OrgProjection_1.joinOrgAndDriverProjection)
                 .from('vex_schema.org_driver_relation_table')
                 .innerJoin('vex_schema.org', 'org_driver_relation_table.org_relation_id', 'org.org_id')
                 .innerJoin('vex_schema.driver', 'org_driver_relation_table.driver_relation_id', 'driver.driver_id')
@@ -45,15 +45,21 @@ class OrgJoinQuery {
                 .innerJoin('vex_schema.driver_address', 'driver_address_relation_table.driver_address_relation_id', 'driver_address.driver_address_id')
                 .innerJoin('vex_schema.org', 'driver_address_relation_table.org_relation_id', 'org.org_id')
                 .where('org.org_id', org_id);
+            const orgAndDriverAndContact = yield knex_1.default.select(OrgProjection_1.joinDriverAndContactProjection)
+                .from('vex_schema.driver_contact_relation_table')
+                .innerJoin('vex_schema.driver', 'driver_contact_relation_table.driver_relation_id', 'driver.driver_id')
+                .innerJoin('vex_schema.driver_contact', 'driver_contact_relation_table.driver_contact_relation_id', 'driver_contact.driver_contact_id')
+                .innerJoin('vex_schema.org', 'driver_contact_relation_table.org_relation_id', 'org.org_id')
+                .where('org.org_id', org_id);
             return {
                 data: {
                     organization,
                     address: orgAndAddress,
                     contact: orgAndContact,
                     drivers: {
-                        orgAndDriver,
+                        employees,
                         address: orgAndDriverAndAddress,
-                        contact: [],
+                        contact: orgAndDriverAndContact,
                         document: [],
                         information: []
                     }

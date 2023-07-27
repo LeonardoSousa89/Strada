@@ -3,7 +3,8 @@ import { organizationProjection,
          joinOrgAndAddressProjection, 
          joinOrgAndContactProjection,
          joinOrgAndDriverProjection,
-         joinDriverAndAddressProjection 
+         joinDriverAndAddressProjection,
+         joinDriverAndContactProjection
 } from '../../repositories/projections/OrgProjection';
 import { DbOperations } from '../../interface/operations';
 
@@ -43,7 +44,7 @@ export default class OrgJoinQuery implements DbOperations {
                                           'org_contact.org_contact_id')
                                         .where('org.org_id', org_id)
 
-        const orgAndDriver = await knex.select(joinOrgAndDriverProjection)
+        const employees = await knex.select(joinOrgAndDriverProjection)
                                         .from('vex_schema.org_driver_relation_table')
                                         .innerJoin('vex_schema.org', 
                                           'org_driver_relation_table.org_relation_id', 
@@ -65,6 +66,19 @@ export default class OrgJoinQuery implements DbOperations {
                                                   'driver_address_relation_table.org_relation_id', 
                                                   'org.org_id')
                                         .where('org.org_id', org_id)
+
+        const orgAndDriverAndContact = await knex.select(joinDriverAndContactProjection)
+                                        .from('vex_schema.driver_contact_relation_table')
+                                        .innerJoin('vex_schema.driver', 
+                                                  'driver_contact_relation_table.driver_relation_id', 
+                                                  'driver.driver_id') 
+                                        .innerJoin('vex_schema.driver_contact', 
+                                                  'driver_contact_relation_table.driver_contact_relation_id', 
+                                                  'driver_contact.driver_contact_id')
+                                        .innerJoin('vex_schema.org', 
+                                                  'driver_contact_relation_table.org_relation_id', 
+                                                  'org.org_id')
+                                        .where('org.org_id', org_id)
                                                                     
 
         return {
@@ -73,9 +87,9 @@ export default class OrgJoinQuery implements DbOperations {
             address: orgAndAddress,
             contact: orgAndContact,
             drivers: { 
-              orgAndDriver,
+              employees,
               address: orgAndDriverAndAddress,
-              contact: [],
+              contact: orgAndDriverAndContact,
               document: [],
               information: []
             }
