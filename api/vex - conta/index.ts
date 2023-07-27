@@ -2,6 +2,7 @@ var port = 8765
 
 import morgan from 'morgan'
 import express from 'express'
+
 import { orgController } from './controllers/org/orgController'
 import { OrgJoinQueryController } from './controllers/query/orgJoinQueryController'
 import { orgAddressController } from './controllers/org/orgAddressController'
@@ -12,14 +13,17 @@ import { orgDriverRelationTableController } from './controllers/relations/orgDri
 import { driverController } from './controllers/driver/driverController'
 import { driverAddressController } from './controllers/driver/driverAddressController'
 import { driverContactController } from './controllers/driver/driverContactController'
+import { driverDocumentController } from './controllers/driver/driverDocumentController'
 import { driverAddressRelationTableController } from './controllers/driver/relations/driverAddressRelationTableController'
 import { driverContactRelationTableController } from './controllers/driver/relations/driverContactRelationTableController'
+import { driverDocumentRelationTableController } from './controllers/driver/relations/driverDocumentRelationTableController'
 
 const app = express()
 
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+
 app.use('/', [
               orgController, 
               OrgJoinQueryController,
@@ -31,8 +35,10 @@ app.use('/', [
               driverController,
               driverAddressController,
               driverContactController,
+              driverDocumentController,
               driverAddressRelationTableController,
-              driverContactRelationTableController
+              driverContactRelationTableController,
+              driverDocumentRelationTableController
             ])
 
 app.listen(port)
