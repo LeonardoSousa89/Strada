@@ -17,6 +17,7 @@ const driverController_1 = require("./controllers/driver/driverController");
 const driverAddressController_1 = require("./controllers/driver/driverAddressController");
 const driverContactController_1 = require("./controllers/driver/driverContactController");
 const driverDocumentController_1 = require("./controllers/driver/driverDocumentController");
+const informationController_1 = require("./controllers/driver/information/informationController");
 const driverAddressRelationTableController_1 = require("./controllers/driver/relations/driverAddressRelationTableController");
 const driverContactRelationTableController_1 = require("./controllers/driver/relations/driverContactRelationTableController");
 const driverDocumentRelationTableController_1 = require("./controllers/driver/relations/driverDocumentRelationTableController");
@@ -36,6 +37,7 @@ app.use('/', [
     driverAddressController_1.driverAddressController,
     driverContactController_1.driverContactController,
     driverDocumentController_1.driverDocumentController,
+    informationController_1.informationController,
     driverAddressRelationTableController_1.driverAddressRelationTableController,
     driverContactRelationTableController_1.driverContactRelationTableController,
     driverDocumentRelationTableController_1.driverDocumentRelationTableController

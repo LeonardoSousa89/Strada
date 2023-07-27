@@ -14,6 +14,7 @@ import { driverController } from './controllers/driver/driverController'
 import { driverAddressController } from './controllers/driver/driverAddressController'
 import { driverContactController } from './controllers/driver/driverContactController'
 import { driverDocumentController } from './controllers/driver/driverDocumentController'
+import { informationController } from './controllers/driver/information/informationController'
 import { driverAddressRelationTableController } from './controllers/driver/relations/driverAddressRelationTableController'
 import { driverContactRelationTableController } from './controllers/driver/relations/driverContactRelationTableController'
 import { driverDocumentRelationTableController } from './controllers/driver/relations/driverDocumentRelationTableController'
@@ -36,6 +37,7 @@ app.use('/', [
               driverAddressController,
               driverContactController,
               driverDocumentController,
+              informationController,
               driverAddressRelationTableController,
               driverContactRelationTableController,
               driverDocumentRelationTableController

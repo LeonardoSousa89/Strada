@@ -54,9 +54,17 @@ const joinDriverAndContactProjection: Array<string> = [
     'driver.driver_id'
 ]
 
+const joinDriverAndDocumentProjection: Array<string> = [
+
+    'driver_document.driver_document_id',
+    'driver_document.cnh',
+    'driver.driver_id'
+]
+
 export { organizationProjection,
          joinOrgAndAddressProjection, 
          joinOrgAndContactProjection,
          joinOrgAndDriverProjection,
          joinDriverAndAddressProjection,
-         joinDriverAndContactProjection } 
+         joinDriverAndContactProjection,
+         joinDriverAndDocumentProjection } 
