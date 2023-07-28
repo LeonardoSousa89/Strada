@@ -35,22 +35,6 @@ informationController.route('/org/driver/information/save').post((req, res) => _
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    // if(Driver.starting_km === null && 
-    //    Driver.final_km === null) return res.status(400).json({
-    //                                                       error: 'starting km and final km both can not be null'
-    //                                                    })
-    // if(Driver.starting_km === '' && 
-    //    Driver.final_km === '') return res.status(400).json({
-    //                                                       error: 'starting km and final km both can not be empty'
-    //                                                    })
-    // if(Driver.starting_km === '' && 
-    //    Driver.final_km === null) return res.status(400).json({
-    //                                                       error: 'starting km and final km both can not be empty or null'
-    //                                                    })
-    // if(Driver.starting_km === null && 
-    //    Driver.final_km === '') return res.status(400).json({
-    //                                                       error: 'starting km and final km both can not be empty or null'
-    //                                                    })
     const startingKmOrFinalKmBothIsIlegalCondition = new informationService_1.default()
         .verifyInformation(Driver.starting_km, Driver.final_km);
     if (startingKmOrFinalKmBothIsIlegalCondition === false)
