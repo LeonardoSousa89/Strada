@@ -5,7 +5,8 @@ import { organizationProjection,
          joinOrgAndDriverProjection,
          joinDriverAndAddressProjection,
          joinDriverAndContactProjection,
-         joinDriverAndDocumentProjection
+         joinDriverAndDocumentProjection,
+         joinDriverAndInformationProjection
 } from '../../repositories/projections/OrgProjection';
 import { DbOperations } from '../../interface/operations';
 
@@ -93,6 +94,19 @@ export default class OrgJoinQuery implements DbOperations {
                                                   'driver_document_relation_table.org_relation_id', 
                                                   'org.org_id')
                                         .where('org.org_id', org_id)
+
+      const orgAndDriverAndInformation = await knex.select(joinDriverAndInformationProjection)
+                                        .from('vex_schema.driver_information_relation_table')
+                                        .innerJoin('vex_schema.driver', 
+                                                  'driver_information_relation_table.driver_relation_id', 
+                                                  'driver.driver_id') 
+                                        .innerJoin('vex_schema.information', 
+                                                  'driver_information_relation_table.information_relation_id', 
+                                                  'information.information_id')
+                                        .innerJoin('vex_schema.org', 
+                                                  'driver_information_relation_table.org_relation_id', 
+                                                  'org.org_id')
+                                        .where('org.org_id', org_id)
                                                                     
 
         return {
@@ -105,7 +119,7 @@ export default class OrgJoinQuery implements DbOperations {
               address: orgAndDriverAndAddress,
               contact: orgAndDriverAndContact,
               document: orgAndDriverAndDocument,
-              information: []
+              information: orgAndDriverAndInformation
             }
           }
         }                               

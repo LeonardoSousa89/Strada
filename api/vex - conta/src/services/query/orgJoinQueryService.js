@@ -57,6 +57,12 @@ class OrgJoinQuery {
                 .innerJoin('vex_schema.driver_document', 'driver_document_relation_table.driver_document_relation_id', 'driver_document.driver_document_id')
                 .innerJoin('vex_schema.org', 'driver_document_relation_table.org_relation_id', 'org.org_id')
                 .where('org.org_id', org_id);
+            const orgAndDriverAndInformation = yield knex_1.default.select(OrgProjection_1.joinDriverAndInformationProjection)
+                .from('vex_schema.driver_information_relation_table')
+                .innerJoin('vex_schema.driver', 'driver_information_relation_table.driver_relation_id', 'driver.driver_id')
+                .innerJoin('vex_schema.information', 'driver_information_relation_table.information_relation_id', 'information.information_id')
+                .innerJoin('vex_schema.org', 'driver_information_relation_table.org_relation_id', 'org.org_id')
+                .where('org.org_id', org_id);
             return {
                 data: {
                     organization,
@@ -67,7 +73,7 @@ class OrgJoinQuery {
                         address: orgAndDriverAndAddress,
                         contact: orgAndDriverAndContact,
                         document: orgAndDriverAndDocument,
-                        information: []
+                        information: orgAndDriverAndInformation
                     }
                 }
             };
