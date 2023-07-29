@@ -2,7 +2,7 @@ import Org from "../../entities/org/org";
 import { DbOperations } from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
 
-export default class OrgService extends Org implements DbOperations{
+export default class OrgService extends Org implements DbOperations {
 
     constructor(
         fantasy_name?: string,
@@ -22,7 +22,7 @@ export default class OrgService extends Org implements DbOperations{
               password)
     }
     
-    organization = new Org( 
+    org = new Org( 
         this.fantasy_name, 
         this.corporate_name,
         this.cnpj,
@@ -33,37 +33,39 @@ export default class OrgService extends Org implements DbOperations{
 
     async verifyCnpj(cnpj: string) {
 
-        const existsOrNotExists = await knex.where('cnpj', cnpj)
-                                      .from('vex_schema.org')
-                                      .first()
+        const existsOrNotExistsCnpj = await knex.where('cnpj', cnpj)
+                                                .from('vex_schema.org')
+                                                .first()
 
-        if(existsOrNotExists)  return true
+        if(existsOrNotExistsCnpj)  return true
 
-        if(!existsOrNotExists) return false
+        if(!existsOrNotExistsCnpj) return false
     }
 
     async verifyId(id: string | number) {
 
-        const existsOrNotExists = await knex.where('org_id', id)
-                                      .from('vex_schema.org')
-                                      .first()
+        const existsOrNotExistsId = await knex.where('org_id', id)
+                                              .from('vex_schema.org')
+                                              .first()
 
-        if(existsOrNotExists)  return true
+        if(existsOrNotExistsId)  return true
 
-        if(!existsOrNotExists) return false
+        if(!existsOrNotExistsId) return false
     }
 
     async save() {
 
-        await knex.insert(this.organization).from('vex_schema.org')
+        await knex.insert(this.org).from('vex_schema.org')
     }
 
     async update(id?: number | string) {
         
-        await knex.where('org_id', id).update(this.organization).from('vex_schema.org')
+        await knex.where('org_id', id)
+                  .update(this.org)
+                  .from('vex_schema.org')
     }
 
-    async getAll(size?: any, page?:any) {
+    async getAll() {
 
         const data = await knex.select(['org_id',
                                         'fantasy_name', 

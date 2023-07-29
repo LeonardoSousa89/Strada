@@ -17,41 +17,43 @@ const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 class OrgService extends org_1.default {
     constructor(fantasy_name, corporate_name, cnpj, org_status, cnae_main_code, open_date, password) {
         super(fantasy_name, corporate_name, cnpj, org_status, cnae_main_code, open_date, password);
-        this.organization = new org_1.default(this.fantasy_name, this.corporate_name, this.cnpj, this.org_status, this.cnae_main_code, this.open_date, this.password);
+        this.org = new org_1.default(this.fantasy_name, this.corporate_name, this.cnpj, this.org_status, this.cnae_main_code, this.open_date, this.password);
     }
     verifyCnpj(cnpj) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExists = yield knex_1.default.where('cnpj', cnpj)
+            const existsOrNotExistsCnpj = yield knex_1.default.where('cnpj', cnpj)
                 .from('vex_schema.org')
                 .first();
-            if (existsOrNotExists)
+            if (existsOrNotExistsCnpj)
                 return true;
-            if (!existsOrNotExists)
+            if (!existsOrNotExistsCnpj)
                 return false;
         });
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExists = yield knex_1.default.where('org_id', id)
+            const existsOrNotExistsId = yield knex_1.default.where('org_id', id)
                 .from('vex_schema.org')
                 .first();
-            if (existsOrNotExists)
+            if (existsOrNotExistsId)
                 return true;
-            if (!existsOrNotExists)
+            if (!existsOrNotExistsId)
                 return false;
         });
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.insert(this.organization).from('vex_schema.org');
+            yield knex_1.default.insert(this.org).from('vex_schema.org');
         });
     }
     update(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.where('org_id', id).update(this.organization).from('vex_schema.org');
+            yield knex_1.default.where('org_id', id)
+                .update(this.org)
+                .from('vex_schema.org');
         });
     }
-    getAll(size, page) {
+    getAll() {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield knex_1.default.select(['org_id',
                 'fantasy_name',

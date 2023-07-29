@@ -46,31 +46,29 @@ dotenv.config();
 const orgController = express_1.default.Router();
 exports.orgController = orgController;
 const err = new handleError_1.default();
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- *
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
-/* [ controlador de verificação de existência do cnpj] */
 orgController.route('/org/verify-cnpj').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let Org = Object.assign({}, req.query);
-    let url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    yield axios_1.default.get(url).then(response => {
-        if (response.data.error) {
-            res.status(404).json({
+    const Org = Object.assign({}, req.query);
+    const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
+    try {
+        const response = yield axios_1.default.get(url);
+        console.log(url);
+        console.log(response.headers);
+        console.log(response.data);
+        if (response.data.error)
+            return res.status(404)
+                .json({
                 organizationExists: false
             });
-        }
-        else {
-            res.status(200).json({
+        else
+            return res.status(200).json({
                 organizationExists: true
             });
-        }
-    }).catch(_ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgController.route('/org/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
@@ -94,13 +92,11 @@ orgController.route('/org/save').post((req, res) => __awaiter(void 0, void 0, vo
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    //verifica se o cnpj passado na url da requisição, existe através de uma api externa
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    let cnpj = Object.assign({}, req.query);
-    let url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${cnpj.cnpj}`;
-    let cnpjRequestResponse = '';
+    const cnpj = Object.assign({}, req.query);
+    const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${cnpj.cnpj}`;
+    let cnpjExistsOnHttpResquest = '';
     try {
-        cnpjRequestResponse = yield axios_1.default.get(url);
+        cnpjExistsOnHttpResquest = yield axios_1.default.get(url);
     }
     catch (__) {
         return res.status(500)
@@ -108,25 +104,23 @@ orgController.route('/org/save').post((req, res) => __awaiter(void 0, void 0, vo
             error: 'i am sorry, there is an error with server'
         });
     }
-    if (cnpjRequestResponse.data.error)
+    if (cnpjExistsOnHttpResquest.data.error)
         return res.status(404)
-            .json({ error: 'cnpj not found' });
-    //verifica se o cnpj no body da requisição já está cadastrado no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationCnpj = new orgService_1.default().verifyCnpj(Org.cnpj);
-    const cnpjDbResponse = yield verificationCnpj.then(e => e);
-    if (cnpjDbResponse === true)
+            .json({
+            error: 'cnpj not found'
+        });
+    const verifyCnpj = new orgService_1.default();
+    const cnpjExixtsOnDb = yield verifyCnpj.verifyCnpj(Org.cnpj);
+    if (cnpjExixtsOnDb === true)
         return res.status(400)
             .json({
             error: 'cnpj already exists'
         });
     try {
         Org.password = (0, bcrypt_1.cryptograph)(Org.password);
-        const response = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password).save();
-        return yield response.then(__ => res.status(201)
-            .json({
-            msg: 'organization created'
-        }));
+        const orgService = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password);
+        yield orgService.save();
+        return res.status(201).json({ msg: 'organization created' });
     }
     catch (e) {
         return res.status(500)
@@ -157,22 +151,20 @@ orgController.route('/org/update/:id').put((req, res) => __awaiter(void 0, void 
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationId = new orgService_1.default().verifyId(req.params.id);
-    const dataIdDbResponse = yield verificationId.then(e => e);
-    if (dataIdDbResponse === false)
+    const verifyId = new orgService_1.default();
+    const orgIdExistsOnDb = yield verifyId.verifyId(req.params.id);
+    if (orgIdExistsOnDb === false)
         return res.status(404)
             .json({
             error: 'organization not found'
         });
     try {
         Org.password = (0, bcrypt_1.cryptograph)(Org.password);
-        const response = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password).update(req.params.id);
-        return yield response.then(__ => res.status(201)
-            .json({
+        const orgService = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password);
+        yield orgService.update(req.params.id);
+        return res.status(201).json({
             msg: 'organization updated'
-        }));
+        });
     }
     catch (e) {
         return res.status(500)
@@ -182,51 +174,59 @@ orgController.route('/org/update/:id').put((req, res) => __awaiter(void 0, void 
     }
 }));
 orgController.route('/org/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Org = Object.assign({}, req.query);
-    const response = new orgService_1.default().getAll(Org.size, Org.page);
-    yield response.then(data => {
+    const orgService = new orgService_1.default();
+    try {
+        const data = yield orgService.getAll();
         if (data.length === 0)
             return res.status(404)
                 .json({
                 error: 'no data'
             });
         return res.status(200).json(data);
-    })
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgController.route('/org/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = new orgService_1.default().getById(req.params.id);
-    yield response.then(data => {
+    const Org = Object.assign({}, req.params);
+    const orgService = new orgService_1.default();
+    try {
+        const data = yield orgService.getById(Org.id);
         if (data.length === 0)
             return res.status(404)
                 .json({
                 error: 'organization not found'
             });
         return res.status(200).json(data);
-    }).catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgController.route('/org/delete-by-id/:id').delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.params);
-    //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationId = new orgService_1.default().verifyId(Org.id);
-    const dataIdDbResponse = yield verificationId.then(e => e);
-    if (dataIdDbResponse === false)
-        return res.status(404)
+    const orgService = new orgService_1.default();
+    try {
+        const verifyId = yield orgService.verifyId(Org.id);
+        if (verifyId === false)
+            return res.status(404)
+                .json({
+                error: 'organization not found'
+            });
+        yield orgService.deleteById(Org.id);
+        return res.status(204).json({});
+    }
+    catch (__) {
+        return res.status(500)
             .json({
-            error: 'organization not found'
+            error: 'i am sorry, there is an error with server'
         });
-    const response = new orgService_1.default().deleteById(Org.id);
-    return yield response.then(__ => res.status(204)
-        .json({}))
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    }
 }));

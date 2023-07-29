@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { response } from 'express'
 import OrgService from '../../services/org/orgService'
 import HandleError from '../../interface/error/handleError'
 import axios from 'axios'
@@ -13,42 +13,31 @@ const orgController = express.Router()
 
 const err = new HandleError() 
 
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- * 
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
-
-/* [ controlador de verificação de existência do cnpj] */
 orgController.route('/org/verify-cnpj').get(async (req, res)=>{
 
-    let Org = { ...req.query }
+    const Org = { ...req.query }
 
-    let url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`
+    const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`
 
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    await axios.get(url).then(response => {
-        
-       if(response.data.error){
+    try{
 
-            res.status(404).json({
+        const response = await axios.get(url)
 
-                organizationExists: false
-            })
-       }
-       
-       else{
+        if(response.data.error) return res.status(404)
+                                          .json({
+                                                organizationExists: false
+                                            })
+            
+        else return res.status(200).json({
+                                        organizationExists: true
+                                    })
+     
+    }catch(__){
 
-            res.status(200).json({
-
-                organizationExists: true
-            })
-       }
-
-    }).catch(_ => res.status(500)
-                     .json({ 
-                        error: 'i am sorry, there is an error with server'
-                    }))
+        return res.status(500).json({ 
+                            error: 'i am sorry, there is an error with server'
+                        })
+    }
 })
 
 orgController.route('/org/save').post(async (req, res)=>{
@@ -79,17 +68,15 @@ orgController.route('/org/save').post(async (req, res)=>{
         return res.status(400).json({ error: e })
     }
 
-    //verifica se o cnpj passado na url da requisição, existe através de uma api externa
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    let cnpj = { ...req.query }
+    const cnpj = { ...req.query }
 
-    let url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${cnpj.cnpj}`
+    const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${cnpj.cnpj}`
     
-    let cnpjRequestResponse: any = ''
+    let cnpjExistsOnHttpResquest: any = ''
 
     try{
 
-        cnpjRequestResponse = await axios.get(url)
+        cnpjExistsOnHttpResquest = await axios.get(url)
     }catch(__){
 
         return res.status(500)
@@ -98,38 +85,37 @@ orgController.route('/org/save').post(async (req, res)=>{
                 })
     }
  
-    if(cnpjRequestResponse.data.error) return res.status(404)
-                                                 .json({ error: 'cnpj not found' })
+    if(cnpjExistsOnHttpResquest.data.error) return res.status(404)
+                                                      .json({ 
+                                                        error: 'cnpj not found' 
+                                                    })
 
-    //verifica se o cnpj no body da requisição já está cadastrado no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationCnpj = new OrgService().verifyCnpj(Org.cnpj)
+    const verifyCnpj = new OrgService()
 
-    const cnpjDbResponse = await verificationCnpj.then(e => e)
+    const cnpjExixtsOnDb = await verifyCnpj.verifyCnpj(Org.cnpj)
     
-    if(cnpjDbResponse === true) return res.status(400)
+    if(cnpjExixtsOnDb === true) return res.status(400)
                                           .json({ 
                                             error: 'cnpj already exists' 
                                         }) 
 
     try{
     
-    Org.password = cryptograph(Org.password)
+        Org.password = cryptograph(Org.password)
 
-    const response = new OrgService( 
-                    Org.fantasy_name, 
-                    Org.corporate_name,
-                    Org.cnpj, 
-                    Org.org_status, 
-                    Org.cnae_main_code,
-                    Org.open_date, 
-                    Org.password).save()
-    
+        const orgService = new OrgService( 
+                            Org.fantasy_name, 
+                            Org.corporate_name,
+                            Org.cnpj, 
+                            Org.org_status, 
+                            Org.cnae_main_code,
+                            Org.open_date, 
+                            Org.password)
+        
 
-        return await response.then(__ => res.status(201)
-                                            .json({ 
-                                                msg: 'organization created' 
-                                            }))
+        await orgService.save()
+
+        return res.status(201).json({ msg: 'organization created' })
     }catch(e){
 
         return res.status(500)
@@ -167,35 +153,33 @@ orgController.route('/org/update/:id').put(async (req, res)=>{
         return res.status(400).json({ error: e })
     } 
 
-    //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationId = new OrgService().verifyId(req.params.id)
+    const verifyId = new OrgService()
 
-    const dataIdDbResponse = await verificationId.then(e => e)
+    const orgIdExistsOnDb = await verifyId.verifyId(req.params.id)
     
-    if(dataIdDbResponse === false) return res.status(404)
+    if(orgIdExistsOnDb === false) return res.status(404)
                                              .json({ 
                                                 error: 'organization not found' 
                                         }) 
 
     try{
     
-    Org.password = cryptograph(Org.password)
+        Org.password = cryptograph(Org.password)
 
-    const response = new OrgService( 
-                    Org.fantasy_name, 
-                    Org.corporate_name,
-                    Org.cnpj, 
-                    Org.org_status, 
-                    Org.cnae_main_code,
-                    Org.open_date, 
-                    Org.password).update(req.params.id)
+        const orgService = new OrgService( 
+                        Org.fantasy_name, 
+                        Org.corporate_name,
+                        Org.cnpj, 
+                        Org.org_status, 
+                        Org.cnae_main_code,
+                        Org.open_date, 
+                        Org.password)
 
-        return await response.then(__ => res.status(201)
-                                            .json({ 
-                                                msg: 'organization updated' 
-                                            }))
+        await orgService.update(req.params.id)
 
+        return res.status(201).json({ 
+                                    msg: 'organization updated' 
+                                })
     }catch(e){
 
         return res.status(500)
@@ -207,67 +191,79 @@ orgController.route('/org/update/:id').put(async (req, res)=>{
 
 orgController.route('/org/get-all').get(async (req, res)=>{
 
-    const Org = { ...req.query }
-
-    const response = new OrgService().getAll(Org.size, Org.page)
+    const orgService = new OrgService()
     
-    await response.then(data => {
-    
+    try{
+        
+        const data = await orgService.getAll()
+        
         if(data.length === 0) return res.status(404)
                                         .json({ 
                                             error: 'no data' 
                                         })
             
         return res.status(200).json(data)
+    }catch(__){
+
+        return res.status(500)
+                  .json({  
+                        error: 'i am sorry, there is an error with server'  
+                  })
+    }
     
-        })
-        .catch(__ => res.status(500)
-                        .json({  
-                            error: 'i am sorry, there is an error with server'  
-                        }))
 })
 
 orgController.route('/org/get-by-id/:id').get(async (req, res)=>{
 
-    const response = new OrgService().getById(req.params.id)  
+    const Org ={ ...req.params }
+    
+    const orgService = new OrgService()  
+    
+    try{
 
-    await response.then(data => {
+        const data = await orgService.getById(Org.id)
 
         if(data.length === 0) return res.status(404)
                                         .json({
-                                    error: 'organization not found'
-                                })
+                                            error: 'organization not found'
+                                        })
 
         return res.status(200).json(data)
-    }).catch(__ => res.status(500)
-                      .json({  
-                        error: 'i am sorry, there is an error with server'  
-                    }))
+    }catch(__){
+       
+        return res.status(500)
+                  .json({  
+                    error: 'i am sorry, there is an error with server'  
+                })
+    }
+
 })
 
 orgController.route('/org/delete-by-id/:id').delete(async (req, res)=>{
 
     const Org = { ...req.params }
-
-    //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationId = new OrgService().verifyId(Org.id)
-
-    const dataIdDbResponse = await verificationId.then(e => e)
     
-    if(dataIdDbResponse === false) return res.status(404)
-                                             .json({ 
-                                                error: 'organization not found' 
+    const orgService = new OrgService()
+
+    try{
+        
+        const verifyId = await orgService.verifyId(Org.id)
+        
+        if(verifyId === false) return res.status(404)
+                                         .json({ 
+                                            error: 'organization not found' 
                                         })
 
-    const response = new OrgService().deleteById(Org.id)  
+        await orgService.deleteById(Org.id)  
+          
+        return res.status(204).json({})
+    }catch(__){
 
-    return await response.then(__ => res.status(204)
-                                        .json({}))
-                                        .catch(__ => res.status(500)
-                                                        .json({  
-                                                            error: 'i am sorry, there is an error with server'  
-                                                        }))
+        return res.status(500)
+                  .json({  
+                    error: 'i am sorry, there is an error with server'  
+                })
+    }
 })
 
 export { orgController }
