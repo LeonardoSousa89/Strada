@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const driverAddress_1 = __importDefault(require("../../entities/driver/driverAddress"));
+const driverProjection_1 = require("../../repositories/projections/driverProjection");
 class DriverAddressService extends driverAddress_1.default {
     constructor(zip_code, state, city) {
         super(zip_code, state, city);
@@ -27,12 +28,12 @@ class DriverAddressService extends driverAddress_1.default {
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExists = yield knex_1.default.where('driver_address_id', id)
+            const existsOrNotExistsId = yield knex_1.default.where('driver_address_id', id)
                 .from('vex_schema.driver_address')
                 .first();
-            if (existsOrNotExists)
+            if (existsOrNotExistsId)
                 return true;
-            if (!existsOrNotExists)
+            if (!existsOrNotExistsId)
                 return false;
         });
     }
@@ -50,7 +51,7 @@ class DriverAddressService extends driverAddress_1.default {
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select('*')
+            const data = yield knex_1.default.select(driverProjection_1.driverAddressProjection)
                 .from('vex_schema.driver_address');
             return data;
         });
@@ -58,7 +59,7 @@ class DriverAddressService extends driverAddress_1.default {
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield knex_1.default.where('driver_address_id', id)
-                .select('*')
+                .select(driverProjection_1.driverAddressProjection)
                 .from('vex_schema.driver_address');
             return data;
         });

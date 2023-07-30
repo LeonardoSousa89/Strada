@@ -79,9 +79,17 @@ driverController.route('/org/driver/update/:id').put(async (req, res)=>{
       return res.status(400).json({ error: e })
    }
 
-   Driver.password = cryptograph(Driver.password)
+
+   const driverIdExistsOnDb = await new DriverService().verifyId(req.params.id)
    
+   if(driverIdExistsOnDb === false) return res.status(404)
+                                                   .json({
+                                                      error: 'driver not found'
+                                                   }) 
+
    try{
+
+      Driver.password = cryptograph(Driver.password)
 
       const driverService = new DriverService(Driver.first_name, 
                                        Driver.last_name,

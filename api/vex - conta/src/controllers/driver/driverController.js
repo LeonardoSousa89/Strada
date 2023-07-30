@@ -69,8 +69,14 @@ driverController.route('/org/driver/update/:id').put((req, res) => __awaiter(voi
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    Driver.password = (0, bcrypt_1.cryptograph)(Driver.password);
+    const driverIdExistsOnDb = yield new driverService_1.default().verifyId(req.params.id);
+    if (driverIdExistsOnDb === false)
+        return res.status(404)
+            .json({
+            error: 'driver not found'
+        });
     try {
+        Driver.password = (0, bcrypt_1.cryptograph)(Driver.password);
         const driverService = new driverService_1.default(Driver.first_name, Driver.last_name, Driver.email, Driver.password);
         yield driverService.update(req.params.id);
         return res.status(201).json({ msg: 'driver update' });

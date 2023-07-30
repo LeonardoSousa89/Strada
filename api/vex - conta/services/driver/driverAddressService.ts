@@ -2,6 +2,8 @@ import knex from '../../repositories/knex/knex'
 import { DbOperations } from '../../interface/operations';
 import DriverAddress from '../../entities/driver/driverAddress';
 
+import { driverAddressProjection } from '../../repositories/projections/driverProjection'
+
 export default class DriverAddressService extends DriverAddress implements DbOperations {
     
     constructor(zip_code?: string, 
@@ -26,13 +28,13 @@ export default class DriverAddressService extends DriverAddress implements DbOpe
 
     async verifyId(id: string) {
 
-        const existsOrNotExists = await knex.where('driver_address_id', id)
-                                            .from('vex_schema.driver_address')
-                                            .first()
+        const existsOrNotExistsId = await knex.where('driver_address_id', id)
+                                              .from('vex_schema.driver_address')
+                                              .first()
 
-        if(existsOrNotExists)  return true
+        if(existsOrNotExistsId)  return true
 
-        if(!existsOrNotExists) return false
+        if(!existsOrNotExistsId) return false
     }
 
     async save(){
@@ -49,8 +51,8 @@ export default class DriverAddressService extends DriverAddress implements DbOpe
 
     async getAll() {
 
-        const data = await knex.select('*')
-                              .from('vex_schema.driver_address')
+        const data = await knex.select(driverAddressProjection)
+                               .from('vex_schema.driver_address')
 
         return data
     }
@@ -58,7 +60,7 @@ export default class DriverAddressService extends DriverAddress implements DbOpe
     async getById(id?: string | number){
 
         const data = await knex.where('driver_address_id', id)
-                               .select('*')
+                               .select(driverAddressProjection)
                                .from('vex_schema.driver_address')
 
         return data
