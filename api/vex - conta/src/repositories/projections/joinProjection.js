@@ -1,13 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.joinDriverAndInformationProjection = exports.joinDriverAndDocumentProjection = exports.joinDriverAndContactProjection = exports.joinDriverAndAddressProjection = exports.joinOrgAndDriverProjection = void 0;
-const joinOrgAndDriverProjection = [
-    'driver.driver_id',
-    'driver.first_name',
-    'driver.last_name',
-    'driver.email'
-];
-exports.joinOrgAndDriverProjection = joinOrgAndDriverProjection;
+exports.joinDriverAndInformationProjection = exports.joinDriverAndDocumentProjection = exports.joinDriverAndContactProjection = exports.joinDriverAndAddressProjection = void 0;
 const joinDriverAndAddressProjection = [
     'driver_address.driver_address_id',
     'driver_address.zip_code ',

@@ -1,11 +1,3 @@
-const joinOrgAndDriverProjection: Array<string> = [
-
-    'driver.driver_id',
-    'driver.first_name',
-    'driver.last_name',
-    'driver.email'
-]
-
 const joinDriverAndAddressProjection: Array<string> = [
 
     'driver_address.driver_address_id',
@@ -39,8 +31,7 @@ const joinDriverAndInformationProjection: Array<string> = [
     'driver.driver_id'
 ]
 
-export { joinOrgAndDriverProjection,
-         joinDriverAndAddressProjection,
+export { joinDriverAndAddressProjection,
          joinDriverAndContactProjection,
          joinDriverAndDocumentProjection,
          joinDriverAndInformationProjection } 

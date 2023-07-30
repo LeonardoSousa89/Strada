@@ -14,8 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const orgProjection_1 = require("../../repositories/projections/orgProjection");
-const joinProjection_1 = require("../../repositories/projections/joinProjection");
 const driverProjection_1 = require("../../repositories/projections/driverProjection");
+const joinProjection_1 = require("../../repositories/projections/joinProjection");
 class OrgJoinQuery {
     constructor() { }
     save() { }

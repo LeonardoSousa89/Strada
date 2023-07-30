@@ -6,15 +6,14 @@ import {
   orgContactProjection
 } from '../../repositories/projections/orgProjection'
 
-import { joinOrgAndDriverProjection,
-         joinDriverAndAddressProjection,
-         joinDriverAndContactProjection,
-         joinDriverAndDocumentProjection,
-         joinDriverAndInformationProjection
-} from '../../repositories/projections/joinProjection';
+import { driverProjection } from '../../repositories/projections/driverProjection';
 
-import { driverProjection 
-} from '../../repositories/projections/driverProjection';
+import { 
+  joinDriverAndAddressProjection,
+  joinDriverAndContactProjection,
+  joinDriverAndDocumentProjection,
+  joinDriverAndInformationProjection
+} from '../../repositories/projections/joinProjection';
 
 import { DbOperations } from '../../interface/operations';
 

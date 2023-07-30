@@ -8,9 +8,20 @@ const driverProjection = [
     'driver.email'
 ];
 exports.driverProjection = driverProjection;
-const driverAddressProjection = [];
+const driverAddressProjection = [
+    'driver_address.driver_address_id',
+    'driver_address.zip_code ',
+    'driver_address.state',
+    'driver_address.city'
+];
 exports.driverAddressProjection = driverAddressProjection;
-const driverContactProjection = [];
+const driverContactProjection = [
+    'driver_contact.driver_contact_id',
+    'driver_contact.telephone'
+];
 exports.driverContactProjection = driverContactProjection;
-const driverDocumentProjection = [];
+const driverDocumentProjection = [
+    'driver_document.driver_document_id',
+    'driver_document.cnh'
+];
 exports.driverDocumentProjection = driverDocumentProjection;
