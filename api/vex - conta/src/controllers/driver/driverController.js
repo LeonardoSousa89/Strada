@@ -20,37 +20,32 @@ const bcrypt_1 = require("../../security/cryptography/bcrypt");
 const driverController = express_1.default.Router();
 exports.driverController = driverController;
 const err = new handleError_1.default();
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- *
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
 driverController.route('/org/driver/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Org = Object.assign({}, req.body);
+    const Driver = Object.assign({}, req.body);
     try {
-        err.exceptionFieldNullOrUndefined(Org.first_name, 'first name is undefined or null');
-        err.exceptionFieldNullOrUndefined(Org.last_name, 'last name is undefined or null');
-        err.exceptionFieldNullOrUndefined(Org.email, 'email place is undefined or null');
-        err.exceptionFieldNullOrUndefined(Org.password, 'password place is undefined or null');
-        err.exceptionFieldIsEmpty(Org.first_name.trim(), 'first name can not be empty');
-        err.exceptionFieldIsEmpty(Org.last_name.trim(), 'last name can not be empty');
-        err.exceptionFieldIsEmpty(Org.email.trim(), 'email place can not be empty');
-        err.exceptionFieldIsEmpty(Org.password.trim(), 'password place can not be empty');
-        err.exceptionFieldValueLessToType(Org.password, 'password can not be less than 4');
+        err.exceptionFieldNullOrUndefined(Driver.first_name, 'first name is undefined or null');
+        err.exceptionFieldNullOrUndefined(Driver.last_name, 'last name is undefined or null');
+        err.exceptionFieldNullOrUndefined(Driver.email, 'email place is undefined or null');
+        err.exceptionFieldNullOrUndefined(Driver.password, 'password place is undefined or null');
+        err.exceptionFieldIsEmpty(Driver.first_name.trim(), 'first name can not be empty');
+        err.exceptionFieldIsEmpty(Driver.last_name.trim(), 'last name can not be empty');
+        err.exceptionFieldIsEmpty(Driver.email.trim(), 'email place can not be empty');
+        err.exceptionFieldIsEmpty(Driver.password.trim(), 'password place can not be empty');
+        err.exceptionFieldValueLessToType(Driver.password, 'password can not be less than 4');
     }
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    const emailExistsOrNotExists = yield new driverService_1.default().verifyEmail(Org.email);
-    if (emailExistsOrNotExists === true)
+    const emailIdExistsOnDb = yield new driverService_1.default().verifyEmail(Driver.email);
+    if (emailIdExistsOnDb === true)
         return res.status(400)
             .json({
             error: 'email already exists'
         });
-    Org.password = (0, bcrypt_1.cryptograph)(Org.password);
+    Driver.password = (0, bcrypt_1.cryptograph)(Driver.password);
     try {
-        const driver = new driverService_1.default(Org.first_name, Org.last_name, Org.email, Org.password);
-        yield driver.save();
+        const driverService = new driverService_1.default(Driver.first_name, Driver.last_name, Driver.email, Driver.password);
+        yield driverService.save();
         return res.status(201).json({ msg: 'driver saved' });
     }
     catch (e) {
@@ -59,25 +54,25 @@ driverController.route('/org/driver/save').post((req, res) => __awaiter(void 0, 
     }
 }));
 driverController.route('/org/driver/update/:id').put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Org = Object.assign({}, req.body);
+    const Driver = Object.assign({}, req.body);
     try {
-        err.exceptionFieldNullOrUndefined(Org.first_name, 'first name is undefined or null');
-        err.exceptionFieldNullOrUndefined(Org.last_name, 'last name is undefined or null');
-        err.exceptionFieldNullOrUndefined(Org.email, 'email place is undefined or null');
-        err.exceptionFieldNullOrUndefined(Org.password, 'password place is undefined or null');
-        err.exceptionFieldIsEmpty(Org.first_name.trim(), 'first name can not be empty');
-        err.exceptionFieldIsEmpty(Org.last_name.trim(), 'last name can not be empty');
-        err.exceptionFieldIsEmpty(Org.email.trim(), 'email place can not be empty');
-        err.exceptionFieldIsEmpty(Org.password.trim(), 'password place can not be empty');
-        err.exceptionFieldValueLessToType(Org.password, 'password can not be less than 4');
+        err.exceptionFieldNullOrUndefined(Driver.first_name, 'first name is undefined or null');
+        err.exceptionFieldNullOrUndefined(Driver.last_name, 'last name is undefined or null');
+        err.exceptionFieldNullOrUndefined(Driver.email, 'email place is undefined or null');
+        err.exceptionFieldNullOrUndefined(Driver.password, 'password place is undefined or null');
+        err.exceptionFieldIsEmpty(Driver.first_name.trim(), 'first name can not be empty');
+        err.exceptionFieldIsEmpty(Driver.last_name.trim(), 'last name can not be empty');
+        err.exceptionFieldIsEmpty(Driver.email.trim(), 'email place can not be empty');
+        err.exceptionFieldIsEmpty(Driver.password.trim(), 'password place can not be empty');
+        err.exceptionFieldValueLessToType(Driver.password, 'password can not be less than 4');
     }
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    Org.password = (0, bcrypt_1.cryptograph)(Org.password);
+    Driver.password = (0, bcrypt_1.cryptograph)(Driver.password);
     try {
-        const driver = new driverService_1.default(Org.first_name, Org.last_name, Org.email, Org.password);
-        yield driver.update(req.params.id);
+        const driverService = new driverService_1.default(Driver.first_name, Driver.last_name, Driver.email, Driver.password);
+        yield driverService.update(req.params.id);
         return res.status(201).json({ msg: 'driver update' });
     }
     catch (e) {
@@ -86,9 +81,9 @@ driverController.route('/org/driver/update/:id').put((req, res) => __awaiter(voi
     }
 }));
 driverController.route('/org/driver/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const driverService = new driverService_1.default();
     try {
-        const driver = new driverService_1.default();
-        const data = yield driver.getAll();
+        const data = yield driverService.getAll();
         if (data.length === 0)
             return res.status(404)
                 .json({
@@ -101,16 +96,35 @@ driverController.route('/org/driver/get-all').get((req, res) => __awaiter(void 0
             .json({ error: 'i am sorry, there is an error with server' });
     }
 }));
-driverController.route('/org/driver/delete-all').delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+driverController.route('/org/driver/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Driver = Object.assign({}, req.params);
+    const driverService = new driverService_1.default();
     try {
-        const driver = new driverService_1.default();
-        const driverExistsOrNotExists = yield driver.getAll();
-        if (driverExistsOrNotExists.length === 0)
+        const data = yield driverService.getById(Driver.id);
+        if (data.length === 0)
+            return res.status(404)
+                .json({
+                error: 'driver not found'
+            });
+        return res.status(200).json(data);
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
+}));
+driverController.route('/org/driver/delete-all').delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const driverService = new driverService_1.default();
+    try {
+        const driverIdExistsOnDb = yield driverService.getAll();
+        if (driverIdExistsOnDb.length === 0)
             return res.status(404)
                 .json({
                 error: 'no data'
             });
-        yield driver.deleteAll();
+        yield driverService.deleteAll();
         return res.status(204).json({});
     }
     catch (e) {
@@ -119,16 +133,16 @@ driverController.route('/org/driver/delete-all').delete((req, res) => __awaiter(
     }
 }));
 driverController.route('/org/driver/delete-by-id/:id').delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Org = Object.assign({}, req.params);
+    const driverService = new driverService_1.default();
+    const Driver = Object.assign({}, req.params);
     try {
-        const driver = new driverService_1.default();
-        const driverExistsOrNotExists = yield driver.getById(Org.id);
-        if (driverExistsOrNotExists.length === 0)
+        const driverIdExistsOnDb = yield driverService.getById(Driver.id);
+        if (driverIdExistsOnDb.length === 0)
             return res.status(404)
                 .json({
                 error: 'driver not found'
             });
-        yield driver.deleteById(Org.id);
+        yield driverService.deleteById(Driver.id);
         return res.status(204).json({});
     }
     catch (e) {

@@ -1,7 +1,8 @@
 import knex from '../../repositories/knex/knex'
-
 import { DbOperations } from '../../interface/operations';
 import Driver from '../../entities/driver/driver';
+
+import { driverProjection } from '../../repositories/projections/driverProjection'
 
 export default class DriverService extends Driver implements DbOperations {
     
@@ -57,10 +58,7 @@ export default class DriverService extends Driver implements DbOperations {
 
     async getAll() {
 
-        const data = await knex.select(['driver_id',
-                                        'first_name',
-                                        'last_name',
-                                        'email'])
+        const data = await knex.select(driverProjection)
                               .from('vex_schema.driver')
 
         return data
@@ -69,7 +67,7 @@ export default class DriverService extends Driver implements DbOperations {
     async getById(id?: string | number){
 
         const data = await knex.where('driver_id', id)
-                               .select('*')
+                               .select(driverProjection)
                                .from('vex_schema.driver')
 
         return data

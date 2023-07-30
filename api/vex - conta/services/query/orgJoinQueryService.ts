@@ -13,6 +13,9 @@ import { joinOrgAndDriverProjection,
          joinDriverAndInformationProjection
 } from '../../repositories/projections/joinProjection';
 
+import { driverProjection 
+} from '../../repositories/projections/driverProjection';
+
 import { DbOperations } from '../../interface/operations';
 
 export default class OrgJoinQuery implements DbOperations {
@@ -51,7 +54,7 @@ export default class OrgJoinQuery implements DbOperations {
                                           'org_contact.org_contact_id')
                                         .where('org.org_id', org_id)
 
-        const employees = await knex.select(joinOrgAndDriverProjection)
+        const employees = await knex.select(driverProjection)
                                         .from('vex_schema.org_driver_relation_table')
                                         .innerJoin('vex_schema.org', 
                                           'org_driver_relation_table.org_relation_id', 

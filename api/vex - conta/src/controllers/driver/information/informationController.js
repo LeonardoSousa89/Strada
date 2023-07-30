@@ -24,6 +24,28 @@ const err = new handleError_1.default();
  *
  * Error: Can't extend QueryBuilder with existing method ('paginate')
  */
+/**
+ *
+ * //data e horário de publicação da informação
+
+      const southAmericaTimeZone=new Date()
+
+      const date=new Intl.DateTimeFormat(
+         'pt-BR', {
+            timeZone: 'America/Sao_Paulo',
+            dateStyle: 'long'
+         }).format(southAmericaTimeZone)
+         
+      const time=new Intl.DateTimeFormat(
+         'pt-BR', {
+            timeZone: 'America/Sao_Paulo',
+            timeStyle: 'short'
+         }).format(southAmericaTimeZone)
+
+      console.log(`data: ${date}, ${time}`)
+ 
+ *
+ */
 informationController.route('/org/driver/information/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Driver = Object.assign({}, req.body);
     try {

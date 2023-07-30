@@ -1,4 +1,3 @@
-import axios from 'axios'
 import express from 'express'
 import DriverService from '../../services/driver/driverService'
 
@@ -9,50 +8,45 @@ const driverController = express.Router()
 
 const err = new HandleError()
 
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- * 
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
 driverController.route('/org/driver/save').post(async (req, res)=>{
 
-   const Org = { ...req.body }
+   const Driver = { ...req.body }
 
    try{
 
-      err.exceptionFieldNullOrUndefined(Org.first_name, 'first name is undefined or null')
-      err.exceptionFieldNullOrUndefined(Org.last_name, 'last name is undefined or null')
-      err.exceptionFieldNullOrUndefined(Org.email, 'email place is undefined or null')
-      err.exceptionFieldNullOrUndefined(Org.password, 'password place is undefined or null')
+      err.exceptionFieldNullOrUndefined(Driver.first_name, 'first name is undefined or null')
+      err.exceptionFieldNullOrUndefined(Driver.last_name, 'last name is undefined or null')
+      err.exceptionFieldNullOrUndefined(Driver.email, 'email place is undefined or null')
+      err.exceptionFieldNullOrUndefined(Driver.password, 'password place is undefined or null')
   
-      err.exceptionFieldIsEmpty(Org.first_name.trim(), 'first name can not be empty')
-      err.exceptionFieldIsEmpty(Org.last_name.trim(), 'last name can not be empty')
-      err.exceptionFieldIsEmpty(Org.email.trim(), 'email place can not be empty')
-      err.exceptionFieldIsEmpty(Org.password.trim(), 'password place can not be empty')
+      err.exceptionFieldIsEmpty(Driver.first_name.trim(), 'first name can not be empty')
+      err.exceptionFieldIsEmpty(Driver.last_name.trim(), 'last name can not be empty')
+      err.exceptionFieldIsEmpty(Driver.email.trim(), 'email place can not be empty')
+      err.exceptionFieldIsEmpty(Driver.password.trim(), 'password place can not be empty')
       
-      err.exceptionFieldValueLessToType(Org.password, 'password can not be less than 4')
+      err.exceptionFieldValueLessToType(Driver.password, 'password can not be less than 4')
    }catch(e){
 
       return res.status(400).json({ error: e })
    }
 
-   const emailExistsOrNotExists = await new DriverService().verifyEmail(Org.email)
+   const emailIdExistsOnDb = await new DriverService().verifyEmail(Driver.email)
 
-   if(emailExistsOrNotExists === true) return res.status(400)
+   if(emailIdExistsOnDb === true) return res.status(400)
                                                  .json({
                                                    error: 'email already exists'
                                                 })
 
-   Org.password = cryptograph(Org.password)
+   Driver.password = cryptograph(Driver.password)
    
    try{
 
-      const driver = new DriverService(Org.first_name, 
-                                       Org.last_name,
-                                       Org.email,
-                                       Org.password)
+      const driverService = new DriverService(Driver.first_name, 
+                                       Driver.last_name,
+                                       Driver.email,
+                                       Driver.password)
 
-      await driver.save()
+      await driverService.save()
 
       return res.status(201).json({ msg: 'driver saved' })
 
@@ -65,36 +59,36 @@ driverController.route('/org/driver/save').post(async (req, res)=>{
 
 driverController.route('/org/driver/update/:id').put(async (req, res)=>{
 
-   const Org = { ...req.body }
+   const Driver = { ...req.body }
 
    try{
 
-      err.exceptionFieldNullOrUndefined(Org.first_name, 'first name is undefined or null')
-      err.exceptionFieldNullOrUndefined(Org.last_name, 'last name is undefined or null')
-      err.exceptionFieldNullOrUndefined(Org.email, 'email place is undefined or null')
-      err.exceptionFieldNullOrUndefined(Org.password, 'password place is undefined or null')
+      err.exceptionFieldNullOrUndefined(Driver.first_name, 'first name is undefined or null')
+      err.exceptionFieldNullOrUndefined(Driver.last_name, 'last name is undefined or null')
+      err.exceptionFieldNullOrUndefined(Driver.email, 'email place is undefined or null')
+      err.exceptionFieldNullOrUndefined(Driver.password, 'password place is undefined or null')
   
-      err.exceptionFieldIsEmpty(Org.first_name.trim(), 'first name can not be empty')
-      err.exceptionFieldIsEmpty(Org.last_name.trim(), 'last name can not be empty')
-      err.exceptionFieldIsEmpty(Org.email.trim(), 'email place can not be empty')
-      err.exceptionFieldIsEmpty(Org.password.trim(), 'password place can not be empty')
+      err.exceptionFieldIsEmpty(Driver.first_name.trim(), 'first name can not be empty')
+      err.exceptionFieldIsEmpty(Driver.last_name.trim(), 'last name can not be empty')
+      err.exceptionFieldIsEmpty(Driver.email.trim(), 'email place can not be empty')
+      err.exceptionFieldIsEmpty(Driver.password.trim(), 'password place can not be empty')
       
-      err.exceptionFieldValueLessToType(Org.password, 'password can not be less than 4')
+      err.exceptionFieldValueLessToType(Driver.password, 'password can not be less than 4')
    }catch(e){
 
       return res.status(400).json({ error: e })
    }
 
-   Org.password = cryptograph(Org.password)
+   Driver.password = cryptograph(Driver.password)
    
    try{
 
-      const driver = new DriverService(Org.first_name, 
-                                       Org.last_name,
-                                       Org.email,
-                                       Org.password)
+      const driverService = new DriverService(Driver.first_name, 
+                                       Driver.last_name,
+                                       Driver.email,
+                                       Driver.password)
 
-      await driver.update(req.params.id)
+      await driverService.update(req.params.id)
 
       return res.status(201).json({ msg: 'driver update' })
    }catch(e){
@@ -106,10 +100,11 @@ driverController.route('/org/driver/update/:id').put(async (req, res)=>{
 
 driverController.route('/org/driver/get-all').get(async (req, res)=>{
 
+   const driverService = new DriverService()
+   
    try{
-      const driver = new DriverService()
 
-      const data = await driver.getAll()
+      const data = await driverService.getAll()
 
       if(data.length === 0)  return res.status(404)
                                            .json({
@@ -125,19 +120,46 @@ driverController.route('/org/driver/get-all').get(async (req, res)=>{
    }
 })
 
+driverController.route('/org/driver/get-by-id/:id').get(async (req, res)=>{
+
+   const Driver ={ ...req.params }
+   
+   const driverService = new DriverService()  
+   
+   try{
+
+       const data = await driverService.getById(Driver.id)
+
+       if(data.length === 0) return res.status(404)
+                                       .json({
+                                           error: 'driver not found'
+                                       })
+
+       return res.status(200).json(data)
+   }catch(__){
+      
+       return res.status(500)
+                 .json({  
+                   error: 'i am sorry, there is an error with server'  
+               })
+   }
+
+})
+
 driverController.route('/org/driver/delete-all').delete(async (req, res)=>{
 
+   const driverService = new DriverService()
+
    try{
-      const driver = new DriverService()
 
-      const driverExistsOrNotExists = await driver.getAll()
+      const driverIdExistsOnDb = await driverService.getAll()
 
-      if(driverExistsOrNotExists.length === 0) return res.status(404)
+      if(driverIdExistsOnDb.length === 0) return res.status(404)
                                                          .json({
                                                             error: 'no data'
                                                          })
 
-      await driver.deleteAll()
+      await driverService.deleteAll()
 
       return res.status(204).json({})
 
@@ -150,20 +172,20 @@ driverController.route('/org/driver/delete-all').delete(async (req, res)=>{
 
 driverController.route('/org/driver/delete-by-id/:id').delete(async (req, res)=>{
 
-   const Org = { ...req.params }
+   const driverService = new DriverService()
    
-   try{
-      
-      const driver = new DriverService()
+   const Driver = { ...req.params }
+   
+   try{   
 
-      const driverExistsOrNotExists = await driver.getById(Org.id)
+      const driverIdExistsOnDb = await driverService.getById(Driver.id)
 
-      if(driverExistsOrNotExists.length === 0) return res.status(404)
+      if(driverIdExistsOnDb.length === 0) return res.status(404)
                                                          .json({
                                                             error: 'driver not found'
                                                          })
 
-      await driver.deleteById(Org.id)
+      await driverService.deleteById(Driver.id)
 
       return res.status(204).json({})
 

@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const driver_1 = __importDefault(require("../../entities/driver/driver"));
+const driverProjection_1 = require("../../repositories/projections/driverProjection");
 class DriverService extends driver_1.default {
     constructor(first_name, last_name, email, password) {
         super(first_name, last_name, email, password);
@@ -55,10 +56,7 @@ class DriverService extends driver_1.default {
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select(['driver_id',
-                'first_name',
-                'last_name',
-                'email'])
+            const data = yield knex_1.default.select(driverProjection_1.driverProjection)
                 .from('vex_schema.driver');
             return data;
         });
@@ -66,7 +64,7 @@ class DriverService extends driver_1.default {
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield knex_1.default.where('driver_id', id)
-                .select('*')
+                .select(driverProjection_1.driverProjection)
                 .from('vex_schema.driver');
             return data;
         });

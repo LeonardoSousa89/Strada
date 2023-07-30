@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const orgProjection_1 = require("../../repositories/projections/orgProjection");
 const joinProjection_1 = require("../../repositories/projections/joinProjection");
+const driverProjection_1 = require("../../repositories/projections/driverProjection");
 class OrgJoinQuery {
     constructor() { }
     save() { }
@@ -35,7 +36,7 @@ class OrgJoinQuery {
                 .innerJoin('vex_schema.org', 'org_contact_relation_table.org_relation_id', 'org.org_id')
                 .innerJoin('vex_schema.org_contact', 'org_contact_relation_table.org_contact_relation_id', 'org_contact.org_contact_id')
                 .where('org.org_id', org_id);
-            const employees = yield knex_1.default.select(joinProjection_1.joinOrgAndDriverProjection)
+            const employees = yield knex_1.default.select(driverProjection_1.driverProjection)
                 .from('vex_schema.org_driver_relation_table')
                 .innerJoin('vex_schema.org', 'org_driver_relation_table.org_relation_id', 'org.org_id')
                 .innerJoin('vex_schema.driver', 'org_driver_relation_table.driver_relation_id', 'driver.driver_id')
