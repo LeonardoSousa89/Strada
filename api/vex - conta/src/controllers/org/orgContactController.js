@@ -19,11 +19,6 @@ const handleError_1 = __importDefault(require("../../interface/error/handleError
 const orgContactController = express_1.default.Router();
 exports.orgContactController = orgContactController;
 const err = new handleError_1.default();
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- *
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
 orgContactController.route('/org/contact/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgContact = Object.assign({}, req.body);
     try {
@@ -37,15 +32,20 @@ orgContactController.route('/org/contact/save').post((req, res) => __awaiter(voi
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    const response = new orgContactService_1.default(OrgContact.telephone, OrgContact.ddd, OrgContact.email).save();
-    return yield response.then(__ => res.status(201)
-        .json({
-        msg: 'organization contact save'
-    }))
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server' + __
-    }));
+    try {
+        const orgContactService = new orgContactService_1.default(OrgContact.telephone, OrgContact.ddd, OrgContact.email);
+        yield orgContactService.save();
+        return res.status(201)
+            .json({
+            msg: 'organization contact saved'
+        });
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgContactController.route('/org/contact/update/:id').put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgContact = Object.assign({}, req.body);
@@ -60,72 +60,83 @@ orgContactController.route('/org/contact/update/:id').put((req, res) => __awaite
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationId = new orgContactService_1.default().verifyId(req.params.id);
-    const dataIdDbResponse = yield verificationId.then(e => e);
+    const verifyId = new orgContactService_1.default().verifyId(req.params.id);
+    const dataIdDbResponse = yield verifyId.then(e => e);
     if (dataIdDbResponse === false)
         return res.status(404)
             .json({
             error: 'organization contact not found'
         });
-    const response = new orgContactService_1.default(OrgContact.telephone, OrgContact.ddd, OrgContact.email).update(req.params.id);
-    return yield response.then(__ => res.status(201)
-        .json({
-        msg: 'organization contact update'
-    }))
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server' + __
-    }));
+    try {
+        const orgContactService = new orgContactService_1.default(OrgContact.telephone, OrgContact.ddd, OrgContact.email);
+        yield orgContactService.update(req.params.id);
+        return res.status(201)
+            .json({
+            msg: 'organization contact updated'
+        });
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgContactController.route('/org/contact/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = new orgContactService_1.default().getAll();
-    yield response.then(data => {
+    const orgContactService = new orgContactService_1.default();
+    try {
+        const data = yield orgContactService.getAll();
         if (data.length === 0)
             return res.status(404)
                 .json({
                 error: 'no data'
             });
         return res.status(200).json(data);
-    })
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgContactController.route('/org/contact/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = new orgContactService_1.default().getById(req.params.id);
-    yield response.then(data => {
+    const OrgContact = Object.assign({}, req.params);
+    const orgContactService = new orgContactService_1.default();
+    try {
+        const data = yield orgContactService.getById(OrgContact.id);
         if (data.length === 0)
             return res.status(404)
                 .json({
                 error: 'organization contact not found'
             });
         return res.status(200).json(data);
-    })
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgContactController.route('/org/contact/delete-by-id/:id').delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgContact = Object.assign({}, req.params);
-    const response = new orgContactService_1.default().deleteById(OrgContact.id);
-    //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationId = new orgContactService_1.default().verifyId(OrgContact.id);
-    const dataIdDbResponse = yield verificationId.then(e => e);
-    if (dataIdDbResponse === false)
-        return res.status(404)
-            .json({
-            error: 'organization contact not found'
-        });
-    yield response.then(__ => {
+    const orgContactService = new orgContactService_1.default();
+    try {
+        const verifyId = new orgContactService_1.default();
+        const orgContactIdExistsOnDb = yield verifyId.verifyId(OrgContact.id);
+        if (orgContactIdExistsOnDb === false)
+            return res.status(404)
+                .json({
+                error: 'organization contact not found'
+            });
+        yield orgContactService.deleteById(OrgContact.id);
         return res.status(204).json({});
-    })
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));

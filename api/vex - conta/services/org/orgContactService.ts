@@ -15,31 +15,31 @@ export default class OrgContactService extends OrgContact implements DbOperation
         email)
   }
   
-  organizationAddress = new OrgContact(
+  orgContact = new OrgContact(
     this.telephone,
     this.ddd, 
     this.email)
   
   async verifyId(id: string | number) {
 
-    const existsOrNotExists = await knex.where('org_contact_id', id)
-                                    .from('vex_schema.org_contact')
-                                    .first()
+    const existsOrNotExistsId = await knex.where('org_contact_id', id)
+                                          .from('vex_schema.org_contact')
+                                          .first()
 
-    if(existsOrNotExists)  return true
+    if(existsOrNotExistsId)  return true
 
-    if(!existsOrNotExists) return false
+    if(!existsOrNotExistsId) return false
   }
 
   async save() {
       
-    await knex.insert(this.organizationAddress).from('vex_schema.org_contact')
+    await knex.insert(this.orgContact).from('vex_schema.org_contact')
   }
 
   async update(id?: string | number) {
       
     await knex.where('org_contact_id', id)
-              .update(this.organizationAddress)
+              .update(this.orgContact)
               .from('vex_schema.org_contact')
   }
 

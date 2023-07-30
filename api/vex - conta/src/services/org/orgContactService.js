@@ -17,28 +17,28 @@ const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 class OrgContactService extends orgContact_1.default {
     constructor(telephone, ddd, email) {
         super(telephone, ddd, email);
-        this.organizationAddress = new orgContact_1.default(this.telephone, this.ddd, this.email);
+        this.orgContact = new orgContact_1.default(this.telephone, this.ddd, this.email);
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExists = yield knex_1.default.where('org_contact_id', id)
+            const existsOrNotExistsId = yield knex_1.default.where('org_contact_id', id)
                 .from('vex_schema.org_contact')
                 .first();
-            if (existsOrNotExists)
+            if (existsOrNotExistsId)
                 return true;
-            if (!existsOrNotExists)
+            if (!existsOrNotExistsId)
                 return false;
         });
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.insert(this.organizationAddress).from('vex_schema.org_contact');
+            yield knex_1.default.insert(this.orgContact).from('vex_schema.org_contact');
         });
     }
     update(id) {
         return __awaiter(this, void 0, void 0, function* () {
             yield knex_1.default.where('org_contact_id', id)
-                .update(this.organizationAddress)
+                .update(this.orgContact)
                 .from('vex_schema.org_contact');
         });
     }

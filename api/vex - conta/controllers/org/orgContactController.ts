@@ -6,12 +6,6 @@ const orgContactController = express.Router()
 
 const err = new HandleError()
 
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- * 
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
-
 orgContactController.route('/org/contact/save').post(async(req, res)=> {
 
     const OrgContact = { ...req.body }
@@ -30,18 +24,25 @@ orgContactController.route('/org/contact/save').post(async(req, res)=> {
         return res.status(400).json({ error: e })
     }
                                             
-    const response = new OrgContactService(OrgContact.telephone,
-                                           OrgContact.ddd,
-                                           OrgContact.email).save()
-    
-    return await response.then(__ => res.status(201)
-                                        .json({ 
-                                            msg: 'organization contact save' 
-                                        }))
-                                        .catch(__ => res.status(500)
-                                                        .json({ 
-                                                            error: 'i am sorry, there is an error with server'+__ 
-                                                        }))                                         
+    try{
+
+        const orgContactService = new OrgContactService(OrgContact.telephone,
+                                               OrgContact.ddd,
+                                               OrgContact.email)
+
+        await orgContactService.save()
+        
+        return res.status(201)
+                  .json({ 
+                    msg: 'organization contact saved' 
+                })
+    }catch(__){
+
+        return res.status(500)
+                  .json({ 
+                        error: 'i am sorry, there is an error with server' 
+                  }) 
+    }                                        
 })
 
 orgContactController.route('/org/contact/update/:id').put(async(req, res)=> {
@@ -62,97 +63,112 @@ orgContactController.route('/org/contact/update/:id').put(async(req, res)=> {
         return res.status(400).json({ error: e })
     }
 
-    //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationId = new OrgContactService().verifyId(req.params.id)
+    const verifyId = new OrgContactService().verifyId(req.params.id)
 
-    const dataIdDbResponse = await verificationId.then(e => e)
+    const dataIdDbResponse = await verifyId.then(e => e)
     
     if(dataIdDbResponse === false) return res.status(404)
                                              .json({ 
                                                 error: 'organization contact not found' 
                                             }) 
+ 
+    try{
 
-    const response = new OrgContactService(OrgContact.telephone,
-                                           OrgContact.ddd,
-                                           OrgContact.email).update(req.params.id)
-                                                                                  
-    return await response.then(__ => res.status(201)
-                                        .json({ 
-                                            msg: 'organization contact update' 
-                                        }))
-                                        .catch(__ => res.status(500)
-                                                        .json({ 
-                                                            error: 'i am sorry, there is an error with server'+__ 
-                                                        }))                                         
+        const orgContactService = new OrgContactService(OrgContact.telephone,
+                                                        OrgContact.ddd,
+                                                        OrgContact.email)
+                                                           
+        await orgContactService.update(req.params.id) 
+
+        return res.status(201)
+                  .json({ 
+                        msg: 'organization contact updated' 
+                  })
+    }catch(__){
+
+        return res.status(500)
+                  .json({ 
+                        error: 'i am sorry, there is an error with server' 
+                    })   
+    }
+                                       
 })
 
 orgContactController.route('/org/contact/get-all').get(async(req, res)=>{
 
-    const response = new OrgContactService().getAll()
+    const orgContactService = new OrgContactService()
     
-    await response.then(data => {
+    try{
+
+        const data = await orgContactService.getAll()
     
         if(data.length === 0) return res.status(404)
                                         .json({ 
                                             error: 'no data' 
                                         })
-            
+                
         return res.status(200).json(data)
-    
-        })
-        .catch(__ => res.status(500)
-                        .json({  
-                            error: 'i am sorry, there is an error with server'  
-                        }))
+    }catch(__){
+
+        return res.status(500)
+                  .json({  
+                    error: 'i am sorry, there is an error with server'  
+                  })
+    }
 })  
 
 orgContactController.route('/org/contact/get-by-id/:id').get(async(req, res)=>{
 
-    const response = new OrgContactService().getById(req.params.id)
+    const OrgContact = { ...req.params }
+
+    const orgContactService = new OrgContactService()
     
-    await response.then(data => {
+    try{
+
+        const data = await orgContactService.getById(OrgContact.id)
     
         if(data.length === 0) return res.status(404)
-                                        .json({ 
-                                            error: 'organization contact not found' 
-                                        })
-            
+                                            .json({ 
+                                                error: 'organization contact not found' 
+                                            })
+                
         return res.status(200).json(data)
-    
-        })
-        .catch(__ => res.status(500)
-                        .json({  
-                            error: 'i am sorry, there is an error with server'  
-                        }))
+    }catch(__){
+
+        return res.status(500)
+                  .json({  
+                    error: 'i am sorry, there is an error with server'  
+                  })
+    }
 })
 
 orgContactController.route('/org/contact/delete-by-id/:id').delete(async(req, res)=>{
 
     const OrgContact = { ...req.params }
 
-    const response = new OrgContactService().deleteById(OrgContact.id)
+    const orgContactService = new OrgContactService()
     
-    //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationId = new OrgContactService().verifyId(OrgContact.id)
+    try{
 
-    const dataIdDbResponse = await verificationId.then(e => e)
-    
-    if(dataIdDbResponse === false) return res.status(404)
-                                             .json({ 
-                                                error: 'organization contact not found' 
-                                            }) 
+        const verifyId = new OrgContactService()
 
-    await response.then(__ => {
+        const orgContactIdExistsOnDb = await verifyId.verifyId(OrgContact.id)
+        
+        if(orgContactIdExistsOnDb === false) return res.status(404)
+                                                       .json({ 
+                                                            error: 'organization contact not found' 
+                                                        }) 
     
+        await orgContactService.deleteById(OrgContact.id)
+        
         return res.status(204).json({})
-    
-        })
-        .catch(__ => res.status(500)
-                        .json({  
-                            error: 'i am sorry, there is an error with server'  
-                        }))
+    }catch(__){
+
+        return res.status(500)
+                  .json({  
+                    error: 'i am sorry, there is an error with server'  
+                  })
+    }
 })
 
 export { orgContactController }
