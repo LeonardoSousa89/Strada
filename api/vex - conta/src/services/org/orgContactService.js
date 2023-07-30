@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const orgContact_1 = __importDefault(require("../../entities/org/orgContact"));
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
+const orgProjection_1 = require("../../repositories/projections/orgProjection");
 class OrgContactService extends orgContact_1.default {
     constructor(telephone, ddd, email) {
         super(telephone, ddd, email);
@@ -44,14 +45,14 @@ class OrgContactService extends orgContact_1.default {
     }
     getAll(size, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select('*').from('vex_schema.org_contact');
+            const data = yield knex_1.default.select(orgProjection_1.orgContactProjection).from('vex_schema.org_contact');
             return data;
         });
     }
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield knex_1.default.where('org_contact_id', id)
-                .select('*')
+                .select(orgProjection_1.orgContactProjection)
                 .from('vex_schema.org_contact');
             return data;
         });

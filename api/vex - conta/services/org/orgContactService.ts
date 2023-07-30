@@ -2,6 +2,8 @@ import OrgContact from "../../entities/org/orgContact";
 import { DbOperations } from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
 
+import { orgContactProjection } from '../../repositories/projections/orgProjection'
+
 export default class OrgContactService extends OrgContact implements DbOperations{
 
   constructor(
@@ -45,7 +47,7 @@ export default class OrgContactService extends OrgContact implements DbOperation
 
   async getAll(size?: any, page?:any) {
       
-    const data = await knex.select('*').from('vex_schema.org_contact') 
+    const data = await knex.select(orgContactProjection).from('vex_schema.org_contact') 
     
     return data
   }
@@ -53,7 +55,7 @@ export default class OrgContactService extends OrgContact implements DbOperation
   async getById(id?: string | number) {
       
     const data = await knex.where('org_contact_id', id)
-                           .select('*')
+                           .select(orgContactProjection)
                            .from('vex_schema.org_contact') 
     return data
   }

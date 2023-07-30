@@ -1,4 +1,4 @@
-const organizationProjection: Array<string> = [
+const orgProjection: Array<string> = [
 
     'org.org_id',
     'org.fantasy_name',
@@ -9,7 +9,7 @@ const organizationProjection: Array<string> = [
     'org.open_date'
 ]
 
-const joinOrgAndAddressProjection: Array<string> = [
+const orgAddressProjection: Array<string> = [
 
     'org_address.org_address_id',
     'org_address.zip_code',
@@ -22,7 +22,7 @@ const joinOrgAndAddressProjection: Array<string> = [
     'org_address.country'
 ]
 
-const joinOrgAndContactProjection: Array<string> = [
+const orgContactProjection: Array<string> = [
 
     'org_contact.org_contact_id',
     'org_contact.ddd',
@@ -30,52 +30,6 @@ const joinOrgAndContactProjection: Array<string> = [
     'org_contact.email'
 ]
 
-const joinOrgAndDriverProjection: Array<string> = [
-
-    'driver.driver_id',
-    'driver.first_name',
-    'driver.last_name',
-    'driver.email'
-]
-
-const joinDriverAndAddressProjection: Array<string> = [
-
-    'driver_address.driver_address_id',
-    'driver_address.zip_code ',
-    'driver_address.state',
-    'driver_address.city',
-    'driver.driver_id'
-]
-
-const joinDriverAndContactProjection: Array<string> = [
-
-    'driver_contact.driver_contact_id',
-    'driver_contact.telephone',
-    'driver.driver_id'
-]
-
-const joinDriverAndDocumentProjection: Array<string> = [
-
-    'driver_document.driver_document_id',
-    'driver_document.cnh',
-    'driver.driver_id'
-]
-
-const joinDriverAndInformationProjection: Array<string> = [
-
-    'information.information_id',
-    'information.starting_km',
-    'information.final_km',
-    'information.plate',
-    'information.notes',
-    'driver.driver_id'
-]
-
-export { organizationProjection,
-         joinOrgAndAddressProjection, 
-         joinOrgAndContactProjection,
-         joinOrgAndDriverProjection,
-         joinDriverAndAddressProjection,
-         joinDriverAndContactProjection,
-         joinDriverAndDocumentProjection,
-         joinDriverAndInformationProjection } 
+export { orgProjection,
+         orgAddressProjection,
+         orgContactProjection } 

@@ -2,6 +2,8 @@ import Org from "../../entities/org/org";
 import { DbOperations } from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
 
+import { orgProjection } from '../../repositories/projections/orgProjection'
+
 export default class OrgService extends Org implements DbOperations {
 
     constructor(
@@ -67,13 +69,7 @@ export default class OrgService extends Org implements DbOperations {
 
     async getAll() {
 
-        const data = await knex.select(['org_id',
-                                        'fantasy_name', 
-                                        'corporate_name',
-                                        'cnpj',
-                                        'org_status',
-                                        'cnae_main_code',
-                                        'open_date'])
+        const data = await knex.select(orgProjection)
                                .from('vex_schema.org') 
     
         return data
@@ -82,13 +78,7 @@ export default class OrgService extends Org implements DbOperations {
     async getById(id?: number | string) {
         
         const data = await knex.where('org_id', id)
-                               .select(['org_id',
-                                        'fantasy_name', 
-                                        'corporate_name',
-                                        'cnpj',
-                                        'org_status',
-                                        'cnae_main_code',
-                                        'open_date'])
+                               .select(orgProjection)
                                .from('vex_schema.org') 
         return data
     }

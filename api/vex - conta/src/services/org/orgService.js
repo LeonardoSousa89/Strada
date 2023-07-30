@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const org_1 = __importDefault(require("../../entities/org/org"));
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
+const orgProjection_1 = require("../../repositories/projections/orgProjection");
 class OrgService extends org_1.default {
     constructor(fantasy_name, corporate_name, cnpj, org_status, cnae_main_code, open_date, password) {
         super(fantasy_name, corporate_name, cnpj, org_status, cnae_main_code, open_date, password);
@@ -55,13 +56,7 @@ class OrgService extends org_1.default {
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select(['org_id',
-                'fantasy_name',
-                'corporate_name',
-                'cnpj',
-                'org_status',
-                'cnae_main_code',
-                'open_date'])
+            const data = yield knex_1.default.select(orgProjection_1.orgProjection)
                 .from('vex_schema.org');
             return data;
         });
@@ -69,13 +64,7 @@ class OrgService extends org_1.default {
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield knex_1.default.where('org_id', id)
-                .select(['org_id',
-                'fantasy_name',
-                'corporate_name',
-                'cnpj',
-                'org_status',
-                'cnae_main_code',
-                'open_date'])
+                .select(orgProjection_1.orgProjection)
                 .from('vex_schema.org');
             return data;
         });

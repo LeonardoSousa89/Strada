@@ -1,13 +1,18 @@
 import knex from '../../repositories/knex/knex'
-import { organizationProjection,
-         joinOrgAndAddressProjection, 
-         joinOrgAndContactProjection,
-         joinOrgAndDriverProjection,
+
+import {
+  orgProjection,
+  orgAddressProjection,
+  orgContactProjection
+} from '../../repositories/projections/orgProjection'
+
+import { joinOrgAndDriverProjection,
          joinDriverAndAddressProjection,
          joinDriverAndContactProjection,
          joinDriverAndDocumentProjection,
          joinDriverAndInformationProjection
-} from '../../repositories/projections/OrgProjection';
+} from '../../repositories/projections/joinProjection';
+
 import { DbOperations } from '../../interface/operations';
 
 export default class OrgJoinQuery implements DbOperations {
@@ -22,11 +27,11 @@ export default class OrgJoinQuery implements DbOperations {
 
     async getById(org_id?: number){
 
-        const organization = await knex.select(organizationProjection)
+        const organization = await knex.select(orgProjection)
                                        .from('vex_schema.org')
                                        .where('org.org_id', org_id) 
 
-        const orgAndAddress = await knex.select(joinOrgAndAddressProjection)
+        const orgAndAddress = await knex.select(orgAddressProjection)
                                         .from('vex_schema.org_address_relation_table')
                                         .innerJoin('vex_schema.org', 
                                           'org_address_relation_table.org_relation_id', 
@@ -36,7 +41,7 @@ export default class OrgJoinQuery implements DbOperations {
                                           'org_address.org_address_id')
                                         .where('org.org_id', org_id) 
 
-        const orgAndContact = await knex.select(joinOrgAndContactProjection)
+        const orgAndContact = await knex.select(orgContactProjection)
                                         .from('vex_schema.org_contact_relation_table')
                                         .innerJoin('vex_schema.org', 
                                           'org_contact_relation_table.org_relation_id', 

@@ -23,24 +23,24 @@ export default class DriverService extends Driver implements DbOperations {
     
     async verifyId(id: string) {
 
-        const existsOrNotExists = await knex.where('driver_id', id)
+        const existsOrNotExistsId = await knex.where('driver_id', id)
                                             .from('vex_schema.driver')
                                             .first()
 
-        if(existsOrNotExists)  return true
+        if(existsOrNotExistsId)  return true
 
-        if(!existsOrNotExists) return false
+        if(!existsOrNotExistsId) return false
     }
 
     async verifyEmail(email: string) {
 
-        const existsOrNotExists = await knex.where('email', email)
+        const existsOrNotExistsEmail = await knex.where('email', email)
                                             .from('vex_schema.driver')
                                             .first()
 
-        if(existsOrNotExists)  return true
+        if(existsOrNotExistsEmail)  return true
 
-        if(!existsOrNotExists) return false
+        if(!existsOrNotExistsEmail) return false
     }
 
     async save(){

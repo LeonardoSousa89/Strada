@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const orgAddress_1 = __importDefault(require("../../entities/org/orgAddress"));
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
+const orgProjection_1 = require("../../repositories/projections/orgProjection");
 class OrgAddressService extends orgAddress_1.default {
     constructor(zip_code, street_type, public_place, org_number, complement, neighborhood, county, country) {
         super(zip_code, street_type, public_place, org_number, complement, neighborhood, county, country);
@@ -44,14 +45,14 @@ class OrgAddressService extends orgAddress_1.default {
     }
     getAll(size, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select('*').from('vex_schema.org_address');
+            const data = yield knex_1.default.select(orgProjection_1.orgAddressProjection).from('vex_schema.org_address');
             return data;
         });
     }
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield knex_1.default.where('org_address_id', id)
-                .select('*')
+                .select(orgProjection_1.orgAddressProjection)
                 .from('vex_schema.org_address');
             return data;
         });

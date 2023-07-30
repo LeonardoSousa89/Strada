@@ -21,23 +21,23 @@ class DriverService extends driver_1.default {
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExists = yield knex_1.default.where('driver_id', id)
+            const existsOrNotExistsId = yield knex_1.default.where('driver_id', id)
                 .from('vex_schema.driver')
                 .first();
-            if (existsOrNotExists)
+            if (existsOrNotExistsId)
                 return true;
-            if (!existsOrNotExists)
+            if (!existsOrNotExistsId)
                 return false;
         });
     }
     verifyEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExists = yield knex_1.default.where('email', email)
+            const existsOrNotExistsEmail = yield knex_1.default.where('email', email)
                 .from('vex_schema.driver')
                 .first();
-            if (existsOrNotExists)
+            if (existsOrNotExistsEmail)
                 return true;
-            if (!existsOrNotExists)
+            if (!existsOrNotExistsEmail)
                 return false;
         });
     }
