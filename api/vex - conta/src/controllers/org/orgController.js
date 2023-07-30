@@ -51,9 +51,6 @@ orgController.route('/org/verify-cnpj').get((req, res) => __awaiter(void 0, void
     const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
     try {
         const response = yield axios_1.default.get(url);
-        console.log(url);
-        console.log(response.headers);
-        console.log(response.data);
         if (response.data.error)
             return res.status(404)
                 .json({

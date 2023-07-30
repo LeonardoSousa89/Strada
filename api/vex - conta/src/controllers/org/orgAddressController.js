@@ -19,11 +19,6 @@ const handleError_1 = __importDefault(require("../../interface/error/handleError
 const orgAddressController = express_1.default.Router();
 exports.orgAddressController = orgAddressController;
 const err = new handleError_1.default();
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- *
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
 orgAddressController.route('/org/address/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgAddress = Object.assign({}, req.body);
     try {
@@ -45,15 +40,20 @@ orgAddressController.route('/org/address/save').post((req, res) => __awaiter(voi
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    const response = new orgAddressService_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country).save();
-    return yield response.then(__ => res.status(201)
-        .json({
-        msg: 'organization address saved'
-    }))
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    try {
+        const orgAddressService = new orgAddressService_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country);
+        yield orgAddressService.save();
+        return res.status(201)
+            .json({
+            msg: 'organization address saved'
+        });
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgAddressController.route('/org/address/update/:id').put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgAddress = Object.assign({}, req.body);
@@ -76,72 +76,82 @@ orgAddressController.route('/org/address/update/:id').put((req, res) => __awaite
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationId = new orgAddressService_1.default().verifyId(req.params.id);
-    const dataIdDbResponse = yield verificationId.then(e => e);
-    if (dataIdDbResponse === false)
+    const verifyId = new orgAddressService_1.default().verifyId(req.params.id);
+    const orgAddressIdExistsOnDb = yield verifyId.then(e => e);
+    if (orgAddressIdExistsOnDb === false)
         return res.status(404)
             .json({
             error: 'organization address not found'
         });
-    const response = new orgAddressService_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country).update(req.params.id);
-    return yield response.then(__ => res.status(201)
-        .json({
-        msg: 'organization address updated'
-    }))
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    try {
+        const orgAddressService = new orgAddressService_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country);
+        yield orgAddressService.update(req.params.id);
+        return res.status(201)
+            .json({
+            msg: 'organization address updated'
+        });
+    }
+    catch (__) {
+        res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgAddressController.route('/org/address/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = new orgAddressService_1.default().getAll();
-    yield response.then(data => {
+    const orgAddressService = new orgAddressService_1.default();
+    try {
+        const data = yield orgAddressService.getAll();
         if (data.length === 0)
             return res.status(404)
                 .json({
                 error: 'no data'
             });
         return res.status(200).json(data);
-    })
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgAddressController.route('/org/address/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = new orgAddressService_1.default().getById(req.params.id);
-    yield response.then(data => {
+    const OrgAddress = Object.assign({}, req.params);
+    const orgAddressService = new orgAddressService_1.default();
+    try {
+        const data = yield orgAddressService.getById(OrgAddress.id);
         if (data.length === 0)
             return res.status(404)
                 .json({
                 error: 'organization address not found'
             });
         return res.status(200).json(data);
-    })
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgAddressController.route('/org/address/delete-by-id/:id').delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgAddress = Object.assign({}, req.params);
-    const response = new orgAddressService_1.default().deleteById(OrgAddress.id);
-    //verifica se o id na url da requisição existe e os dados estão cadastrados no banco de dados do sistema
-    //depurar, testar e delegar esta verificação a uma outra função ou interface **
-    const verificationId = new orgAddressService_1.default().verifyId(OrgAddress.id);
-    const dataIdDbResponse = yield verificationId.then(e => e);
-    if (dataIdDbResponse === false)
-        return res.status(404)
-            .json({
-            error: 'organization address not found'
-        });
-    yield response.then(__ => {
+    const orgAddressService = new orgAddressService_1.default();
+    try {
+        const verifyId = yield orgAddressService.verifyId(OrgAddress.id);
+        if (verifyId === false)
+            return res.status(404)
+                .json({
+                error: 'organization address not found'
+            });
+        orgAddressService.deleteById(OrgAddress.id);
         return res.status(204).json({});
-    })
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));

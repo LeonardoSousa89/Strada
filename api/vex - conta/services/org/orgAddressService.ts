@@ -25,7 +25,7 @@ export default class OrgAddressService extends OrgAddress implements DbOperation
         country)
   }
   
-  organizationAddress = new OrgAddress(
+  orgAddress = new OrgAddress(
     this.zip_code,
     this.street_type, 
     this.public_place, 
@@ -38,24 +38,24 @@ export default class OrgAddressService extends OrgAddress implements DbOperation
   
   async verifyId(id: string | number) {
 
-    const existsOrNotExists = await knex.where('org_address_id', id)
+    const existsOrNotExistsId = await knex.where('org_address_id', id)
                                     .from('vex_schema.org_address')
                                     .first()
 
-    if(existsOrNotExists)  return true
+    if(existsOrNotExistsId)  return true
 
-    if(!existsOrNotExists) return false
+    if(!existsOrNotExistsId) return false
   }
 
   async save() {
       
-    await knex.insert(this.organizationAddress).from('vex_schema.org_address')
+    await knex.insert(this.orgAddress).from('vex_schema.org_address')
   }
 
   async update(id?: string | number) {
       
     await knex.where('org_address_id', id)
-              .update(this.organizationAddress)
+              .update(this.orgAddress)
               .from('vex_schema.org_address')
   }
 

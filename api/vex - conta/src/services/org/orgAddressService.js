@@ -17,28 +17,28 @@ const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 class OrgAddressService extends orgAddress_1.default {
     constructor(zip_code, street_type, public_place, org_number, complement, neighborhood, county, country) {
         super(zip_code, street_type, public_place, org_number, complement, neighborhood, county, country);
-        this.organizationAddress = new orgAddress_1.default(this.zip_code, this.street_type, this.public_place, this.org_number, this.complement, this.neighborhood, this.county, this.country);
+        this.orgAddress = new orgAddress_1.default(this.zip_code, this.street_type, this.public_place, this.org_number, this.complement, this.neighborhood, this.county, this.country);
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExists = yield knex_1.default.where('org_address_id', id)
+            const existsOrNotExistsId = yield knex_1.default.where('org_address_id', id)
                 .from('vex_schema.org_address')
                 .first();
-            if (existsOrNotExists)
+            if (existsOrNotExistsId)
                 return true;
-            if (!existsOrNotExists)
+            if (!existsOrNotExistsId)
                 return false;
         });
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.insert(this.organizationAddress).from('vex_schema.org_address');
+            yield knex_1.default.insert(this.orgAddress).from('vex_schema.org_address');
         });
     }
     update(id) {
         return __awaiter(this, void 0, void 0, function* () {
             yield knex_1.default.where('org_address_id', id)
-                .update(this.organizationAddress)
+                .update(this.orgAddress)
                 .from('vex_schema.org_address');
         });
     }
