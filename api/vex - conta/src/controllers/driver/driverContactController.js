@@ -19,23 +19,18 @@ const driverContactService_1 = __importDefault(require("../../services/driver/dr
 const driverContactController = express_1.default.Router();
 exports.driverContactController = driverContactController;
 const err = new handleError_1.default();
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- *
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
 driverContactController.route('/org/driver/contact/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Driver = Object.assign({}, req.body);
+    const DriverContact = Object.assign({}, req.body);
     try {
-        err.exceptionFieldNullOrUndefined(Driver.telephone, 'telephone is undefined or null');
-        err.exceptionFieldIsEmpty(Driver.telephone.trim(), 'telephone can not be empty');
+        err.exceptionFieldNullOrUndefined(DriverContact.telephone, 'telephone is undefined or null');
+        err.exceptionFieldIsEmpty(DriverContact.telephone.trim(), 'telephone can not be empty');
     }
     catch (e) {
         return res.status(400).json({ error: e });
     }
     try {
-        const driverContact = new driverContactService_1.default(Driver.telephone);
-        yield driverContact.save();
+        const driverContactService = new driverContactService_1.default(DriverContact.telephone);
+        yield driverContactService.save();
         return res.status(201).json({ msg: 'driver telephone save' });
     }
     catch (__) {
@@ -44,10 +39,10 @@ driverContactController.route('/org/driver/contact/save').post((req, res) => __a
     }
 }));
 driverContactController.route('/org/driver/contact/update/:id').put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Driver = Object.assign({}, req.body);
+    const DriverContact = Object.assign({}, req.body);
     try {
-        err.exceptionFieldNullOrUndefined(Driver.telephone, 'telephone is undefined or null');
-        err.exceptionFieldIsEmpty(Driver.telephone.trim(), 'telephone can not be empty');
+        err.exceptionFieldNullOrUndefined(DriverContact.telephone, 'telephone is undefined or null');
+        err.exceptionFieldIsEmpty(DriverContact.telephone.trim(), 'telephone can not be empty');
     }
     catch (e) {
         return res.status(400).json({ error: e });
@@ -60,8 +55,8 @@ driverContactController.route('/org/driver/contact/update/:id').put((req, res) =
             error: 'driver telephone not found'
         });
     try {
-        const driverContact = new driverContactService_1.default(Driver.telephone);
-        yield driverContact.update(req.params.id);
+        const driverContactService = new driverContactService_1.default(DriverContact.telephone);
+        yield driverContactService.update(req.params.id);
         return res.status(201).json({ msg: 'driver telephone update' });
     }
     catch (__) {
@@ -71,8 +66,8 @@ driverContactController.route('/org/driver/contact/update/:id').put((req, res) =
 }));
 driverContactController.route('/org/driver/contact/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const driverContact = new driverContactService_1.default();
-        const data = yield driverContact.getAll();
+        const driverContactService = new driverContactService_1.default();
+        const data = yield driverContactService.getAll();
         if (data.length === 0)
             return res.status(404)
                 .json({
@@ -86,9 +81,10 @@ driverContactController.route('/org/driver/contact/get-all').get((req, res) => _
     }
 }));
 driverContactController.route('/org/driver/contact/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const DriverContact = Object.assign({}, req.params);
+    const driverContactService = new driverContactService_1.default();
     try {
-        const driverContact = new driverContactService_1.default();
-        const data = yield driverContact.getById(req.params.id);
+        const data = yield driverContactService.getById(DriverContact.id);
         if (data.length === 0)
             return res.status(404)
                 .json({
@@ -104,15 +100,15 @@ driverContactController.route('/org/driver/contact/get-by-id/:id').get((req, res
     }
 }));
 driverContactController.route('/org/driver/contact/delete-all').delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const driverContactService = new driverContactService_1.default();
     try {
-        const driverContact = new driverContactService_1.default();
-        const driverContactExistsOrNotExists = yield driverContact.getAll();
+        const driverContactExistsOrNotExists = yield driverContactService.getAll();
         if (driverContactExistsOrNotExists.length === 0)
             return res.status(404)
                 .json({
                 error: 'no data'
             });
-        yield driverContact.deleteAll();
+        yield driverContactService.deleteAll();
         return res.status(204).json({});
     }
     catch (__) {
@@ -121,16 +117,16 @@ driverContactController.route('/org/driver/contact/delete-all').delete((req, res
     }
 }));
 driverContactController.route('/org/driver/contact/delete-by-id/:id').delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Driver = Object.assign({}, req.params);
+    const DriverContact = Object.assign({}, req.params);
+    const driverContactService = new driverContactService_1.default();
     try {
-        const driverContact = new driverContactService_1.default();
-        const driverExistsOrNotExists = yield driverContact.getById(Driver.id);
+        const driverExistsOrNotExists = yield driverContactService.getById(DriverContact.id);
         if (driverExistsOrNotExists.length === 0)
             return res.status(404)
                 .json({
                 error: 'driver telephone not found'
             });
-        yield driverContact.deleteById(Driver.id);
+        yield driverContactService.deleteById(DriverContact.id);
         return res.status(204).json({});
     }
     catch (__) {

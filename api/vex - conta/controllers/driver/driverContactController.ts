@@ -7,20 +7,15 @@ const driverContactController = express.Router()
 
 const err = new HandleError()
 
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- * 
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
 driverContactController.route('/org/driver/contact/save').post(async (req, res)=>{
 
-   const Driver = { ...req.body }
+   const DriverContact = { ...req.body }
 
    try{
 
-      err.exceptionFieldNullOrUndefined(Driver.telephone, 'telephone is undefined or null')
+      err.exceptionFieldNullOrUndefined(DriverContact.telephone, 'telephone is undefined or null')
 
-      err.exceptionFieldIsEmpty(Driver.telephone.trim(), 'telephone can not be empty')
+      err.exceptionFieldIsEmpty(DriverContact.telephone.trim(), 'telephone can not be empty')
    }catch(e){
 
       return res.status(400).json({ error: e })
@@ -28,9 +23,9 @@ driverContactController.route('/org/driver/contact/save').post(async (req, res)=
    
    try{
 
-      const driverContact = new DriverContactService(Driver.telephone)
+      const driverContactService = new DriverContactService(DriverContact.telephone)
 
-      await driverContact.save()
+      await driverContactService.save()
 
       return res.status(201).json({ msg: 'driver telephone save' })
 
@@ -43,13 +38,13 @@ driverContactController.route('/org/driver/contact/save').post(async (req, res)=
 
 driverContactController.route('/org/driver/contact/update/:id').put(async (req, res)=>{
 
-   const Driver = { ...req.body }
+   const DriverContact = { ...req.body }
 
    try{
 
-      err.exceptionFieldNullOrUndefined(Driver.telephone, 'telephone is undefined or null')
+      err.exceptionFieldNullOrUndefined(DriverContact.telephone, 'telephone is undefined or null')
   
-      err.exceptionFieldIsEmpty(Driver.telephone.trim(), 'telephone can not be empty')
+      err.exceptionFieldIsEmpty(DriverContact.telephone.trim(), 'telephone can not be empty')
    }catch(e){
 
       return res.status(400).json({ error: e })
@@ -65,9 +60,9 @@ driverContactController.route('/org/driver/contact/update/:id').put(async (req, 
 
    try{
 
-      const driverContact = new DriverContactService(Driver.telephone)
+      const driverContactService = new DriverContactService(DriverContact.telephone)
 
-      await driverContact.update(req.params.id)
+      await driverContactService.update(req.params.id)
 
       return res.status(201).json({ msg: 'driver telephone update' })
    }catch(__){
@@ -80,9 +75,9 @@ driverContactController.route('/org/driver/contact/update/:id').put(async (req, 
 driverContactController.route('/org/driver/contact/get-all').get(async (req, res)=>{
 
    try{
-      const driverContact = new DriverContactService()
+      const driverContactService = new DriverContactService()
 
-      const data = await driverContact.getAll()
+      const data = await driverContactService.getAll()
 
       if(data.length === 0)  return res.status(404)
                                            .json({
@@ -100,10 +95,13 @@ driverContactController.route('/org/driver/contact/get-all').get(async (req, res
 
 driverContactController.route('/org/driver/contact/get-by-id/:id').get(async(req, res)=>{
 
+   const DriverContact = { ...req.params }
+
+   const driverContactService = new DriverContactService()
+   
    try{
 
-      const driverContact = new DriverContactService()
-      const data = await driverContact.getById(req.params.id)
+      const data = await driverContactService.getById(DriverContact.id)
 
       if(data.length === 0) return res.status(404)
                                       .json({
@@ -123,17 +121,18 @@ driverContactController.route('/org/driver/contact/get-by-id/:id').get(async(req
 
 driverContactController.route('/org/driver/contact/delete-all').delete(async (req, res)=>{
 
-   try{
-      const driverContact = new DriverContactService()
+   const driverContactService = new DriverContactService()
 
-      const driverContactExistsOrNotExists = await driverContact.getAll()
+   try{
+
+      const driverContactExistsOrNotExists = await driverContactService.getAll()
 
       if(driverContactExistsOrNotExists.length === 0) return res.status(404)
                                                          .json({
                                                             error: 'no data'
                                                          })
 
-      await driverContact.deleteAll()
+      await driverContactService.deleteAll()
 
       return res.status(204).json({})
 
@@ -146,20 +145,20 @@ driverContactController.route('/org/driver/contact/delete-all').delete(async (re
 
 driverContactController.route('/org/driver/contact/delete-by-id/:id').delete(async (req, res)=>{
 
-   const Driver = { ...req.params }
+   const DriverContact = { ...req.params }
    
-   try{
-      
-      const driverContact = new DriverContactService()
+   const driverContactService = new DriverContactService()
 
-      const driverExistsOrNotExists = await driverContact.getById(Driver.id)
+   try{  
+
+      const driverExistsOrNotExists = await driverContactService.getById(DriverContact.id)
 
       if(driverExistsOrNotExists.length === 0) return res.status(404)
                                                          .json({
                                                             error: 'driver telephone not found'
                                                          })
 
-      await driverContact.deleteById(Driver.id)
+      await driverContactService.deleteById(DriverContact.id)
 
       return res.status(204).json({})
 

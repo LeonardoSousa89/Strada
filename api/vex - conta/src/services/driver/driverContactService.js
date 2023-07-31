@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const driverContact_1 = __importDefault(require("../../entities/driver/driverContact"));
+const driverProjection_1 = require("../../repositories/projections/driverProjection");
 class DriverContactService extends driverContact_1.default {
     constructor(telephone) {
         super(telephone);
@@ -21,12 +22,12 @@ class DriverContactService extends driverContact_1.default {
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExists = yield knex_1.default.where('driver_contact_id', id)
+            const existsOrNotExistsId = yield knex_1.default.where('driver_contact_id', id)
                 .from('vex_schema.driver_contact')
                 .first();
-            if (existsOrNotExists)
+            if (existsOrNotExistsId)
                 return true;
-            if (!existsOrNotExists)
+            if (!existsOrNotExistsId)
                 return false;
         });
     }
@@ -44,7 +45,7 @@ class DriverContactService extends driverContact_1.default {
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select('*')
+            const data = yield knex_1.default.select(driverProjection_1.driverContactProjection)
                 .from('vex_schema.driver_contact');
             return data;
         });
@@ -52,7 +53,7 @@ class DriverContactService extends driverContact_1.default {
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield knex_1.default.where('driver_contact_id', id)
-                .select('*')
+                .select(driverProjection_1.driverContactProjection)
                 .from('vex_schema.driver_contact');
             return data;
         });

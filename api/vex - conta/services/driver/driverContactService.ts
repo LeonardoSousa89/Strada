@@ -2,6 +2,8 @@ import knex from '../../repositories/knex/knex'
 import { DbOperations } from '../../interface/operations';
 import DriverContact from '../../entities/driver/driverContact';
 
+import { driverContactProjection } from '../../repositories/projections/driverProjection';
+
 export default class DriverContactService extends DriverContact implements DbOperations {
     
     constructor(telephone?: string
@@ -13,13 +15,13 @@ export default class DriverContactService extends DriverContact implements DbOpe
 
     async verifyId(id: string) {
 
-        const existsOrNotExists = await knex.where('driver_contact_id', id)
-                                            .from('vex_schema.driver_contact')
-                                            .first()
+        const existsOrNotExistsId = await knex.where('driver_contact_id', id)
+                                              .from('vex_schema.driver_contact')
+                                              .first()
 
-        if(existsOrNotExists)  return true
+        if(existsOrNotExistsId)  return true
 
-        if(!existsOrNotExists) return false
+        if(!existsOrNotExistsId) return false
     }
 
     async save(){
@@ -36,8 +38,8 @@ export default class DriverContactService extends DriverContact implements DbOpe
 
     async getAll() {
 
-        const data = await knex.select('*')
-                              .from('vex_schema.driver_contact')
+        const data = await knex.select(driverContactProjection)
+                               .from('vex_schema.driver_contact')
 
         return data
     }
@@ -45,7 +47,7 @@ export default class DriverContactService extends DriverContact implements DbOpe
     async getById(id?: string | number){
 
         const data = await knex.where('driver_contact_id', id)
-                               .select('*')
+                               .select(driverContactProjection)
                                .from('vex_schema.driver_contact')
 
         return data
