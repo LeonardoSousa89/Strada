@@ -2,6 +2,8 @@ import OrgAddressRelationTable from "../../../entities/org/relations/orgAddressR
 import { DbOperations } from "../../../interface/operations";
 import knex from "../../../repositories/knex/knex";
 
+import { joinOrgAndAddressRelationProjection } from "../../../repositories/projections/joinProjection";
+
 export default class OrgAddressRelationTableService extends OrgAddressRelationTable implements DbOperations{
 
   constructor(
@@ -13,13 +15,14 @@ export default class OrgAddressRelationTableService extends OrgAddressRelationTa
         org_relation_id)
   }
   
-  organizationAddressRelationTable = new OrgAddressRelationTable(
+  orgAddressRelationTable = new OrgAddressRelationTable(
     this.org_address_relation_id,
     this.org_relation_id)
 
   async save() {
       
-    await knex.insert(this.organizationAddressRelationTable).from('vex_schema.org_address_relation_table')
+    await knex.insert(this.orgAddressRelationTable)
+              .from('vex_schema.org_address_relation_table')
   }
 
   update(id?: string | number): void {
@@ -28,7 +31,8 @@ export default class OrgAddressRelationTableService extends OrgAddressRelationTa
 
   async getAll(size?: any, page?:any) {
       
-    const data = await knex.select('*').from('vex_schema.org_address_relation_table') 
+    const data = await knex.select(joinOrgAndAddressRelationProjection)
+                           .from('vex_schema.org_address_relation_table') 
     
     return data
   }

@@ -21,11 +21,6 @@ const orgAddressService_1 = __importDefault(require("../../../services/org/orgAd
 const orgAddressRelationTableController = express_1.default.Router();
 exports.orgAddressRelationTableController = orgAddressRelationTableController;
 const err = new handleError_1.default();
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- *
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
 orgAddressRelationTableController.route('/org/address/relation-table/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
     try {
@@ -49,28 +44,37 @@ orgAddressRelationTableController.route('/org/address/relation-table/save').post
             .json({
             error: "organization address id not found"
         });
-    const response = new orgAddressRelationTableService_1.default(Org.org_address_relation_id, Org.org_relation_id).save();
-    return yield response.then(__ => res.status(201)
-        .json({
-        msg: 'organization address relation saved'
-    }))
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    try {
+        const orgAddressRelationTableService = new orgAddressRelationTableService_1.default(Org.org_address_relation_id, Org.org_relation_id);
+        yield orgAddressRelationTableService.save();
+        return res.status(201)
+            .json({
+            msg: 'organization address relation saved'
+        });
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgAddressRelationTableController.route('/org/address/relation-table/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = new orgAddressRelationTableService_1.default().getAll();
-    yield response.then(data => {
-        if (data.length === 0)
-            return res.status(404)
-                .json({
-                error: 'no data relationship'
-            });
-        return res.status(200).json(data);
-    })
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    try {
+        const orgAddressRelationTableService = new orgAddressRelationTableService_1.default().getAll();
+        yield orgAddressRelationTableService.then(data => {
+            if (data.length === 0)
+                return res.status(404)
+                    .json({
+                    error: 'no data relationship'
+                });
+            return res.status(200).json(data);
+        });
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));

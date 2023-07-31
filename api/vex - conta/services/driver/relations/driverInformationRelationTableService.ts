@@ -2,6 +2,8 @@ import DriverInformationRelationTable from "../../../entities/driver/relations/d
 import { DbOperations } from "../../../interface/operations";
 import knex from "../../../repositories/knex/knex";
 
+import { joinDriverAndInformationRelationProjection } from "../../../repositories/projections/joinProjection";
+
 export default class DriverInformationRelationTableService extends DriverInformationRelationTable implements DbOperations{
 
   constructor(
@@ -32,7 +34,7 @@ export default class DriverInformationRelationTableService extends DriverInforma
 
   async getAll(size?: any, page?:any) {
       
-    const data = await knex.select('*')
+    const data = await knex.select(joinDriverAndInformationRelationProjection)
                            .from('vex_schema.driver_information_relation_table') 
     
     return data

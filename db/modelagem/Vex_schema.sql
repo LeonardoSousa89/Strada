@@ -137,7 +137,20 @@ CREATE TABLE IF NOT EXISTS vex_schema.driver_information_relation_table (
     FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
 ); 
 
+
+
 ALTER TABLE vex_schema.information ADD COLUMN date_time_registry VARCHAR(250);
+
+ALTER TABLE vex_schema.org_address_relation_table ADD COLUMN org_address_relation_table_id SERIAL;
+ALTER TABLE vex_schema.org_contact_relation_table ADD COLUMN org_contact_relation_table_id SERIAL;
+ALTER TABLE vex_schema.org_driver_relation_table  ADD COLUMN org_driver_relation_table_id  SERIAL;
+
+ALTER TABLE vex_schema.driver_address_relation_table     ADD COLUMN driver_address_relation_table_id SERIAL;
+ALTER TABLE vex_schema.driver_document_relation_table    ADD COLUMN driver_document_relation_table_id SERIAL;
+ALTER TABLE vex_schema.driver_contact_relation_table     ADD COLUMN driver_contact_relation_table_id SERIAL;
+ALTER TABLE vex_schema.driver_information_relation_table ADD COLUMN driver_information_relation_table_id SERIAL;
+
+
 
 DROP TABLE vex_schema.org;
 DROP TABLE vex_schema.org_address;
@@ -198,3 +211,21 @@ ON org_address_relation_table.org_address_relation_id = address.org_address_id
 INNER JOIN vex_schema.org org
 ON org_address_relation_table.org_relation_id = org.org_id
 WHERE org.org_id = 37;
+
+
+
+DELETE FROM vex_schema.org;
+DELETE FROM vex_schema.org_address;
+DELETE FROM vex_schema.org_contact;
+DELETE FROM vex_schema.org_address_relation_table;
+DELETE FROM vex_schema.org_contact_relation_table;
+DELETE FROM vex_schema.org_driver_relation_table;
+
+DELETE FROM vex_schema.driver;
+DELETE FROM vex_schema.driver_address;
+DELETE FROM vex_schema.driver_contact;
+DELETE FROM vex_schema.driver_document;
+DELETE FROM vex_schema.driver_address_relation_table;
+DELETE FROM vex_schema.driver_document_relation_table;
+DELETE FROM vex_schema.driver_contact_relation_table;
+DELETE FROM vex_schema.driver_information_relation_table;

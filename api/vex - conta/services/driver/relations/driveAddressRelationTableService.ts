@@ -2,6 +2,8 @@ import DriveAddressRelationTable from "../../../entities/driver/relations/driver
 import { DbOperations } from "../../../interface/operations";
 import knex from "../../../repositories/knex/knex";
 
+import { joinDriverAndAddressRelationProjection } from "../../../repositories/projections/joinProjection";
+
 export default class DriverAddressRelationTableService extends DriveAddressRelationTable implements DbOperations{
 
   constructor(
@@ -32,7 +34,7 @@ export default class DriverAddressRelationTableService extends DriveAddressRelat
 
   async getAll(size?: any, page?:any) {
       
-    const data = await knex.select('*')
+    const data = await knex.select(joinDriverAndAddressRelationProjection)
                            .from('vex_schema.driver_address_relation_table') 
     
     return data

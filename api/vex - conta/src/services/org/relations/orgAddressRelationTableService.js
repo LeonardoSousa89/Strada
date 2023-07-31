@@ -14,21 +14,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const orgAddressRelationTable_1 = __importDefault(require("../../../entities/org/relations/orgAddressRelationTable"));
 const knex_1 = __importDefault(require("../../../repositories/knex/knex"));
+const joinProjection_1 = require("../../../repositories/projections/joinProjection");
 class OrgAddressRelationTableService extends orgAddressRelationTable_1.default {
     constructor(org_address_relation_id, org_relation_id) {
         super(org_address_relation_id, org_relation_id);
-        this.organizationAddressRelationTable = new orgAddressRelationTable_1.default(this.org_address_relation_id, this.org_relation_id);
+        this.orgAddressRelationTable = new orgAddressRelationTable_1.default(this.org_address_relation_id, this.org_relation_id);
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.insert(this.organizationAddressRelationTable).from('vex_schema.org_address_relation_table');
+            yield knex_1.default.insert(this.orgAddressRelationTable)
+                .from('vex_schema.org_address_relation_table');
         });
     }
     update(id) {
     }
     getAll(size, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select('*').from('vex_schema.org_address_relation_table');
+            const data = yield knex_1.default.select(joinProjection_1.joinOrgAndAddressRelationProjection)
+                .from('vex_schema.org_address_relation_table');
             return data;
         });
     }

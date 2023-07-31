@@ -2,6 +2,8 @@ import DriverContactRelationTable from "../../../entities/driver/relations/drive
 import { DbOperations } from "../../../interface/operations";
 import knex from "../../../repositories/knex/knex";
 
+import { joinDriverAndContactRelationProjection } from "../../../repositories/projections/joinProjection";
+
 export default class DriverContactRelationTableService extends DriverContactRelationTable implements DbOperations{
 
   constructor(
@@ -32,7 +34,7 @@ export default class DriverContactRelationTableService extends DriverContactRela
 
   async getAll(size?: any, page?:any) {
       
-    const data = await knex.select('*')
+    const data = await knex.select(joinDriverAndContactRelationProjection)
                            .from('vex_schema.driver_contact_relation_table') 
     
     return data

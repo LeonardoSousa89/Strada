@@ -2,6 +2,8 @@ import OrgContactRelationTable from "../../../entities/org/relations/orgContactR
 import { DbOperations } from "../../../interface/operations";
 import knex from "../../../repositories/knex/knex";
 
+import { joinOrgAndContactRelationProjection } from "../../../repositories/projections/joinProjection";
+
 export default class OrgContactRelationTableService extends OrgContactRelationTable implements DbOperations{
 
   constructor(
@@ -29,7 +31,7 @@ export default class OrgContactRelationTableService extends OrgContactRelationTa
 
   async getAll(size?: any, page?:any) {
       
-    const data = await knex.select('*')
+    const data = await knex.select(joinOrgAndContactRelationProjection)
                            .from('vex_schema.org_contact_relation_table') 
     
     return data

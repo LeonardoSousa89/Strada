@@ -8,12 +8,6 @@ const orgAddressRelationTableController = express.Router()
 
 const err = new HandleError()
 
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- * 
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
-
 orgAddressRelationTableController.route('/org/address/relation-table/save').post(async(req, res)=> {
 
     const Org = { ...req.body }
@@ -40,29 +34,39 @@ orgAddressRelationTableController.route('/org/address/relation-table/save').post
     const verifyOrgAddressIdExixts = await new OrgAddressService().verifyId(Org.org_address_relation_id)
 
     if(verifyOrgAddressIdExixts == false) return res.status(404)
-                                              .json({
-                                                    error: "organization address id not found"
-                                                })                                                                
+                                                    .json({
+                                                        error: "organization address id not found"
+                                                    })                                                                
 
-    const response = new OrgAddressRelationTableService(Org.org_address_relation_id,
-                                           Org.org_relation_id).save()
+    try{
+        
+        const orgAddressRelationTableService = new OrgAddressRelationTableService(Org.org_address_relation_id,
+                                                                                  Org.org_relation_id)
+        
+        await orgAddressRelationTableService.save() 
+        
+        return res.status(201)
+                  .json({ 
+                    msg: 'organization address relation saved' 
+                  })
 
-    return await response.then(__ => res.status(201)
-                                        .json({ 
-                                            msg: 'organization address relation saved' 
-                                        }))
-                                        .catch(__ => res.status(500)
-                                                        .json({ 
-                                                            error: 'i am sorry, there is an error with server' 
-                                                        }))                                         
+    }catch(__){
+         return res.status(500)
+                   .json({ 
+                        error: 'i am sorry, there is an error with server' 
+                    })  
+    }                                       
 })
 
 
 orgAddressRelationTableController.route('/org/address/relation-table/get-all').get(async(req, res)=>{
 
-    const response = new OrgAddressRelationTableService().getAll()
+    try{
+
+        
+    const orgAddressRelationTableService = new OrgAddressRelationTableService().getAll()
     
-    await response.then(data => {
+    await orgAddressRelationTableService.then(data => {
     
         if(data.length === 0) return res.status(404)
                                         .json({ 
@@ -72,10 +76,13 @@ orgAddressRelationTableController.route('/org/address/relation-table/get-all').g
         return res.status(200).json(data)
     
         })
-        .catch(__ => res.status(500)
-                        .json({  
-                            error: 'i am sorry, there is an error with server'  
-                        }))
+    }catch(__){
+
+        return res.status(500)
+                  .json({  
+                        error: 'i am sorry, there is an error with server'  
+                    })
+    }
 })  
 
 
