@@ -21,6 +21,17 @@ export default class DriverInformationRelationTableService extends DriverInforma
     this.driver_relation_id,
     this.information_relation_id,
     this.org_relation_id)
+  
+  async verifyRelationshipExists(information_relation_id: number){
+
+    const existsOrNotExistsId = await knex.where('information_relation_id', information_relation_id)
+                                          .from('vex_schema.driver_information_relation_table')
+                                          .first()
+      
+    if(existsOrNotExistsId)  return true
+      
+    if(!existsOrNotExistsId) return false
+  }
 
   async save() {
       

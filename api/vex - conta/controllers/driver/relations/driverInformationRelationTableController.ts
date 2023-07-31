@@ -4,16 +4,11 @@ import HandleError from '../../../interface/error/handleError'
 import DriverService from '../../../services/driver/driverService'
 import InformationService from '../../../services/driver/information/informationService'
 import OrgService from '../../../services/org/orgService'
+import DriverInformationRelationTableService from '../../../services/driver/relations/driverInformationRelationTableService'
 
 const driverInformationRelationTableController = express.Router()
 
 const err = new HandleError()
-
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- * 
- * Error: Can't extend QueryBuilder with existing method ('paginate')
-*/
 
 driverInformationRelationTableController.route('/org/driver/information/relation-table/save').post(async(req, res)=> {
 
@@ -54,8 +49,16 @@ driverInformationRelationTableController.route('/org/driver/information/relation
     if(verifyOrgIdExixts == false) return res.status(404)
                                               .json({
                                                     error: "org id not found"
-                                                })                                             
-    
+                                                })
+                                                
+    const verifyRelationshipExists = await new DriverInformationRelationTableService()
+                                                    .verifyRelationshipExists(Driver.information_relation_id)
+
+    if(verifyRelationshipExists == true) return res.status(400)
+                                                   .json({ 
+                                                        error: "relationship already exists"
+                                                    }) 
+
     try{
 
         const driverAndInformationRelation = new driverInformationRelationTableService(Driver.driver_relation_id,
@@ -80,9 +83,9 @@ driverInformationRelationTableController.route('/org/driver/information/relation
 
 driverInformationRelationTableController.route('/org/driver/information/relation-table/get-all').get(async(req, res)=>{
 
+    const driverAndInformationRelation = new driverInformationRelationTableService()
+    
     try{
-
-        const driverAndInformationRelation = new driverInformationRelationTableService()
     
         const data = await driverAndInformationRelation.getAll()
                 

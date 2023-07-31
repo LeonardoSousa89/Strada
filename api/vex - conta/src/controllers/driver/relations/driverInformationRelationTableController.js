@@ -19,14 +19,10 @@ const handleError_1 = __importDefault(require("../../../interface/error/handleEr
 const driverService_1 = __importDefault(require("../../../services/driver/driverService"));
 const informationService_1 = __importDefault(require("../../../services/driver/information/informationService"));
 const orgService_1 = __importDefault(require("../../../services/org/orgService"));
+const driverInformationRelationTableService_2 = __importDefault(require("../../../services/driver/relations/driverInformationRelationTableService"));
 const driverInformationRelationTableController = express_1.default.Router();
 exports.driverInformationRelationTableController = driverInformationRelationTableController;
 const err = new handleError_1.default();
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- *
- * Error: Can't extend QueryBuilder with existing method ('paginate')
-*/
 driverInformationRelationTableController.route('/org/driver/information/relation-table/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Driver = Object.assign({}, req.body);
     try {
@@ -60,6 +56,13 @@ driverInformationRelationTableController.route('/org/driver/information/relation
             .json({
             error: "org id not found"
         });
+    const verifyRelationshipExists = yield new driverInformationRelationTableService_2.default()
+        .verifyRelationshipExists(Driver.information_relation_id);
+    if (verifyRelationshipExists == true)
+        return res.status(400)
+            .json({
+            error: "relationship already exists"
+        });
     try {
         const driverAndInformationRelation = new driverInformationRelationTableService_1.default(Driver.driver_relation_id, Driver.information_relation_id, Driver.org_relation_id);
         yield driverAndInformationRelation.save();
@@ -76,8 +79,8 @@ driverInformationRelationTableController.route('/org/driver/information/relation
     }
 }));
 driverInformationRelationTableController.route('/org/driver/information/relation-table/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const driverAndInformationRelation = new driverInformationRelationTableService_1.default();
     try {
-        const driverAndInformationRelation = new driverInformationRelationTableService_1.default();
         const data = yield driverAndInformationRelation.getAll();
         if (data.length === 0)
             return res.status(404)
