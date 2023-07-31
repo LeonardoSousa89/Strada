@@ -19,7 +19,7 @@ export default class OrgDriverRelationTableService extends OrgDriverRelationTabl
     this.driver_relation_id,
     this.org_relation_id)
   
-  async verifyRelationIdExists(driver_relation_id: number){
+  async verifyRelationshipExists(driver_relation_id: number){
 
     const existsOrNotExistsId = await knex.where('driver_relation_id', driver_relation_id)
                                           .from('vex_schema.org_driver_relation_table')

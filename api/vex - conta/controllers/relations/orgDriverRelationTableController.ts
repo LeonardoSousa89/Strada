@@ -40,10 +40,10 @@ orgDriverRelationTableController.route('/org/driver/relation-table/save').post(a
                                                         error: "organization driver id not found"
                                                      })                                                                
     
-    const verifyRelationIdExists = await new OrgDriverRelationTableService()
-                                                .verifyRelationIdExists(Org.driver_relation_id)
+    const verifyRelationshipExists = await new OrgDriverRelationTableService()
+                                                .verifyRelationshipExists(Org.driver_relation_id)
 
-    if(verifyRelationIdExists == true) return res.status(404)
+    if(verifyRelationshipExists == true) return res.status(404)
                                                  .json({
                                                         error: "relationship already exists"
                                                     })  
