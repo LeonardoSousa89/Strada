@@ -20,6 +20,17 @@ class DriverDocumentRelationTableService extends driverDocumentRelationTable_1.d
         super(driver_document_relation_id, driver_relation_id, org_relation_id);
         this.driverDocumentRelationTable = new driverDocumentRelationTable_1.default(this.driver_document_relation_id, this.driver_relation_id, this.org_relation_id);
     }
+    verifyRelationshipExists(driver_document_relation_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const existsOrNotExistsId = yield knex_1.default.where('driver_document_relation_id', driver_document_relation_id)
+                .from('vex_schema.driver_document_relation_table')
+                .first();
+            if (existsOrNotExistsId)
+                return true;
+            if (!existsOrNotExistsId)
+                return false;
+        });
+    }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
             yield knex_1.default.insert(this.driverDocumentRelationTable)

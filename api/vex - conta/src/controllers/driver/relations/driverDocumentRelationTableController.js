@@ -22,11 +22,6 @@ const orgService_1 = __importDefault(require("../../../services/org/orgService")
 const driverDocumentRelationTableController = express_1.default.Router();
 exports.driverDocumentRelationTableController = driverDocumentRelationTableController;
 const err = new handleError_1.default();
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- *
- * Error: Can't extend QueryBuilder with existing method ('paginate')
-*/
 driverDocumentRelationTableController.route('/org/driver/document/relation-table/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Driver = Object.assign({}, req.body);
     try {
@@ -60,6 +55,13 @@ driverDocumentRelationTableController.route('/org/driver/document/relation-table
             .json({
             error: "org id not found"
         });
+    const verifyRelationshipExists = yield new driverDocumentRelationTableService_1.default()
+        .verifyRelationshipExists(Driver.driver_document_relation_id);
+    if (verifyRelationshipExists == true)
+        return res.status(400)
+            .json({
+            error: "relationship already exists"
+        });
     try {
         const driverAndDocumentRelation = new driverDocumentRelationTableService_1.default(Driver.driver_document_relation_id, Driver.driver_relation_id, Driver.org_relation_id);
         yield driverAndDocumentRelation.save();
@@ -76,8 +78,8 @@ driverDocumentRelationTableController.route('/org/driver/document/relation-table
     }
 }));
 driverDocumentRelationTableController.route('/org/driver/document/relation-table/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const driverAndDocumentRelation = new driverDocumentRelationTableService_1.default();
     try {
-        const driverAndDocumentRelation = new driverDocumentRelationTableService_1.default();
         const data = yield driverAndDocumentRelation.getAll();
         if (data.length === 0)
             return res.status(404)

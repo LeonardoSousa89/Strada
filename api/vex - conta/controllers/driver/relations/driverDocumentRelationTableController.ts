@@ -9,12 +9,6 @@ const driverDocumentRelationTableController = express.Router()
 
 const err = new HandleError()
 
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- * 
- * Error: Can't extend QueryBuilder with existing method ('paginate')
-*/
-
 driverDocumentRelationTableController.route('/org/driver/document/relation-table/save').post(async(req, res)=> {
 
     const Driver = { ...req.body }
@@ -45,16 +39,24 @@ driverDocumentRelationTableController.route('/org/driver/document/relation-table
                                                     .verifyId(Driver.driver_document_relation_id)
 
     if(verifyDriverDocumentIdExixts == false) return res.status(404)
-                                              .json({
-                                                    error: "driver document id not found"
-                                                })     
+                                                        .json({
+                                                            error: "driver document id not found"
+                                                        })     
                                                 
     const verifyOrgIdExixts = await new OrgService().verifyId(Driver.org_relation_id)
 
     if(verifyOrgIdExixts == false) return res.status(404)
-                                              .json({
+                                             .json({
                                                     error: "org id not found"
-                                                })                                             
+                                              })                                             
+
+    const verifyRelationshipExists = await new DriverDocumentRelationTableService()
+                                                    .verifyRelationshipExists(Driver.driver_document_relation_id)
+
+    if(verifyRelationshipExists == true) return res.status(400)
+                                                   .json({ 
+                                                        error: "relationship already exists"
+                                                    }) 
     
     try{
 
@@ -80,9 +82,9 @@ driverDocumentRelationTableController.route('/org/driver/document/relation-table
 
 driverDocumentRelationTableController.route('/org/driver/document/relation-table/get-all').get(async(req, res)=>{
 
+    const driverAndDocumentRelation = new DriverDocumentRelationTableService()
+    
     try{
-
-        const driverAndDocumentRelation = new DriverDocumentRelationTableService()
     
         const data = await driverAndDocumentRelation.getAll()
                 
