@@ -22,6 +22,17 @@ export default class DriverContactRelationTableService extends DriverContactRela
     this.driver_relation_id,
     this.org_relation_id)
 
+  async verifyRelationshipExists(driver_contact_relation_id: number){
+
+    const existsOrNotExistsId = await knex.where('driver_contact_relation_id', driver_contact_relation_id)
+                                          .from('vex_schema.driver_contact_relation_table')
+                                          .first()
+        
+    if(existsOrNotExistsId)  return true
+        
+    if(!existsOrNotExistsId) return false
+  }
+
   async save() {
       
     await knex.insert(this.driverContactRelationTable)
