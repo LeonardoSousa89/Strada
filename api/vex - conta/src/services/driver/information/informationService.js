@@ -14,19 +14,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = __importDefault(require("../../../repositories/knex/knex"));
 const information_1 = __importDefault(require("../../../entities/driver/information/information"));
+const informationProjection_1 = require("../../../repositories/projections/informationProjection");
 class InformationService extends information_1.default {
-    constructor(starting_km, final_km, plate, notes) {
-        super(starting_km, final_km, plate, notes);
-        this.information = new information_1.default(this.starting_km, this.final_km, this.plate, this.notes);
+    constructor(starting_km, final_km, plate, notes, date_time_registry) {
+        super(starting_km, final_km, plate, notes, date_time_registry);
+        this.information = new information_1.default(this.starting_km, this.final_km, this.plate, this.notes, this.date_time_registry);
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExists = yield knex_1.default.where('information_id', id)
+            const existsOrNotExistsId = yield knex_1.default.where('information_id', id)
                 .from('vex_schema.information')
                 .first();
-            if (existsOrNotExists)
+            if (existsOrNotExistsId)
                 return true;
-            if (!existsOrNotExists)
+            if (!existsOrNotExistsId)
                 return false;
         });
     }
@@ -44,6 +45,18 @@ class InformationService extends information_1.default {
             final_km === null)
             return false;
     }
+    getTime() {
+        const southAmericaTimeZone = new Date();
+        const date = new Intl.DateTimeFormat('pt-BR', {
+            timeZone: 'America/Sao_Paulo',
+            dateStyle: 'long'
+        }).format(southAmericaTimeZone);
+        const time = new Intl.DateTimeFormat('pt-BR', {
+            timeZone: 'America/Sao_Paulo',
+            timeStyle: 'short'
+        }).format(southAmericaTimeZone);
+        return `${date}, ${time}`;
+    }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
             yield knex_1.default.insert(this.information).from('vex_schema.information');
@@ -58,7 +71,7 @@ class InformationService extends information_1.default {
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select('*')
+            const data = yield knex_1.default.select(informationProjection_1.informationProjection)
                 .from('vex_schema.information');
             return data;
         });
@@ -66,7 +79,7 @@ class InformationService extends information_1.default {
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield knex_1.default.where('information_id', id)
-                .select('*')
+                .select(informationProjection_1.informationProjection)
                 .from('vex_schema.information');
             return data;
         });
@@ -82,6 +95,11 @@ class InformationService extends information_1.default {
                 .delete()
                 .from('vex_schema.information');
         });
+    }
+    //será preciso deletar toda a associação do motorista, 
+    // para conseguir deletar sua informação
+    periodicDelete() {
+        return __awaiter(this, void 0, void 0, function* () { });
     }
 }
 exports.default = InformationService;

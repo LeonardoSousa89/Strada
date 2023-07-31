@@ -7,53 +7,24 @@ const informationController = express.Router()
 
 const err = new HandleError()
 
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- * 
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
-
-/**
- * 
- * //data e horário de publicação da informação 
-
-      const southAmericaTimeZone=new Date()
-
-      const date=new Intl.DateTimeFormat(
-         'pt-BR', {
-            timeZone: 'America/Sao_Paulo',
-            dateStyle: 'long'
-         }).format(southAmericaTimeZone)
-         
-      const time=new Intl.DateTimeFormat(
-         'pt-BR', {
-            timeZone: 'America/Sao_Paulo',
-            timeStyle: 'short'
-         }).format(southAmericaTimeZone)
-
-      console.log(`data: ${date}, ${time}`)
- 
- * 
- */
-
 informationController.route('/org/driver/information/save').post(async (req, res)=>{
 
-   const Driver = { ...req.body }
+   const Information = { ...req.body }
 
    try{
-      err.exceptionFieldNullOrUndefined(Driver.plate, 'plate is undefined or null')
-      err.exceptionFieldNullOrUndefined(Driver.notes, 'notes is undefined or null')
+      err.exceptionFieldNullOrUndefined(Information.plate, 'plate is undefined or null')
+      err.exceptionFieldNullOrUndefined(Information.notes, 'notes is undefined or null')
   
-      err.exceptionFieldIsEmpty(Driver.plate.trim(), 'plate can not be empty')
-      err.exceptionFieldIsEmpty(Driver.notes.trim(), 'notes can not be empty')
+      err.exceptionFieldIsEmpty(Information.plate.trim(), 'plate can not be empty')
+      err.exceptionFieldIsEmpty(Information.notes.trim(), 'notes can not be empty')
    }catch(e){
 
       return res.status(400).json({ error: e })
    }
 
    const startingKmOrFinalKmBothIsIlegalCondition = new InformationService()
-                                                .verifyInformation(Driver.starting_km, 
-                                                   Driver.final_km)
+                                                .verifyInformation(Information.starting_km, 
+                                                   Information.final_km)
    
    if(startingKmOrFinalKmBothIsIlegalCondition === false)  return res.status(400)
                                                           .json({
@@ -62,14 +33,17 @@ informationController.route('/org/driver/information/save').post(async (req, res
 
    try{
 
-      const driverInformation = new InformationService(Driver.starting_km, 
-                                       Driver.final_km,
-                                       Driver.plate,
-                                       Driver.notes)
+      const date_time_registry = new InformationService().getTime()
 
-      await driverInformation.save()
+      const informationService = new InformationService(Information.starting_km, 
+                                       Information.final_km,
+                                       Information.plate,
+                                       Information.notes,
+                                       date_time_registry)
 
-      return res.status(201).json({ msg: 'driver information save' })
+      await informationService.save()
+
+      return res.status(201).json({ msg: 'driver information saved' })
 
    }catch(__){
 
@@ -80,10 +54,11 @@ informationController.route('/org/driver/information/save').post(async (req, res
 
 informationController.route('/org/driver/information/get-all').get(async (req, res)=>{
 
+   const informationService = new InformationService()
+   
    try{
-      const driverInformation = new InformationService()
 
-      const data = await driverInformation.getAll()
+      const data = await informationService.getAll()
 
       if(data.length === 0)  return res.status(404)
                                            .json({
@@ -101,10 +76,13 @@ informationController.route('/org/driver/information/get-all').get(async (req, r
 
 informationController.route('/org/driver/information/get-by-id/:id').get(async(req, res)=>{
 
+   const Information = { ...req.params }
+
+   const informationService = new InformationService()
+   
    try{
 
-      const driverInformation = new InformationService()
-      const data = await driverInformation.getById(req.params.id)
+      const data = await informationService.getById(Information.id)
 
       if(data.length === 0) return res.status(404)
                                       .json({
@@ -124,17 +102,18 @@ informationController.route('/org/driver/information/get-by-id/:id').get(async(r
 
 informationController.route('/org/driver/information/delete-all').delete(async (req, res)=>{
 
+   const informationService = new InformationService()
+   
    try{
-      const driverInformation = new InformationService()
 
-      const driverInformationExistsOrNotExists = await driverInformation.getAll()
+      const driverInformationExistsOrNotExists = await informationService.getAll()
 
       if(driverInformationExistsOrNotExists.length === 0) return res.status(404)
                                                          .json({
                                                             error: 'no data'
                                                          })
 
-      await driverInformation.deleteAll()
+      await informationService.deleteAll()
 
       return res.status(204).json({})
 
@@ -147,20 +126,20 @@ informationController.route('/org/driver/information/delete-all').delete(async (
 
 informationController.route('/org/driver/information/delete-by-id/:id').delete(async (req, res)=>{
 
-   const Driver = { ...req.params }
+   const Information = { ...req.params }
+   
+   const informationService = new InformationService()
    
    try{
-      
-      const driverInformation = new InformationService()
 
-      const driverInformationExistsOrNotExists = await driverInformation.getById(Driver.id)
+      const driverInformationExistsOrNotExists = await informationService.getById(Information.id)
 
       if(driverInformationExistsOrNotExists.length === 0) return res.status(404)
-                                                         .json({
-                                                            error: 'driver information not found'
-                                                         })
+                                                                    .json({
+                                                                        error: 'driver information not found'
+                                                                  })
 
-      await driverInformation.deleteById(Driver.id)
+      await informationService.deleteById(Information.id)
 
       return res.status(204).json({})
 

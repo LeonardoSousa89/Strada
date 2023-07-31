@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS vex_schema.driver_information_relation_table (
     FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
 ); 
 
-
+ALTER TABLE vex_schema.information ADD COLUMN date_time_registry VARCHAR(250);
 
 DROP TABLE vex_schema.org;
 DROP TABLE vex_schema.org_address;

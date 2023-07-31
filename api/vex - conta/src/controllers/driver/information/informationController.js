@@ -19,55 +19,29 @@ const informationService_1 = __importDefault(require("../../../services/driver/i
 const informationController = express_1.default.Router();
 exports.informationController = informationController;
 const err = new handleError_1.default();
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- *
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
-/**
- *
- * //data e horário de publicação da informação
-
-      const southAmericaTimeZone=new Date()
-
-      const date=new Intl.DateTimeFormat(
-         'pt-BR', {
-            timeZone: 'America/Sao_Paulo',
-            dateStyle: 'long'
-         }).format(southAmericaTimeZone)
-         
-      const time=new Intl.DateTimeFormat(
-         'pt-BR', {
-            timeZone: 'America/Sao_Paulo',
-            timeStyle: 'short'
-         }).format(southAmericaTimeZone)
-
-      console.log(`data: ${date}, ${time}`)
- 
- *
- */
 informationController.route('/org/driver/information/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Driver = Object.assign({}, req.body);
+    const Information = Object.assign({}, req.body);
     try {
-        err.exceptionFieldNullOrUndefined(Driver.plate, 'plate is undefined or null');
-        err.exceptionFieldNullOrUndefined(Driver.notes, 'notes is undefined or null');
-        err.exceptionFieldIsEmpty(Driver.plate.trim(), 'plate can not be empty');
-        err.exceptionFieldIsEmpty(Driver.notes.trim(), 'notes can not be empty');
+        err.exceptionFieldNullOrUndefined(Information.plate, 'plate is undefined or null');
+        err.exceptionFieldNullOrUndefined(Information.notes, 'notes is undefined or null');
+        err.exceptionFieldIsEmpty(Information.plate.trim(), 'plate can not be empty');
+        err.exceptionFieldIsEmpty(Information.notes.trim(), 'notes can not be empty');
     }
     catch (e) {
         return res.status(400).json({ error: e });
     }
     const startingKmOrFinalKmBothIsIlegalCondition = new informationService_1.default()
-        .verifyInformation(Driver.starting_km, Driver.final_km);
+        .verifyInformation(Information.starting_km, Information.final_km);
     if (startingKmOrFinalKmBothIsIlegalCondition === false)
         return res.status(400)
             .json({
             error: 'starting km and final km both can not be empty or null'
         });
     try {
-        const driverInformation = new informationService_1.default(Driver.starting_km, Driver.final_km, Driver.plate, Driver.notes);
-        yield driverInformation.save();
-        return res.status(201).json({ msg: 'driver information save' });
+        const date_time_registry = new informationService_1.default().getTime();
+        const informationService = new informationService_1.default(Information.starting_km, Information.final_km, Information.plate, Information.notes, date_time_registry);
+        yield informationService.save();
+        return res.status(201).json({ msg: 'driver information saved' });
     }
     catch (__) {
         return res.status(500)
@@ -75,9 +49,9 @@ informationController.route('/org/driver/information/save').post((req, res) => _
     }
 }));
 informationController.route('/org/driver/information/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const informationService = new informationService_1.default();
     try {
-        const driverInformation = new informationService_1.default();
-        const data = yield driverInformation.getAll();
+        const data = yield informationService.getAll();
         if (data.length === 0)
             return res.status(404)
                 .json({
@@ -91,9 +65,10 @@ informationController.route('/org/driver/information/get-all').get((req, res) =>
     }
 }));
 informationController.route('/org/driver/information/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Information = Object.assign({}, req.params);
+    const informationService = new informationService_1.default();
     try {
-        const driverInformation = new informationService_1.default();
-        const data = yield driverInformation.getById(req.params.id);
+        const data = yield informationService.getById(Information.id);
         if (data.length === 0)
             return res.status(404)
                 .json({
@@ -109,15 +84,15 @@ informationController.route('/org/driver/information/get-by-id/:id').get((req, r
     }
 }));
 informationController.route('/org/driver/information/delete-all').delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const informationService = new informationService_1.default();
     try {
-        const driverInformation = new informationService_1.default();
-        const driverInformationExistsOrNotExists = yield driverInformation.getAll();
+        const driverInformationExistsOrNotExists = yield informationService.getAll();
         if (driverInformationExistsOrNotExists.length === 0)
             return res.status(404)
                 .json({
                 error: 'no data'
             });
-        yield driverInformation.deleteAll();
+        yield informationService.deleteAll();
         return res.status(204).json({});
     }
     catch (__) {
@@ -126,16 +101,16 @@ informationController.route('/org/driver/information/delete-all').delete((req, r
     }
 }));
 informationController.route('/org/driver/information/delete-by-id/:id').delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Driver = Object.assign({}, req.params);
+    const Information = Object.assign({}, req.params);
+    const informationService = new informationService_1.default();
     try {
-        const driverInformation = new informationService_1.default();
-        const driverInformationExistsOrNotExists = yield driverInformation.getById(Driver.id);
+        const driverInformationExistsOrNotExists = yield informationService.getById(Information.id);
         if (driverInformationExistsOrNotExists.length === 0)
             return res.status(404)
                 .json({
                 error: 'driver information not found'
             });
-        yield driverInformation.deleteById(Driver.id);
+        yield informationService.deleteById(Information.id);
         return res.status(204).json({});
     }
     catch (__) {
