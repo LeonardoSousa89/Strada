@@ -2,6 +2,8 @@ import knex from '../../repositories/knex/knex'
 import { DbOperations } from '../../interface/operations';
 import DriverDocument from '../../entities/driver/driverDocument';
 
+import { driverDocumentProjection } from '../../repositories/projections/driverProjection';
+
 export default class DriverDocumentService extends DriverDocument implements DbOperations {
     
     constructor(cnh?: string
@@ -13,24 +15,24 @@ export default class DriverDocumentService extends DriverDocument implements DbO
 
     async verifyId(id: string) {
 
-        const existsOrNotExists = await knex.where('driver_document_id', id)
-                                            .from('vex_schema.driver_document')
-                                            .first()
+        const existsOrNotExistsId = await knex.where('driver_document_id', id)
+                                              .from('vex_schema.driver_document')
+                                              .first()
 
-        if(existsOrNotExists)  return true
+        if(existsOrNotExistsId)  return true
 
-        if(!existsOrNotExists) return false
+        if(!existsOrNotExistsId) return false
     }
 
     async verifyDocument(cnh: string) {
 
-        const existsOrNotExists = await knex.where('cnh', cnh)
-                                            .from('vex_schema.driver_document')
-                                            .first()
+        const existsOrNotExistsCnh = await knex.where('cnh', cnh)
+                                               .from('vex_schema.driver_document')
+                                               .first()
 
-        if(existsOrNotExists)  return true
+        if(existsOrNotExistsCnh)  return true
 
-        if(!existsOrNotExists) return false
+        if(!existsOrNotExistsCnh) return false
     }
 
     async save(){
@@ -47,8 +49,8 @@ export default class DriverDocumentService extends DriverDocument implements DbO
 
     async getAll() {
 
-        const data = await knex.select('*')
-                              .from('vex_schema.driver_document')
+        const data = await knex.select(driverDocumentProjection)
+                               .from('vex_schema.driver_document')
 
         return data
     }
@@ -56,7 +58,7 @@ export default class DriverDocumentService extends DriverDocument implements DbO
     async getById(id?: string | number){
 
         const data = await knex.where('driver_document_id', id)
-                               .select('*')
+                               .select(driverDocumentProjection)
                                .from('vex_schema.driver_document')
 
         return data

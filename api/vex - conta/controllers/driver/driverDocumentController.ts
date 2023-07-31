@@ -7,40 +7,35 @@ const driverDocumentController = express.Router()
 
 const err = new HandleError()
 
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- * 
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
 driverDocumentController.route('/org/driver/document/save').post(async (req, res)=>{
 
-   const Driver = { ...req.body }
+   const DriverDocument = { ...req.body }
 
    try{
 
-      err.exceptionFieldNullOrUndefined(Driver.cnh, 'document is undefined or null')
+      err.exceptionFieldNullOrUndefined(DriverDocument.cnh, 'document is undefined or null')
 
-      err.exceptionFieldIsEmpty(Driver.cnh.trim(), 'document can not be empty')
+      err.exceptionFieldIsEmpty(DriverDocument.cnh.trim(), 'document can not be empty')
    }catch(e){
 
       return res.status(400).json({ error: e })
    }
    
    const driverDocumentExistsOrNotExists = await new DriverDocumentService()
-                                                         .verifyDocument(Driver.cnh)
+                                                         .verifyDocument(DriverDocument.cnh)
 
    if(driverDocumentExistsOrNotExists === true) return res.status(400)
-                                                            .json({
+                                                          .json({
                                                                error: 'driver document already exists'
                                                             })
 
    try{
 
-      const driverDocument = new DriverDocumentService(Driver.cnh)
+      const driverDocumentService = new DriverDocumentService(DriverDocument.cnh)
 
-      await driverDocument.save()
+      await driverDocumentService.save()
 
-      return res.status(201).json({ msg: 'driver document save' })
+      return res.status(201).json({ msg: 'driver document saved' })
 
    }catch(__){
 
@@ -51,13 +46,13 @@ driverDocumentController.route('/org/driver/document/save').post(async (req, res
 
 driverDocumentController.route('/org/driver/document/update/:id').put(async (req, res)=>{
 
-   const Driver = { ...req.body }
+   const DriverDocument = { ...req.body }
 
    try{
 
-      err.exceptionFieldNullOrUndefined(Driver.cnh, 'document is undefined or null')
+      err.exceptionFieldNullOrUndefined(DriverDocument.cnh, 'document is undefined or null')
   
-      err.exceptionFieldIsEmpty(Driver.cnh.trim(), 'document can not be empty')
+      err.exceptionFieldIsEmpty(DriverDocument.cnh.trim(), 'document can not be empty')
    }catch(e){
 
       return res.status(400).json({ error: e })
@@ -67,17 +62,17 @@ driverDocumentController.route('/org/driver/document/update/:id').put(async (req
                                                          .verifyId(req.params.id)
 
    if(driverDocumentExistsOrNotExists === false) return res.status(404)
-                                                            .json({
+                                                           .json({
                                                                error: 'driver document not found'
                                                             })
 
    try{
 
-      const driverDocument = new DriverDocumentService(Driver.telephone)
+      const driverDocumentService = new DriverDocumentService(DriverDocument.cnh)
 
-      await driverDocument.update(req.params.id)
+      await driverDocumentService.update(req.params.id)
 
-      return res.status(201).json({ msg: 'driver document update' })
+      return res.status(201).json({ msg: 'driver document updated' })
    }catch(__){
 
       return res.status(500)
@@ -88,14 +83,15 @@ driverDocumentController.route('/org/driver/document/update/:id').put(async (req
 driverDocumentController.route('/org/driver/document/get-all').get(async (req, res)=>{
 
    try{
-      const driverDocument = new DriverDocumentService()
 
-      const data = await driverDocument.getAll()
+      const driverDocumentService = new DriverDocumentService()
+
+      const data = await driverDocumentService.getAll()
 
       if(data.length === 0)  return res.status(404)
-                                           .json({
-                                             error: 'no data'
-                                           }) 
+                                       .json({
+                                          error: 'no data'
+                                       }) 
 
       return res.status(200).json(data)
 
@@ -108,10 +104,13 @@ driverDocumentController.route('/org/driver/document/get-all').get(async (req, r
 
 driverDocumentController.route('/org/driver/document/get-by-id/:id').get(async(req, res)=>{
 
+   const DriverDocument = { ...req.params }
+
+   const driverDocumentService = new DriverDocumentService()
+   
    try{
 
-      const driverDocument = new DriverDocumentService()
-      const data = await driverDocument.getById(req.params.id)
+      const data = await driverDocumentService.getById(DriverDocument.id)
 
       if(data.length === 0) return res.status(404)
                                       .json({
@@ -132,16 +131,17 @@ driverDocumentController.route('/org/driver/document/get-by-id/:id').get(async(r
 driverDocumentController.route('/org/driver/document/delete-all').delete(async (req, res)=>{
 
    try{
-      const driverDocument = new DriverDocumentService()
 
-      const driverDocumentExistsOrNotExists = await driverDocument.getAll()
+      const driverDocumentService = new DriverDocumentService()
+
+      const driverDocumentExistsOrNotExists = await driverDocumentService.getAll()
 
       if(driverDocumentExistsOrNotExists.length === 0) return res.status(404)
-                                                         .json({
-                                                            error: 'no data'
-                                                         })
+                                                                 .json({
+                                                                     error: 'no data'
+                                                                 })
 
-      await driverDocument.deleteAll()
+      await driverDocumentService.deleteAll()
 
       return res.status(204).json({})
 
@@ -154,20 +154,20 @@ driverDocumentController.route('/org/driver/document/delete-all').delete(async (
 
 driverDocumentController.route('/org/driver/document/delete-by-id/:id').delete(async (req, res)=>{
 
-   const Driver = { ...req.params }
+   const DriverDocument = { ...req.params }
+   
+   const driverDocumentService = new DriverDocumentService()
    
    try{
-      
-      const driverDocument = new DriverDocumentService()
 
-      const driverDocumentExistsOrNotExists = await driverDocument.getById(Driver.id)
+      const driverDocumentExistsOrNotExists = await driverDocumentService.getById(DriverDocument.id)
 
       if(driverDocumentExistsOrNotExists.length === 0) return res.status(404)
-                                                         .json({
-                                                            error: 'driver document not found'
-                                                         })
+                                                                 .json({
+                                                                     error: 'driver document not found'
+                                                                  })
 
-      await driverDocument.deleteById(Driver.id)
+      await driverDocumentService.deleteById(DriverDocument.id)
 
       return res.status(204).json({})
 
