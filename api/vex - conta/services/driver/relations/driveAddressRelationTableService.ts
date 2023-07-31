@@ -21,6 +21,17 @@ export default class DriverAddressRelationTableService extends DriveAddressRelat
     this.driver_address_relation_id,
     this.driver_relation_id,
     this.org_relation_id)
+  
+  async verifyRelationshipExists(driver_address_relation_id: number){
+
+    const existsOrNotExistsId = await knex.where('driver_address_relation_id', driver_address_relation_id)
+                                          .from('vex_schema.driver_address_relation_table')
+                                          .first()
+          
+    if(existsOrNotExistsId)  return true
+          
+    if(!existsOrNotExistsId) return false
+  }
 
   async save() {
       

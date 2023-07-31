@@ -9,12 +9,6 @@ const driverAddressRelationTableController = express.Router()
 
 const err = new HandleError()
 
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- * 
- * Error: Can't extend QueryBuilder with existing method ('paginate')
-*/
-
 driverAddressRelationTableController.route('/org/driver/address/relation-table/save').post(async(req, res)=> {
 
     const Driver = { ...req.body }
@@ -53,7 +47,15 @@ driverAddressRelationTableController.route('/org/driver/address/relation-table/s
                                               .json({
                                                     error: "org id not found"
                                                 })                                             
-    
+
+    const verifyRelationshipExists = await new DriverAddressRelationTableService()
+                                                    .verifyRelationshipExists(Driver.driver_address_relation_id)
+
+    if(verifyRelationshipExists == true) return res.status(400)
+                                                   .json({ 
+                                                        error: "relationship already exists"
+                                                    })
+
     try{
 
         const driverAndAddressRelation = new DriverAddressRelationTableService(Driver.driver_address_relation_id,
@@ -78,9 +80,9 @@ driverAddressRelationTableController.route('/org/driver/address/relation-table/s
 
 driverAddressRelationTableController.route('/org/driver/address/relation-table/get-all').get(async(req, res)=>{
 
+    const driverAndAddressRelation = new DriverAddressRelationTableService()
+    
     try{
-
-        const driverAndAddressRelation = new DriverAddressRelationTableService()
     
         const data = await driverAndAddressRelation.getAll()
                 
