@@ -21,13 +21,7 @@ const OrgDriverRelationTableService_1 = __importDefault(require("../../services/
 const orgDriverRelationTableController = express_1.default.Router();
 exports.orgDriverRelationTableController = orgDriverRelationTableController;
 const err = new handleError_1.default();
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- *
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
-orgDriverRelationTableController.route('/org/driver/relation-table/save')
-    .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgDriverRelationTableController.route('/org/driver/relation-table/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
     try {
         err.exceptionFieldNullOrUndefined(Org.driver_relation_id, 'org driver id is undefined or null');
@@ -52,6 +46,13 @@ orgDriverRelationTableController.route('/org/driver/relation-table/save')
             .json({
             error: "organization driver id not found"
         });
+    const verifyRelationIdExists = yield new OrgDriverRelationTableService_1.default()
+        .verifyRelationIdExists(Org.driver_relation_id);
+    if (verifyRelationIdExists == true)
+        return res.status(404)
+            .json({
+            error: "relationship already exists"
+        });
     try {
         const driverAndOrganizationRelationShip = new OrgDriverRelationTableService_1.default(Org.driver_relation_id, Org.org_relation_id);
         yield driverAndOrganizationRelationShip.save();
@@ -60,12 +61,15 @@ orgDriverRelationTableController.route('/org/driver/relation-table/save')
         });
     }
     catch (e) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
     }
 }));
-orgDriverRelationTableController.route('/org/driver/relation-table/get-all')
-    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgDriverRelationTableController.route('/org/driver/relation-table/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const driver = new OrgDriverRelationTableService_1.default();
     try {
-        const driver = new OrgDriverRelationTableService_1.default();
         const data = yield driver.getAll();
         if (data.length === 0)
             return res.status(404)
@@ -75,7 +79,8 @@ orgDriverRelationTableController.route('/org/driver/relation-table/get-all')
         return res.status(200).json(data);
     }
     catch (e) {
-        return res.status(500).json({
+        return res.status(500)
+            .json({
             error: 'i am sorry, there is an error with server'
         });
     }

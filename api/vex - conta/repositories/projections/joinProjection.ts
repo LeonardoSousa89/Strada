@@ -10,6 +10,12 @@ const joinOrgAndContactRelationProjection: Array<string> = [
     'org_contact_relation_table.org_relation_id'
 ]
 
+const joinOrgAndDriverRelationProjection: Array<string> = [
+    'org_driver_relation_table.org_driver_relation_table_id',
+    'org_driver_relation_table.driver_relation_id',
+    'org_driver_relation_table.org_relation_id'
+]
+
 const joinDriverAndAddressRelationProjection: Array<string> = [
     'driver_address_relation_table.driver_address_relation_table_id',
     'driver_address_relation_table.driver_address_relation_id',
@@ -74,6 +80,7 @@ const joinDriverAndInformationProjection: Array<string> = [
 
 export { joinOrgAndAddressRelationProjection,
          joinOrgAndContactRelationProjection,
+         joinOrgAndDriverRelationProjection,
          joinDriverAndAddressRelationProjection,
          joinDriverAndContactRelationProjection,
          joinDriverAndDocumentRelationProjection,

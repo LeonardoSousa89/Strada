@@ -37,7 +37,14 @@ orgAddressRelationTableController.route('/org/address/relation-table/save').post
                                                     .json({
                                                         error: "organization address id not found"
                                                     })                                                                
+    
+    const verifyRelationshipExists = await new OrgAddressRelationTableService()
+                                                    .verifyRelationshipExists(Org.org_address_relation_id)
 
+    if(verifyRelationshipExists == true) return res.status(400).json({ 
+                                                                    error: "relationship already exists"
+                                                                }) 
+                                                    
     try{
         
         const orgAddressRelationTableService = new OrgAddressRelationTableService(Org.org_address_relation_id,
@@ -61,12 +68,11 @@ orgAddressRelationTableController.route('/org/address/relation-table/save').post
 
 orgAddressRelationTableController.route('/org/address/relation-table/get-all').get(async(req, res)=>{
 
-    try{
-
-        
-    const orgAddressRelationTableService = new OrgAddressRelationTableService().getAll()
+    const orgAddressRelationTableService = new OrgAddressRelationTableService()
     
-    await orgAddressRelationTableService.then(data => {
+    try{
+    
+        const data = await orgAddressRelationTableService.getAll()
     
         if(data.length === 0) return res.status(404)
                                         .json({ 
@@ -74,8 +80,6 @@ orgAddressRelationTableController.route('/org/address/relation-table/get-all').g
                                         })
             
         return res.status(200).json(data)
-    
-        })
     }catch(__){
 
         return res.status(500)

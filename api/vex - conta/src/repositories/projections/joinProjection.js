@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.joinDriverAndInformationProjection = exports.joinDriverAndDocumentProjection = exports.joinDriverAndContactProjection = exports.joinDriverAndAddressProjection = exports.joinDriverAndInformationRelationProjection = exports.joinDriverAndDocumentRelationProjection = exports.joinDriverAndContactRelationProjection = exports.joinDriverAndAddressRelationProjection = exports.joinOrgAndContactRelationProjection = exports.joinOrgAndAddressRelationProjection = void 0;
+exports.joinDriverAndInformationProjection = exports.joinDriverAndDocumentProjection = exports.joinDriverAndContactProjection = exports.joinDriverAndAddressProjection = exports.joinDriverAndInformationRelationProjection = exports.joinDriverAndDocumentRelationProjection = exports.joinDriverAndContactRelationProjection = exports.joinDriverAndAddressRelationProjection = exports.joinOrgAndDriverRelationProjection = exports.joinOrgAndContactRelationProjection = exports.joinOrgAndAddressRelationProjection = void 0;
 const joinOrgAndAddressRelationProjection = [
     'org_address_relation_table.org_address_relation_table_id',
     'org_address_relation_table.org_address_relation_id',
@@ -13,6 +13,12 @@ const joinOrgAndContactRelationProjection = [
     'org_contact_relation_table.org_relation_id'
 ];
 exports.joinOrgAndContactRelationProjection = joinOrgAndContactRelationProjection;
+const joinOrgAndDriverRelationProjection = [
+    'org_driver_relation_table.org_driver_relation_table_id',
+    'org_driver_relation_table.driver_relation_id',
+    'org_driver_relation_table.org_relation_id'
+];
+exports.joinOrgAndDriverRelationProjection = joinOrgAndDriverRelationProjection;
 const joinDriverAndAddressRelationProjection = [
     'driver_address_relation_table.driver_address_relation_table_id',
     'driver_address_relation_table.driver_address_relation_id',

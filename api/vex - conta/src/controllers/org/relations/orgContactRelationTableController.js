@@ -21,11 +21,6 @@ const orgContactService_1 = __importDefault(require("../../../services/org/orgCo
 const orgContactRelationTableController = express_1.default.Router();
 exports.orgContactRelationTableController = orgContactRelationTableController;
 const err = new handleError_1.default();
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- *
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
 orgContactRelationTableController.route('/org/contact/relation-table/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
     try {
@@ -49,28 +44,42 @@ orgContactRelationTableController.route('/org/contact/relation-table/save').post
             .json({
             error: "organization contact id not found"
         });
-    const response = new orgContactRelationTableService_1.default(Org.org_contact_relation_id, Org.org_relation_id).save();
-    return yield response.then(__ => res.status(201)
-        .json({
-        msg: 'organization contact relation saved'
-    }))
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    const verifyRelationshipExists = yield new orgContactRelationTableService_1.default()
+        .verifyRelationshipExists(Org.org_contact_relation_id);
+    if (verifyRelationshipExists == true)
+        return res.status(400).json({
+            error: "relationship already exists"
+        });
+    try {
+        const response = new orgContactRelationTableService_1.default(Org.org_contact_relation_id, Org.org_relation_id);
+        yield response.save();
+        return res.status(201)
+            .json({
+            msg: 'organization contact relation saved'
+        });
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));
 orgContactRelationTableController.route('/org/contact/relation-table/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = new orgContactRelationTableService_1.default().getAll();
-    yield response.then(data => {
+    const orgContactRelationTableService = new orgContactRelationTableService_1.default();
+    try {
+        const data = yield orgContactRelationTableService.getAll();
         if (data.length === 0)
             return res.status(404)
                 .json({
                 error: 'no data relationship'
             });
         return res.status(200).json(data);
-    })
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));

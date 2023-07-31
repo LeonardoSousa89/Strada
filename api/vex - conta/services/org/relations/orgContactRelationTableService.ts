@@ -18,6 +18,17 @@ export default class OrgContactRelationTableService extends OrgContactRelationTa
   orgContactRelationTableService = new OrgContactRelationTable(
     this.org_contact_relation_id,
     this.org_relation_id)
+  
+  async verifyRelationshipExists(org_contact_relation_id: number){
+
+    const existsOrNotExistsId = await knex.where('org_contact_relation_id', org_contact_relation_id)
+                                          .from('vex_schema.org_contact_relation_table')
+                                          .first()
+    
+    if(existsOrNotExistsId)  return true
+    
+    if(!existsOrNotExistsId) return false
+  }
 
   async save() {
       

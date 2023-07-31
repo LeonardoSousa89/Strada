@@ -44,6 +44,12 @@ orgAddressRelationTableController.route('/org/address/relation-table/save').post
             .json({
             error: "organization address id not found"
         });
+    const verifyRelationshipExists = yield new orgAddressRelationTableService_1.default()
+        .verifyRelationshipExists(Org.org_address_relation_id);
+    if (verifyRelationshipExists == true)
+        return res.status(400).json({
+            error: "relationship already exists"
+        });
     try {
         const orgAddressRelationTableService = new orgAddressRelationTableService_1.default(Org.org_address_relation_id, Org.org_relation_id);
         yield orgAddressRelationTableService.save();
@@ -60,16 +66,15 @@ orgAddressRelationTableController.route('/org/address/relation-table/save').post
     }
 }));
 orgAddressRelationTableController.route('/org/address/relation-table/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const orgAddressRelationTableService = new orgAddressRelationTableService_1.default();
     try {
-        const orgAddressRelationTableService = new orgAddressRelationTableService_1.default().getAll();
-        yield orgAddressRelationTableService.then(data => {
-            if (data.length === 0)
-                return res.status(404)
-                    .json({
-                    error: 'no data relationship'
-                });
-            return res.status(200).json(data);
-        });
+        const data = yield orgAddressRelationTableService.getAll();
+        if (data.length === 0)
+            return res.status(404)
+                .json({
+                error: 'no data relationship'
+            });
+        return res.status(200).json(data);
     }
     catch (__) {
         return res.status(500)

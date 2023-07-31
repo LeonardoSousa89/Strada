@@ -14,10 +14,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const orgDriverRelationTable_1 = __importDefault(require("../../entities/relations/orgDriverRelationTable"));
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
+const joinProjection_1 = require("../../repositories/projections/joinProjection");
 class OrgDriverRelationTableService extends orgDriverRelationTable_1.default {
     constructor(driver_relation_id, org_relation_id) {
         super(driver_relation_id, org_relation_id);
         this.orgDriverRelationTableService = new orgDriverRelationTable_1.default(this.driver_relation_id, this.org_relation_id);
+    }
+    verifyRelationIdExists(driver_relation_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const existsOrNotExistsId = yield knex_1.default.where('driver_relation_id', driver_relation_id)
+                .from('vex_schema.org_driver_relation_table')
+                .first();
+            if (existsOrNotExistsId)
+                return true;
+            if (!existsOrNotExistsId)
+                return false;
+        });
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -30,7 +42,7 @@ class OrgDriverRelationTableService extends orgDriverRelationTable_1.default {
     }
     getAll(size, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select('*')
+            const data = yield knex_1.default.select(joinProjection_1.joinOrgAndDriverRelationProjection)
                 .from('vex_schema.org_driver_relation_table');
             return data;
         });

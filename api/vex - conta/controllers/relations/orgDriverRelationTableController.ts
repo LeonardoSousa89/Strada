@@ -8,14 +8,7 @@ const orgDriverRelationTableController = express.Router()
 
 const err = new HandleError()
 
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- * 
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
-
-orgDriverRelationTableController.route('/org/driver/relation-table/save')
-                                .post(async(req, res)=> {
+orgDriverRelationTableController.route('/org/driver/relation-table/save').post(async(req, res)=> {
 
     const Org = { ...req.body }
 
@@ -45,9 +38,16 @@ orgDriverRelationTableController.route('/org/driver/relation-table/save')
     if(verifyOrgContactIdExixts == false) return res.status(404)
                                                     .json({
                                                         error: "organization driver id not found"
-                                                    })                                                                
+                                                     })                                                                
+    
+    const verifyRelationIdExists = await new OrgDriverRelationTableService()
+                                                .verifyRelationIdExists(Org.driver_relation_id)
 
-                                                    
+    if(verifyRelationIdExists == true) return res.status(404)
+                                                 .json({
+                                                        error: "relationship already exists"
+                                                    })  
+
     try{
                                                         
         const driverAndOrganizationRelationShip = new OrgDriverRelationTableService(Org.driver_relation_id,
@@ -60,17 +60,19 @@ orgDriverRelationTableController.route('/org/driver/relation-table/save')
                                 })
     }catch(e){
 
-
+        return res.status(500)
+                  .json({
+                    error: 'i am sorry, there is an error with server'
+                })
     }
 })
 
 
-orgDriverRelationTableController.route('/org/driver/relation-table/get-all')
-                                .get(async(req, res)=>{
+orgDriverRelationTableController.route('/org/driver/relation-table/get-all').get(async(req, res)=>{
 
+    const driver = new OrgDriverRelationTableService()
+    
     try{
-
-        const driver = new OrgDriverRelationTableService()
 
         const data = await driver.getAll()
 
@@ -82,9 +84,10 @@ orgDriverRelationTableController.route('/org/driver/relation-table/get-all')
         return res.status(200).json(data)
     }catch(e){
 
-        return res.status(500).json({
-            error: 'i am sorry, there is an error with server'
-        })
+        return res.status(500)
+                  .json({
+                    error: 'i am sorry, there is an error with server'
+                })
     }
     
 })  

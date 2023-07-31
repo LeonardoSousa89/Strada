@@ -20,6 +20,17 @@ class OrgAddressRelationTableService extends orgAddressRelationTable_1.default {
         super(org_address_relation_id, org_relation_id);
         this.orgAddressRelationTable = new orgAddressRelationTable_1.default(this.org_address_relation_id, this.org_relation_id);
     }
+    verifyRelationshipExists(org_address_relation_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const existsOrNotExistsId = yield knex_1.default.where('org_address_relation_id', org_address_relation_id)
+                .from('vex_schema.org_address_relation_table')
+                .first();
+            if (existsOrNotExistsId)
+                return true;
+            if (!existsOrNotExistsId)
+                return false;
+        });
+    }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
             yield knex_1.default.insert(this.orgAddressRelationTable)

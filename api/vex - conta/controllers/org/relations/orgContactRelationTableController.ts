@@ -8,12 +8,6 @@ const orgContactRelationTableController = express.Router()
 
 const err = new HandleError()
 
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- * 
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
-
 orgContactRelationTableController.route('/org/contact/relation-table/save').post(async(req, res)=> {
 
     const Org = { ...req.body }
@@ -44,38 +38,55 @@ orgContactRelationTableController.route('/org/contact/relation-table/save').post
                                                     error: "organization contact id not found"
                                                 })                                                                
 
-    const response = new OrgContactRelationTableService(Org.org_contact_relation_id,
-                                           Org.org_relation_id).save()
+    const verifyRelationshipExists = await new OrgContactRelationTableService()
+                                                    .verifyRelationshipExists(Org.org_contact_relation_id)
 
-    return await response.then(__ => res.status(201)
-                                        .json({ 
-                                            msg: 'organization contact relation saved' 
-                                        }))
-                                        .catch(__ => res.status(500)
-                                                        .json({ 
-                                                            error: 'i am sorry, there is an error with server' 
-                                                        }))                                         
+    if(verifyRelationshipExists == true) return res.status(400).json({ 
+                                                                    error: "relationship already exists"
+                                                                }) 
+
+    try{
+        
+        const response = new OrgContactRelationTableService(Org.org_contact_relation_id,
+                                                            Org.org_relation_id)
+        
+        await response.save()
+
+        return res.status(201)
+                  .json({ 
+                    msg: 'organization contact relation saved' 
+                  })
+    }catch(__){
+
+         return res.status(500)
+                         .json({ 
+                             error: 'i am sorry, there is an error with server' 
+                            })  
+    }                                          
 })
 
 
 orgContactRelationTableController.route('/org/contact/relation-table/get-all').get(async(req, res)=>{
 
-    const response = new OrgContactRelationTableService().getAll()
+    const orgContactRelationTableService = new OrgContactRelationTableService()
     
-    await response.then(data => {
-    
+    try{
+        
+        const data = await orgContactRelationTableService.getAll()
+            
         if(data.length === 0) return res.status(404)
                                         .json({ 
                                             error: 'no data relationship' 
                                         })
-            
+                        
         return res.status(200).json(data)
-    
-        })
-        .catch(__ => res.status(500)
-                        .json({  
+    }catch(__){
+
+            return res.status(500)
+                      .json({  
                             error: 'i am sorry, there is an error with server'  
-                        }))
+                        })
+    }
 })  
 
 

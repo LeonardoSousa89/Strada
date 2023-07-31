@@ -2,6 +2,8 @@ import OrgDriverRelationTable from "../../entities/relations/orgDriverRelationTa
 import { DbOperations } from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
 
+import { joinOrgAndDriverRelationProjection } from "../../repositories/projections/joinProjection";
+
 export default class OrgDriverRelationTableService extends OrgDriverRelationTable implements DbOperations{
 
   constructor(
@@ -16,6 +18,17 @@ export default class OrgDriverRelationTableService extends OrgDriverRelationTabl
   orgDriverRelationTableService = new OrgDriverRelationTable( 
     this.driver_relation_id,
     this.org_relation_id)
+  
+  async verifyRelationIdExists(driver_relation_id: number){
+
+    const existsOrNotExistsId = await knex.where('driver_relation_id', driver_relation_id)
+                                          .from('vex_schema.org_driver_relation_table')
+                                          .first()
+
+    if(existsOrNotExistsId)  return true
+
+    if(!existsOrNotExistsId) return false
+  }
 
   async save() {
       
@@ -27,7 +40,7 @@ export default class OrgDriverRelationTableService extends OrgDriverRelationTabl
 
   async getAll(size?: any, page?:any) {
       
-    const data = await knex.select('*')
+    const data = await knex.select(joinOrgAndDriverRelationProjection)
                            .from('vex_schema.org_driver_relation_table') 
     
     return data
