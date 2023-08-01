@@ -22,11 +22,13 @@ const driverAddressRelationTableController_1 = require("./controllers/driver/rel
 const driverContactRelationTableController_1 = require("./controllers/driver/relations/driverContactRelationTableController");
 const driverDocumentRelationTableController_1 = require("./controllers/driver/relations/driverDocumentRelationTableController");
 const driverInformationRelationTableController_1 = require("./controllers/driver/relations/driverInformationRelationTableController");
+const testsController_1 = require("./__tests__/functions/server/testsController");
 const app = (0, express_1.default)();
 app.use((0, morgan_1.default)('dev'));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use('/', [
+    testsController_1.orgTestsController,
     orgController_1.orgController,
     orgJoinQueryController_1.OrgJoinQueryController,
     orgAddressController_1.orgAddressController,

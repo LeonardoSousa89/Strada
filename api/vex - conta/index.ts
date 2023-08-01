@@ -19,6 +19,7 @@ import { driverAddressRelationTableController } from './controllers/driver/relat
 import { driverContactRelationTableController } from './controllers/driver/relations/driverContactRelationTableController'
 import { driverDocumentRelationTableController } from './controllers/driver/relations/driverDocumentRelationTableController'
 import { driverInformationRelationTableController } from './controllers/driver/relations/driverInformationRelationTableController'
+import { orgTestsController } from './__tests__/functions/server/testsController'
 
 const app = express()
 
@@ -27,6 +28,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 app.use('/', [
+              orgTestsController,
               orgController, 
               OrgJoinQueryController,
               orgAddressController,

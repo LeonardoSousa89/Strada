@@ -3,6 +3,7 @@ import { DbOperations } from '../../../interface/operations';
 import Information from '../../../entities/driver/information/information';
 
 import { informationProjection } from '../../../repositories/projections/informationProjection';
+import DriverInformationRelationTableService from '../relations/driverInformationRelationTableService';
 
 export default class InformationService extends Information implements DbOperations {
     
@@ -118,8 +119,4 @@ export default class InformationService extends Information implements DbOperati
                   .delete()
                   .from('vex_schema.information')
     }
-
-    //será preciso deletar toda a associação do motorista, 
-    // para conseguir deletar sua informação
-    async periodicDelete(){}
 }

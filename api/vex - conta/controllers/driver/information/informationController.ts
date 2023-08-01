@@ -24,12 +24,12 @@ informationController.route('/org/driver/information/save').post(async (req, res
 
    const startingKmOrFinalKmBothIsIlegalCondition = new InformationService()
                                                 .verifyInformation(Information.starting_km, 
-                                                   Information.final_km)
+                                                                   Information.final_km)
    
    if(startingKmOrFinalKmBothIsIlegalCondition === false)  return res.status(400)
-                                                          .json({
-                                                            error: 'starting km and final km both can not be empty or null'
-                                                         })                                               
+                                                                     .json({
+                                                                        error: 'starting km and final km both can not be empty or null'
+                                                                     })                                               
 
    try{
 

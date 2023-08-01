@@ -56,5 +56,4 @@ export default class DriverInformationRelationTableService extends DriverInforma
   deleteAll(): void {}
 
   deleteById(id?: string | number): void {}
-
 }

@@ -96,10 +96,5 @@ class InformationService extends information_1.default {
                 .from('vex_schema.information');
         });
     }
-    //será preciso deletar toda a associação do motorista, 
-    // para conseguir deletar sua informação
-    periodicDelete() {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
 }
 exports.default = InformationService;
