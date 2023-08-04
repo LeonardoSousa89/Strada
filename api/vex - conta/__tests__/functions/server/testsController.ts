@@ -10,6 +10,7 @@ import { cryptograph } from '../../../security/cryptography/bcrypt'
 
 import { testDeleteByTimeInformation } from '../server/functions'
 import { loadDataTest, loadDataTest2 } from '../../request/request.test'
+import { connection, disconnection, getCache, setCache } from '../../cache/redis'
 
 dotenv.config()
 
@@ -17,22 +18,66 @@ const orgTestsController = express.Router()
 
 const err = new HandleError() 
 
+//teste de cargas
 orgTestsController.route('/tests').get(async(req, res)=>{
 
-    // const data = testDeleteByTimeInformation()
+    try{
 
-    // console.log(data)
+        // const data = testDeleteByTimeInformation()
     
-    // 40  requisições/s direto do banco de dados [gravação e leitura]
-    const request = loadDataTest()
+        // console.log(data)
+        
+        // 40  requisições/s direto do banco de dados [gravação e leitura]
+        const request = loadDataTest()
+    
+        console.log(request)
+    
+        const request2 = loadDataTest2()
+    
+        console.log(request2)
+    
+        return res.status(200).json({tests: 'testing Ok!'})
+    }catch(__){
 
-    console.log(request)
+        return res.status(500).json({ error: 'ops! there is an error' })
+    }
+})
 
-    const request2 = loadDataTest2()
+// testes de performance com cache utilizando o db redis
+orgTestsController.route('/tests/redis-cache/on-storage').post(async(req, res)=>{
 
-    console.log(request2)
+    try{
 
-    res.status(200).json({tests: 'testing Ok!'})
+        await connection()
+
+        await setCache(req.body.key, req.body.value, req.body.expiration)
+
+        res.status(201).json({ msg: 'cache on storage' })
+        
+        await disconnection()
+        
+        return 
+    }catch(__){
+
+        return res.status(500).json({ error: 'ops! there is an error' })
+    }
+}).get(async(req, res)=>{
+
+    try{
+
+        await connection()
+
+        const cache = await getCache(req.query.cache)
+
+        res.status(200).json(cache)
+        
+        await disconnection()
+        
+        return 
+    }catch(__){
+
+        return res.status(500).json({ error: 'ops! there is an error' })
+    }
 })
 
 export { orgTestsController }

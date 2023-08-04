@@ -1,4 +1,2 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-test('delete by time', function () {
-});
+test('', function () { });

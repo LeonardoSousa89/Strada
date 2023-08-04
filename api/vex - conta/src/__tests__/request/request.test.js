@@ -14,6 +14,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loadDataTest2 = exports.loadDataTest = void 0;
 const axios_1 = __importDefault(require("axios"));
+/**
+ *
+ * neste momento foi testado a carga suportada atual pela api,
+ * 40 requisições/s de leitura e gravação diretos no banco de
+ * dados, com a inserção do banco de caching, seu suporte,
+ * disponibilidade e velocidade, aumentaram consideravelmente.
+ *
+ * dependendo dos testes atuais o app já possui capacidade para atender
+ * entre 2 a 5 empresas pequenas de logística com o módulo de checklist
+ */
 // 20 requisições/s, comunicação direta com o banco de dados [leitura]
 function loadDataTest() {
     const request = setInterval(() => __awaiter(this, void 0, void 0, function* () {
@@ -82,8 +92,6 @@ function loadDataTest2() {
             plate: "rdn-7d95",
             notes: "pneu careca!"
         };
-        const data1Parsed = JSON.stringify(data1);
-        const data2Parsed = JSON.stringify(data2);
         const org1 = yield axios_1.default.post('http://localhost:8765/org/driver/information/save', data1);
         const org11 = yield axios_1.default.post('http://localhost:8765/org/driver/information/save', data2);
         const org2 = yield axios_1.default.post('http://localhost:8765/org/driver/information/save', data1);

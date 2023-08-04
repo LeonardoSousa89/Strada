@@ -1,7 +1,7 @@
 var port = 8765
 
 import morgan from 'morgan'
-import express from 'express'
+import express from 'express' 
 
 import { orgController } from './controllers/org/orgController'
 import { OrgJoinQueryController } from './controllers/query/orgJoinQueryController'
@@ -47,4 +47,14 @@ app.use('/', [
               driverInformationRelationTableController
             ])
 
-app.listen(port)
+const server = async () => {
+
+  const serve = app.listen(port)
+
+  console.table({ 
+                  network: serve.address(),
+                  maxListeners: serve.getMaxListeners()
+                })  
+} 
+
+server()

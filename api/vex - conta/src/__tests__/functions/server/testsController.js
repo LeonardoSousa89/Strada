@@ -40,16 +40,48 @@ const express_1 = __importDefault(require("express"));
 const handleError_1 = __importDefault(require("../../../interface/error/handleError"));
 const dotenv = __importStar(require("dotenv"));
 const request_test_1 = require("../../request/request.test");
+const redis_1 = require("../../cache/redis");
 dotenv.config();
 const orgTestsController = express_1.default.Router();
 exports.orgTestsController = orgTestsController;
 const err = new handleError_1.default();
+//teste de cargas
 orgTestsController.route('/tests').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // const data = testDeleteByTimeInformation()
-    // console.log(data)
-    const request = (0, request_test_1.loadDataTest)();
-    console.log(request);
-    const request2 = (0, request_test_1.loadDataTest2)();
-    console.log(request2);
-    res.status(200).json({ tests: 'testing Ok!' });
+    try {
+        // const data = testDeleteByTimeInformation()
+        // console.log(data)
+        // 40  requisições/s direto do banco de dados [gravação e leitura]
+        const request = (0, request_test_1.loadDataTest)();
+        console.log(request);
+        const request2 = (0, request_test_1.loadDataTest2)();
+        console.log(request2);
+        return res.status(200).json({ tests: 'testing Ok!' });
+    }
+    catch (__) {
+        return res.status(500).json({ error: 'ops! there is an error' });
+    }
+}));
+// testes de performance com cache utilizando o db redis
+orgTestsController.route('/tests/redis-cache/on-storage').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield (0, redis_1.connection)();
+        yield (0, redis_1.setCache)(req.body.key, req.body.value, req.body.expiration);
+        res.status(201).json({ msg: 'cache on storage' });
+        yield (0, redis_1.disconnection)();
+        return;
+    }
+    catch (__) {
+        return res.status(500).json({ error: 'ops! there is an error' });
+    }
+})).get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield (0, redis_1.connection)();
+        const cache = yield (0, redis_1.getCache)(req.query.cache);
+        res.status(200).json(cache);
+        yield (0, redis_1.disconnection)();
+        return;
+    }
+    catch (__) {
+        return res.status(500).json({ error: 'ops! there is an error' });
+    }
 }));

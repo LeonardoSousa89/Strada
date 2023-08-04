@@ -229,3 +229,5 @@ DELETE FROM vex_schema.driver_address_relation_table;
 DELETE FROM vex_schema.driver_document_relation_table;
 DELETE FROM vex_schema.driver_contact_relation_table;
 DELETE FROM vex_schema.driver_information_relation_table;
+
+DELETE FROM vex_schema.information;

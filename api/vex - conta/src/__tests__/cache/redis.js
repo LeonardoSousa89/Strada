@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getCache = exports.setCache = exports.disconnection = exports.connection = void 0;
+const redis_1 = require("../../repositories/redis/cache/redis");
+const connection = () => (0, redis_1.connect)();
+exports.connection = connection;
+const disconnection = () => (0, redis_1.disconnect)();
+exports.disconnection = disconnection;
+const setCache = (key, value, expiration) => (0, redis_1.setCacheValue)(key, value, expiration);
+exports.setCache = setCache;
+const getCache = (key) => (0, redis_1.getCacheValue)(key);
+exports.getCache = getCache;
