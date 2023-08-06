@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var port = 8765;
+var port = [8765, 80, 8080, 8181];
 const morgan_1 = __importDefault(require("morgan"));
 const express_1 = __importDefault(require("express"));
 const orgController_1 = require("./controllers/org/orgController");
@@ -56,8 +56,10 @@ app.use('/', [
     driverInformationRelationTableController_1.driverInformationRelationTableController
 ]);
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
-    const serve = app.listen(port);
+    const serve = app.listen(port[1]);
     console.table({
+        port_range: port,
+        port_in_use: port[1],
         network: serve.address(),
         maxListeners: serve.getMaxListeners()
     });

@@ -1,4 +1,4 @@
-var port = 8765
+var port = [8765, 80, 8080, 8181] 
 
 import morgan from 'morgan'
 import express from 'express' 
@@ -49,9 +49,11 @@ app.use('/', [
 
 const server = async () => {
 
-  const serve = app.listen(port)
+  const serve = app.listen(port[1])
 
   console.table({ 
+                  port_range: port,
+                  port_in_use: port[1],
                   network: serve.address(),
                   maxListeners: serve.getMaxListeners()
                 })  
