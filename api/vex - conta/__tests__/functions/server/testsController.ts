@@ -1,4 +1,4 @@
-import express, { response } from 'express'
+import express, { json, response } from 'express'
 
 import HandleError from '../../../interface/error/handleError'
 
@@ -11,6 +11,9 @@ import { cryptograph } from '../../../security/cryptography/bcrypt'
 import { testDeleteByTimeInformation } from '../server/functions'
 import { loadDataTest, loadDataTest2 } from '../../request/request.test'
 import { connection, disconnection, getCache, setCache } from '../../cache/redis'
+import InformationService from '../../../services/driver/information/informationService'
+import e from 'express'
+import OrgJoinQuery from '../../../services/query/orgJoinQueryService'
 
 dotenv.config()
 
@@ -79,5 +82,93 @@ orgTestsController.route('/tests/redis-cache/on-storage').post(async(req, res)=>
         return res.status(500).json({ error: 'ops! there is an error' })
     }
 })
+
+orgTestsController.route('/tests/redis-cache/get/org/data/:id').get(async(req, res)=>{
+
+    try{
+
+        await connection()
+             
+        const orgDataFromCache = await getCache(`org_data_${req.params.id}`)
+
+        if(orgDataFromCache) {
+
+            const data = JSON.parse(orgDataFromCache)
+            
+            res.status(200).json({
+                                data: {
+                                inCache: 'yes',
+                                data 
+                                }
+                            })
+                
+            await disconnection()
+    
+            return
+        }
+
+        const query = new OrgJoinQuery()
+
+        const data = await query.getById(Number(req.params.id))
+        
+        if(data.data.organization.length === 0){
+
+            res.status(404)
+               .json({
+                    msg: 'no data'
+                })
+
+            await disconnection()
+
+            return
+        }
+
+        // 60 * 60 * 24 * 7 (expiration: 7 dias)
+        //a lógica é a seguinte: a informação será salva,
+        // na api de registro, no database de registro e no banco de cache
+        // o usuário de nível gratuito, somente acessará os dados em cache,
+        // com ttl equivalente a 1 semana, após isso os dados em cache serão 
+        // eliminados e a API de registro somente será acessível a administração
+        // do app, para fins de consulta ou jurídico, será eliminar primeiro a
+        // associação da informação e logo após a informação, ambos estarão 
+        // em cache
+        await setCache(`org_data_${req.params.id}`, JSON.stringify(data), 300)
+                 
+           
+        // neste ponto a tentativa de parse levaria a erros continuos,
+        // pois aqui o valor da value de informationFromCache é null 
+        // e a tentativa de parse para JSON, seria o mesmo que 
+        // converter um valor null em JSON.
+        // então se na chamada não houver dados em cache, 
+        // os dados obtidos na requisição REST serão salvos no redis e
+        // apresentados ao usuário, na próxima chamada o valor já será
+        // diferente de null, aí sim poderá ser parseado para JSON
+        // e obtido do banco de dados de cache. 
+
+        res.status(200).json({
+                            data:{
+                                inCache: 'no',
+                                data
+                            }
+                        })
+        
+        await disconnection()
+
+        return 
+    }catch(__){
+
+        res.status(500)
+           .json({ 
+                error: 'i am sorry, there is an error with server'
+            })
+        
+        await disconnection()
+        
+        return 
+        
+    }
+})
+
+
 
 export { orgTestsController }
