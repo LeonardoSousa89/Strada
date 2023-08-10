@@ -2,6 +2,7 @@ import express from 'express'
 
 import HandleError from '../../interface/error/handleError'
 import DriverDocumentService from '../../services/driver/driverDocumentService'
+import RedisOperations from '../../repositories/redis/cache/services/redis.cache.operation'
 
 const driverDocumentController = express.Router()
 
@@ -82,18 +83,51 @@ driverDocumentController.route('/org/driver/document/update/:id').put(async (req
 
 driverDocumentController.route('/org/driver/document/get-all').get(async (req, res)=>{
 
+   const driverDocumentService = new DriverDocumentService()
+
+   const cache = new RedisOperations()
+
    try{
 
-      const driverDocumentService = new DriverDocumentService()
+      cache.connection()
+
+      const driverDocumentFromCache = await cache.getCache(`driverDocument`)
+
+      if(driverDocumentFromCache) {
+
+         const data = JSON.parse(driverDocumentFromCache)
+          
+         res.status(200).json({
+                              data: { inCache: 'yes', data }
+                          })
+              
+         await cache.disconnection()
+                          
+         return
+      }
 
       const data = await driverDocumentService.getAll()
 
-      if(data.length === 0)  return res.status(404)
-                                       .json({
-                                          error: 'no data'
-                                       }) 
+      if(data.length === 0) {
 
-      return res.status(200).json(data)
+         res.status(404).json({
+                           error: 'no data'
+                        }) 
+
+         await cache.disconnection()                
+
+         return                       
+      }
+
+      await cache.setCache(`driverDocument`, JSON.stringify(data), 300)
+
+      res.status(200).json({ 
+                          data: { inCache: 'no', data }
+                      })
+
+      await cache.disconnection()
+
+      return 
 
    }catch(__){
 
@@ -107,17 +141,51 @@ driverDocumentController.route('/org/driver/document/get-by-id/:id').get(async(r
    const DriverDocument = { ...req.params }
 
    const driverDocumentService = new DriverDocumentService()
+
+   const cache = new RedisOperations()
    
    try{
 
+      cache.connection()
+
+      const driverDocumentFromCache = await cache.getCache(`driverDocument_${DriverDocument.id}`)
+
+      if(driverDocumentFromCache) {
+
+          const data = JSON.parse(driverDocumentFromCache)
+          
+          res.status(200).json({
+                              data: { inCache: 'yes', data }
+                          })
+              
+          await cache.disconnection()
+                          
+          return
+      }
+
       const data = await driverDocumentService.getById(DriverDocument.id)
 
-      if(data.length === 0) return res.status(404)
-                                      .json({
-                                          error: 'driver document not found'
-                                       })
+      if(data.length === 0) {
 
-      return res.status(200).json(data)
+         res.status(404).json({
+                           error: 'driver document not found'
+                        })
+
+         await cache.disconnection()              
+
+         return 
+      }
+
+      await cache.setCache(`driverDocument_${DriverDocument.id}`, JSON.stringify(data), 300)
+
+      res.status(200).json({ 
+                          data: { inCache: 'no', data }
+                     })
+                      
+      await cache.disconnection()
+
+      return
+
    }catch(__){
 
       return res.status(500)

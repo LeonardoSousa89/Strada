@@ -16,6 +16,7 @@ exports.driverDocumentController = void 0;
 const express_1 = __importDefault(require("express"));
 const handleError_1 = __importDefault(require("../../interface/error/handleError"));
 const driverDocumentService_1 = __importDefault(require("../../services/driver/driverDocumentService"));
+const redis_cache_operation_1 = __importDefault(require("../../repositories/redis/cache/services/redis.cache.operation"));
 const driverDocumentController = express_1.default.Router();
 exports.driverDocumentController = driverDocumentController;
 const err = new handleError_1.default();
@@ -72,15 +73,33 @@ driverDocumentController.route('/org/driver/document/update/:id').put((req, res)
     }
 }));
 driverDocumentController.route('/org/driver/document/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const driverDocumentService = new driverDocumentService_1.default();
+    const cache = new redis_cache_operation_1.default();
     try {
-        const driverDocumentService = new driverDocumentService_1.default();
+        cache.connection();
+        const driverDocumentFromCache = yield cache.getCache(`driverDocument`);
+        if (driverDocumentFromCache) {
+            const data = JSON.parse(driverDocumentFromCache);
+            res.status(200).json({
+                data: { inCache: 'yes', data }
+            });
+            yield cache.disconnection();
+            return;
+        }
         const data = yield driverDocumentService.getAll();
-        if (data.length === 0)
-            return res.status(404)
-                .json({
+        if (data.length === 0) {
+            res.status(404).json({
                 error: 'no data'
             });
-        return res.status(200).json(data);
+            yield cache.disconnection();
+            return;
+        }
+        yield cache.setCache(`driverDocument`, JSON.stringify(data), 300);
+        res.status(200).json({
+            data: { inCache: 'no', data }
+        });
+        yield cache.disconnection();
+        return;
     }
     catch (__) {
         return res.status(500)
@@ -90,14 +109,32 @@ driverDocumentController.route('/org/driver/document/get-all').get((req, res) =>
 driverDocumentController.route('/org/driver/document/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverDocument = Object.assign({}, req.params);
     const driverDocumentService = new driverDocumentService_1.default();
+    const cache = new redis_cache_operation_1.default();
     try {
+        cache.connection();
+        const driverDocumentFromCache = yield cache.getCache(`driverDocument_${DriverDocument.id}`);
+        if (driverDocumentFromCache) {
+            const data = JSON.parse(driverDocumentFromCache);
+            res.status(200).json({
+                data: { inCache: 'yes', data }
+            });
+            yield cache.disconnection();
+            return;
+        }
         const data = yield driverDocumentService.getById(DriverDocument.id);
-        if (data.length === 0)
-            return res.status(404)
-                .json({
+        if (data.length === 0) {
+            res.status(404).json({
                 error: 'driver document not found'
             });
-        return res.status(200).json(data);
+            yield cache.disconnection();
+            return;
+        }
+        yield cache.setCache(`driverDocument_${DriverDocument.id}`, JSON.stringify(data), 300);
+        res.status(200).json({
+            data: { inCache: 'no', data }
+        });
+        yield cache.disconnection();
+        return;
     }
     catch (__) {
         return res.status(500)
