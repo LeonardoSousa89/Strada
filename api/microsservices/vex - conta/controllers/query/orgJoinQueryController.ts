@@ -1,41 +1,75 @@
 import express from 'express'
 import OrgJoinQueryService from '../../services/query/orgJoinQueryService'
-import HandleError from '../../interface/error/handleError'
+import RedisOperations from '../../repositories/redis/cache/services/redis.cache.operation'
 
 const OrgJoinQueryController = express.Router()
 
-const err = new HandleError()
-
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- * 
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
 OrgJoinQueryController.route('/org/join/data').get(async(req, res)=>{
 
     const Org = { ...req.query }
+
+    const orgJoinQueryService = new OrgJoinQueryService()
+    
+    const cache = new RedisOperations()
 
     if(!Org.org_id) return res.status(400)
                               .json({
                                     error: 'query params required'
                                 })
 
-    const response = new OrgJoinQueryService().getById(Number(Org.org_id))
-    
-    await response.then(data => {
+    try{
 
-        if(data.data.organization.length === 0) return res.status(404)
-                                                          .json({
-                                                            error: 'organization not found'
-                                                          })
+        cache.connection()
 
-        return res.status(200).json(data)
-    
-        })
-        .catch(__ => res.status(500)
-                        .json({  
+        const orgJoinDataFromCache = await cache.getCache(`org_join_data_${Org.org_id}`)
+
+        if(orgJoinDataFromCache) {
+
+            const data = JSON.parse(orgJoinDataFromCache)
+            
+            res.status(200).json({
+                                data: {
+                                inCache: 'yes',
+                                data 
+                                }
+                            })
+             
+                            
+            await cache.disconnection()
+                            
+            return
+        }
+        
+        const data = await orgJoinQueryService.getById(Number(Org.org_id))                        
+
+        if(data.data.organization.length === 0){ 
+            
+            res.status(404).json({
+                                error: 'organization not found'
+                            })
+            
+            await cache.disconnection()
+            
+            return
+        }
+
+        await cache.setCache(`org_join_data_${Org.org_id}`, JSON.stringify(data), 300)
+
+        res.status(200).json({ 
+                            data: { inCache: 'no', data }
+                        })
+
+        await cache.disconnection()
+
+        return 
+        
+     }catch(__){
+            
+            return res.status(500)
+                      .json({  
                             error: 'i am sorry, there is an error with server'
-                        }))
+                        })
+    }
 })
 
 export { OrgJoinQueryController }

@@ -56,10 +56,10 @@ app.use('/', [
     driverInformationRelationTableController_1.driverInformationRelationTableController
 ]);
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
-    const serve = app.listen(port[1]);
+    const serve = app.listen(port[0]);
     console.table({
         port_range: port,
-        port_in_use: port[1],
+        port_in_use: port[0],
         network: serve.address(),
         maxListeners: serve.getMaxListeners()
     });

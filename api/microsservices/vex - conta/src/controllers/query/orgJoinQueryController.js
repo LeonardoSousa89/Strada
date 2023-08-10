@@ -15,33 +15,51 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrgJoinQueryController = void 0;
 const express_1 = __importDefault(require("express"));
 const orgJoinQueryService_1 = __importDefault(require("../../services/query/orgJoinQueryService"));
-const handleError_1 = __importDefault(require("../../interface/error/handleError"));
+const redis_cache_operation_1 = __importDefault(require("../../repositories/redis/cache/services/redis.cache.operation"));
 const OrgJoinQueryController = express_1.default.Router();
 exports.OrgJoinQueryController = OrgJoinQueryController;
-const err = new handleError_1.default();
-/**
- * erro do knex-paginate usado em mais de um arquivo:
- *
- * Error: Can't extend QueryBuilder with existing method ('paginate')
- */
 OrgJoinQueryController.route('/org/join/data').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.query);
+    const orgJoinQueryService = new orgJoinQueryService_1.default();
+    const cache = new redis_cache_operation_1.default();
     if (!Org.org_id)
         return res.status(400)
             .json({
             error: 'query params required'
         });
-    const response = new orgJoinQueryService_1.default().getById(Number(Org.org_id));
-    yield response.then(data => {
-        if (data.data.organization.length === 0)
-            return res.status(404)
-                .json({
+    try {
+        cache.connection();
+        const orgJoinDataFromCache = yield cache.getCache(`org_join_data_${Org.org_id}`);
+        if (orgJoinDataFromCache) {
+            const data = JSON.parse(orgJoinDataFromCache);
+            res.status(200).json({
+                data: {
+                    inCache: 'yes',
+                    data
+                }
+            });
+            yield cache.disconnection();
+            return;
+        }
+        const data = yield orgJoinQueryService.getById(Number(Org.org_id));
+        if (data.data.organization.length === 0) {
+            res.status(404).json({
                 error: 'organization not found'
             });
-        return res.status(200).json(data);
-    })
-        .catch(__ => res.status(500)
-        .json({
-        error: 'i am sorry, there is an error with server'
-    }));
+            yield cache.disconnection();
+            return;
+        }
+        yield cache.setCache(`org_join_data_${Org.org_id}`, JSON.stringify(data), 300);
+        res.status(200).json({
+            data: { inCache: 'no', data }
+        });
+        yield cache.disconnection();
+        return;
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server'
+        });
+    }
 }));

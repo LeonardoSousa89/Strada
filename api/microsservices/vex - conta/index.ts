@@ -49,11 +49,11 @@ app.use('/', [
 
 const server = async () => {
 
-  const serve = app.listen(port[1])
+  const serve = app.listen(port[0])
 
   console.table({ 
                   port_range: port,
-                  port_in_use: port[1],
+                  port_in_use: port[0],
                   network: serve.address(),
                   maxListeners: serve.getMaxListeners()
                 })  
