@@ -3,6 +3,7 @@ import DriverService from '../../services/driver/driverService'
 
 import HandleError from '../../interface/error/handleError'
 import { cryptograph } from '../../security/cryptography/bcrypt'
+import RedisOperations from '../../repositories/redis/cache/services/redis.cache.operation'
 
 const driverController = express.Router()
 
@@ -109,17 +110,50 @@ driverController.route('/org/driver/update/:id').put(async (req, res)=>{
 driverController.route('/org/driver/get-all').get(async (req, res)=>{
 
    const driverService = new DriverService()
+
+   const cache = new RedisOperations()
    
    try{
 
+      cache.connection()
+
+      const driverFromCache = await cache.getCache(`driver`)
+
+      if(driverFromCache) {
+
+          const data = JSON.parse(driverFromCache)
+          
+          res.status(200).json({
+                              data: { inCache: 'yes', data }
+                          })
+              
+          await cache.disconnection()
+                          
+          return
+      }
+
       const data = await driverService.getAll()
 
-      if(data.length === 0)  return res.status(404)
-                                           .json({
-                                             error: 'driver not found'
-                                           }) 
+      if(data.length === 0)  {
 
-      return res.status(200).json(data)
+         res.status(404).json({
+                           error: 'driver not found'
+                        })
+                        
+         await cache.disconnection()              
+         
+         return 
+      }
+
+      await cache.setCache(`driver`, JSON.stringify(data), 300)
+
+      res.status(200).json({ 
+                          data: { inCache: 'no', data }
+                      })
+
+      await cache.disconnection()
+
+      return 
 
    }catch(e){
 
@@ -134,16 +168,50 @@ driverController.route('/org/driver/get-by-id/:id').get(async (req, res)=>{
    
    const driverService = new DriverService()  
    
+   const cache = new RedisOperations()
+
    try{
+
+      cache.connection()
+
+      const driverFromCache = await cache.getCache(`driver_${Driver.id}`)
+
+      if(driverFromCache) {
+
+          const data = JSON.parse(driverFromCache)
+          
+          res.status(200).json({
+                              data: { inCache: 'yes', data }
+                          })
+              
+          await cache.disconnection()
+                          
+          return
+      }
 
        const data = await driverService.getById(Driver.id)
 
-       if(data.length === 0) return res.status(404)
-                                       .json({
-                                           error: 'driver not found'
-                                       })
+       if(data.length === 0) {
 
-       return res.status(200).json(data)
+         res.status(404).json({
+                              error: 'driver not found'
+                           })
+
+         await cache.disconnection()               
+
+         return 
+       }
+
+       await cache.setCache(`driver_${Driver.id}`, JSON.stringify(data), 300)
+
+       res.status(200).json({ 
+                           data: { inCache: 'no', data }
+                       })
+                       
+       await cache.disconnection()
+ 
+       return 
+
    }catch(__){
       
        return res.status(500)
