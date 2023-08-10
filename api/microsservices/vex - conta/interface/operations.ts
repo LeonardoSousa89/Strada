@@ -16,10 +16,7 @@ export interface Verifications {
 export interface CacheOperations {
 
     connection(): any 
-
     disconnection(): any
-
     setCache(key?:any, value?:any, expiration?:any): any
-
     getCache(key?:any): any
 }
