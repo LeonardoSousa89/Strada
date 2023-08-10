@@ -1,6 +1,7 @@
 import express from 'express'
 import OrgAddressService from '../../services/org/orgAddressService'
 import HandleError from '../../interface/error/handleError'
+import RedisOperations from '../../repositories/redis/cache/services/redis.cache.operation'
 
 const orgAddressController = express.Router()
 
@@ -123,16 +124,50 @@ orgAddressController.route('/org/address/get-all').get(async(req, res)=>{
 
     const orgAddressService = new OrgAddressService()
     
+    const cache = new RedisOperations()
+
     try{
+
+        cache.connection()
+
+        const orgAddressFromCache = await cache.getCache(`orgAddress`)
+  
+        if(orgAddressFromCache) {
+  
+            const data = JSON.parse(orgAddressFromCache)
+            
+            res.status(200).json({
+                                data: { inCache: 'yes', data }
+                            })
+                
+            await cache.disconnection()
+                            
+            return
+        }
 
         const data = await orgAddressService.getAll()
                 
-        if(data.length === 0) return res.status(404)
-                                        .json({ 
-                                            error: 'no data' 
-                                        })
+        if(data.length === 0) {
+
+            res.status(404).json({ 
+                                error: 'no data' 
+                            })
+
+            await cache.disconnection()
+                            
+            return
+        }
                         
-        return res.status(200).json(data)
+        await cache.setCache(`orgAddress`, JSON.stringify(data), 300)
+
+        res.status(200).json({ 
+                            data: { inCache: 'no', data }
+                       })
+                        
+        await cache.disconnection()
+  
+        return
+
     }catch(__){
         
         return res.status(500)
@@ -148,16 +183,50 @@ orgAddressController.route('/org/address/get-by-id/:id').get(async(req, res)=>{
 
     const orgAddressService = new OrgAddressService()
     
+    const cache = new RedisOperations()
+
     try{
+
+        cache.connection()
+
+        const orgAddressFromCache = await cache.getCache(`orgAddress_${OrgAddress.id}`)
+  
+        if(orgAddressFromCache) {
+  
+            const data = JSON.parse(orgAddressFromCache)
+            
+            res.status(200).json({
+                                data: { inCache: 'yes', data }
+                            })
+                
+            await cache.disconnection()
+                            
+            return
+        }
 
         const data = await orgAddressService.getById(OrgAddress.id)
                 
-        if(data.length === 0) return res.status(404)
-                                        .json({ 
-                                            error: 'organization address not found' 
-                                        })
+        if(data.length === 0) {
+
+            res.status(404).json({ 
+                                error: 'no data' 
+                            })
+
+            await cache.disconnection()
+                            
+            return
+        }
                         
-        return res.status(200).json(data)
+        await cache.setCache(`orgAddress_${OrgAddress.id}`, JSON.stringify(data), 300)
+
+        res.status(200).json({ 
+                            data: { inCache: 'no', data }
+                       })
+                        
+        await cache.disconnection()
+  
+        return
+
     }catch(__){
             
             return res.status(500)

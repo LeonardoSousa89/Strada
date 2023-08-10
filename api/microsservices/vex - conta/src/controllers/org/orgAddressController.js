@@ -16,6 +16,7 @@ exports.orgAddressController = void 0;
 const express_1 = __importDefault(require("express"));
 const orgAddressService_1 = __importDefault(require("../../services/org/orgAddressService"));
 const handleError_1 = __importDefault(require("../../interface/error/handleError"));
+const redis_cache_operation_1 = __importDefault(require("../../repositories/redis/cache/services/redis.cache.operation"));
 const orgAddressController = express_1.default.Router();
 exports.orgAddressController = orgAddressController;
 const err = new handleError_1.default();
@@ -100,14 +101,32 @@ orgAddressController.route('/org/address/update/:id').put((req, res) => __awaite
 }));
 orgAddressController.route('/org/address/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const orgAddressService = new orgAddressService_1.default();
+    const cache = new redis_cache_operation_1.default();
     try {
+        cache.connection();
+        const orgAddressFromCache = yield cache.getCache(`orgAddress`);
+        if (orgAddressFromCache) {
+            const data = JSON.parse(orgAddressFromCache);
+            res.status(200).json({
+                data: { inCache: 'yes', data }
+            });
+            yield cache.disconnection();
+            return;
+        }
         const data = yield orgAddressService.getAll();
-        if (data.length === 0)
-            return res.status(404)
-                .json({
+        if (data.length === 0) {
+            res.status(404).json({
                 error: 'no data'
             });
-        return res.status(200).json(data);
+            yield cache.disconnection();
+            return;
+        }
+        yield cache.setCache(`orgAddress`, JSON.stringify(data), 300);
+        res.status(200).json({
+            data: { inCache: 'no', data }
+        });
+        yield cache.disconnection();
+        return;
     }
     catch (__) {
         return res.status(500)
@@ -119,14 +138,32 @@ orgAddressController.route('/org/address/get-all').get((req, res) => __awaiter(v
 orgAddressController.route('/org/address/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgAddress = Object.assign({}, req.params);
     const orgAddressService = new orgAddressService_1.default();
+    const cache = new redis_cache_operation_1.default();
     try {
-        const data = yield orgAddressService.getById(OrgAddress.id);
-        if (data.length === 0)
-            return res.status(404)
-                .json({
-                error: 'organization address not found'
+        cache.connection();
+        const orgAddressFromCache = yield cache.getCache(`orgAddress_${OrgAddress.id}`);
+        if (orgAddressFromCache) {
+            const data = JSON.parse(orgAddressFromCache);
+            res.status(200).json({
+                data: { inCache: 'yes', data }
             });
-        return res.status(200).json(data);
+            yield cache.disconnection();
+            return;
+        }
+        const data = yield orgAddressService.getById(OrgAddress.id);
+        if (data.length === 0) {
+            res.status(404).json({
+                error: 'no data'
+            });
+            yield cache.disconnection();
+            return;
+        }
+        yield cache.setCache(`orgAddress_${OrgAddress.id}`, JSON.stringify(data), 300);
+        res.status(200).json({
+            data: { inCache: 'no', data }
+        });
+        yield cache.disconnection();
+        return;
     }
     catch (__) {
         return res.status(500)
