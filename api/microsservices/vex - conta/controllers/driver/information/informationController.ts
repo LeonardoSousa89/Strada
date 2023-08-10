@@ -2,6 +2,7 @@ import express from 'express'
 
 import HandleError from '../../../interface/error/handleError'
 import InformationService from '../../../services/driver/information/informationService'
+import RedisOperations from '../../../repositories/redis/cache/services/redis.cache.operation'
 
 const informationController = express.Router()
 
@@ -55,17 +56,51 @@ informationController.route('/org/driver/information/save').post(async (req, res
 informationController.route('/org/driver/information/get-all').get(async (req, res)=>{
 
    const informationService = new InformationService()
+
+   const cache = new RedisOperations()
    
    try{
 
+      cache.connection()
+
+      const informationFromCache = await cache.getCache(`information`)
+
+      if(informationFromCache) {
+
+         const data = JSON.parse(informationFromCache)
+         
+         res.status(200).json({
+                             data: { inCache: 'yes', data }
+                         })
+          
+         await cache.disconnection()
+                         
+         return
+     }
+
       const data = await informationService.getAll()
 
-      if(data.length === 0)  return res.status(404)
-                                           .json({
-                                             error: 'no data'
-                                           }) 
+      if(data.length === 0)  {
 
-      return res.status(200).json(data)
+         res.status(404)
+            .json({
+               error: 'no data'
+            })
+            
+         await cache.disconnection()
+            
+         return  
+      }
+
+      await cache.setCache(`information`, JSON.stringify(data), 300)
+
+      res.status(200).json({ 
+                        data: { inCache: 'no', data }
+                     })
+
+      await cache.disconnection()
+
+      return 
 
    }catch(__){
 
@@ -79,17 +114,51 @@ informationController.route('/org/driver/information/get-by-id/:id').get(async(r
    const Information = { ...req.params }
 
    const informationService = new InformationService()
+
+   const cache = new RedisOperations()
    
    try{
 
+      cache.connection()
+
+      const informationFromCache = await cache.getCache(`information_${Information.id}`)
+
+      if(informationFromCache) {
+
+          const data = JSON.parse(informationFromCache)
+          
+          res.status(200).json({
+                              data: { inCache: 'yes', data }
+                          })
+              
+          await cache.disconnection()
+                          
+          return
+      }
+
       const data = await informationService.getById(Information.id)
 
-      if(data.length === 0) return res.status(404)
-                                      .json({
-                                          error: 'driver information not found'
-                                       })
+      if(data.length === 0){
 
-      return res.status(200).json(data)
+         res.status(404)
+            .json({
+               error: 'driver information not found'
+            })
+
+         await cache.disconnection()
+            
+         return
+      }
+
+      await cache.setCache(`information_${Information.id}`, JSON.stringify(data), 300)
+
+      res.status(200).json({ 
+                           data: { inCache: 'no', data }
+                        })
+
+      await cache.disconnection()
+
+      return 
    }catch(__){
 
       return res.status(500)

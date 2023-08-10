@@ -29,14 +29,11 @@ OrgJoinQueryController.route('/org/join/data').get((req, res) => __awaiter(void 
         });
     try {
         cache.connection();
-        const orgJoinDataFromCache = yield cache.getCache(`org_join_data_${Org.org_id}`);
-        if (orgJoinDataFromCache) {
-            const data = JSON.parse(orgJoinDataFromCache);
+        const orgJoinQueryFromCache = yield cache.getCache(`OrgJoinQuery_${Org.org_id}`);
+        if (orgJoinQueryFromCache) {
+            const data = JSON.parse(orgJoinQueryFromCache);
             res.status(200).json({
-                data: {
-                    inCache: 'yes',
-                    data
-                }
+                data: { inCache: 'yes', data }
             });
             yield cache.disconnection();
             return;
@@ -49,7 +46,7 @@ OrgJoinQueryController.route('/org/join/data').get((req, res) => __awaiter(void 
             yield cache.disconnection();
             return;
         }
-        yield cache.setCache(`org_join_data_${Org.org_id}`, JSON.stringify(data), 300);
+        yield cache.setCache(`OrgJoinQuery_${Org.org_id}`, JSON.stringify(data), 300);
         res.status(200).json({
             data: { inCache: 'no', data }
         });
