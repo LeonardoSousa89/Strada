@@ -151,12 +151,12 @@ driverAddressController.route('/org/driver/address/get-all').get((req, res) => _
     }
 }));
 driverAddressController.route('/org/driver/address/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Driver = Object.assign({}, req.params);
+    const DriverAddress = Object.assign({}, req.params);
     const driverAddressService = new driverAddressService_1.default();
     const cache = new redis_cache_operation_1.default();
     try {
         cache.connection();
-        const driverAddressFromCache = yield cache.getCache(`driverAddress_${Driver.id}`);
+        const driverAddressFromCache = yield cache.getCache(`driverAddress_${DriverAddress.id}`);
         if (driverAddressFromCache) {
             const data = JSON.parse(driverAddressFromCache);
             res.status(200).json({
@@ -165,7 +165,7 @@ driverAddressController.route('/org/driver/address/get-by-id/:id').get((req, res
             yield cache.disconnection();
             return;
         }
-        const data = yield driverAddressService.getById(Driver.id);
+        const data = yield driverAddressService.getById(DriverAddress.id);
         if (data.length === 0) {
             res.status(404).json({
                 error: 'driver address not found'
@@ -173,7 +173,7 @@ driverAddressController.route('/org/driver/address/get-by-id/:id').get((req, res
             yield cache.disconnection();
             return;
         }
-        yield cache.setCache(`driverAddress_${Driver.id}`, JSON.stringify(data), 300);
+        yield cache.setCache(`driverAddress_${DriverAddress.id}`, JSON.stringify(data), 300);
         res.status(200).json({
             data: { inCache: 'no', data }
         });

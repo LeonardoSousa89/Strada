@@ -170,7 +170,7 @@ driverAddressController.route('/org/driver/address/get-all').get(async (req, res
 
 driverAddressController.route('/org/driver/address/get-by-id/:id').get(async(req, res)=>{
 
-   const Driver = { ...req.params }
+   const DriverAddress = { ...req.params }
 
    const driverAddressService = new DriverAddressService()
    
@@ -180,7 +180,7 @@ driverAddressController.route('/org/driver/address/get-by-id/:id').get(async(req
 
       cache.connection()
 
-      const driverAddressFromCache = await cache.getCache(`driverAddress_${Driver.id}`)
+      const driverAddressFromCache = await cache.getCache(`driverAddress_${DriverAddress.id}`)
 
       if(driverAddressFromCache) {
 
@@ -195,7 +195,7 @@ driverAddressController.route('/org/driver/address/get-by-id/:id').get(async(req
           return
       }
 
-      const data = await driverAddressService.getById(Driver.id)
+      const data = await driverAddressService.getById(DriverAddress.id)
 
       if(data.length === 0) {
 
@@ -208,7 +208,7 @@ driverAddressController.route('/org/driver/address/get-by-id/:id').get(async(req
          return 
       }
 
-      await cache.setCache(`driverAddress_${Driver.id}`, JSON.stringify(data), 300)
+      await cache.setCache(`driverAddress_${DriverAddress.id}`, JSON.stringify(data), 300)
 
       res.status(200).json({ 
                           data: { inCache: 'no', data }

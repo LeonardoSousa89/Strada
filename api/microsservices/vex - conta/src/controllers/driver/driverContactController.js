@@ -16,6 +16,7 @@ exports.driverContactController = void 0;
 const express_1 = __importDefault(require("express"));
 const handleError_1 = __importDefault(require("../../interface/error/handleError"));
 const driverContactService_1 = __importDefault(require("../../services/driver/driverContactService"));
+const redis_cache_operation_1 = __importDefault(require("../../repositories/redis/cache/services/redis.cache.operation"));
 const driverContactController = express_1.default.Router();
 exports.driverContactController = driverContactController;
 const err = new handleError_1.default();
@@ -65,15 +66,33 @@ driverContactController.route('/org/driver/contact/update/:id').put((req, res) =
     }
 }));
 driverContactController.route('/org/driver/contact/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const driverContactService = new driverContactService_1.default();
+    const cache = new redis_cache_operation_1.default();
     try {
-        const driverContactService = new driverContactService_1.default();
+        cache.connection();
+        const driverContactFromCache = yield cache.getCache(`driverContact`);
+        if (driverContactFromCache) {
+            const data = JSON.parse(driverContactFromCache);
+            res.status(200).json({
+                data: { inCache: 'yes', data }
+            });
+            yield cache.disconnection();
+            return;
+        }
         const data = yield driverContactService.getAll();
-        if (data.length === 0)
-            return res.status(404)
-                .json({
+        if (data.length === 0) {
+            res.status(404).json({
                 error: 'no data'
             });
-        return res.status(200).json(data);
+            yield cache.disconnection();
+            return;
+        }
+        yield cache.setCache(`driverContact`, JSON.stringify(data), 300);
+        res.status(200).json({
+            data: { inCache: 'no', data }
+        });
+        yield cache.disconnection();
+        return;
     }
     catch (__) {
         return res.status(500)
@@ -83,14 +102,32 @@ driverContactController.route('/org/driver/contact/get-all').get((req, res) => _
 driverContactController.route('/org/driver/contact/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverContact = Object.assign({}, req.params);
     const driverContactService = new driverContactService_1.default();
+    const cache = new redis_cache_operation_1.default();
     try {
+        cache.connection();
+        const driverContactFromCache = yield cache.getCache(`driverContact_${DriverContact.id}`);
+        if (driverContactFromCache) {
+            const data = JSON.parse(driverContactFromCache);
+            res.status(200).json({
+                data: { inCache: 'yes', data }
+            });
+            yield cache.disconnection();
+            return;
+        }
         const data = yield driverContactService.getById(DriverContact.id);
-        if (data.length === 0)
-            return res.status(404)
-                .json({
+        if (data.length === 0) {
+            res.status(404).json({
                 error: 'driver telephone not found'
             });
-        return res.status(200).json(data);
+            yield cache.disconnection();
+            return;
+        }
+        yield cache.setCache(`driverContact_${DriverContact.id}`, JSON.stringify(data), 300);
+        res.status(200).json({
+            data: { inCache: 'no', data }
+        });
+        yield cache.disconnection();
+        return;
     }
     catch (__) {
         return res.status(500)

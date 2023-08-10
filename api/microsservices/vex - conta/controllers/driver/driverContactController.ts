@@ -2,6 +2,7 @@ import express from 'express'
 
 import HandleError from '../../interface/error/handleError'
 import DriverContactService from '../../services/driver/driverContactService'
+import RedisOperations from '../../repositories/redis/cache/services/redis.cache.operation'
 
 const driverContactController = express.Router()
 
@@ -74,17 +75,51 @@ driverContactController.route('/org/driver/contact/update/:id').put(async (req, 
 
 driverContactController.route('/org/driver/contact/get-all').get(async (req, res)=>{
 
+   const driverContactService = new DriverContactService()
+   
+   const cache = new RedisOperations()
+
    try{
-      const driverContactService = new DriverContactService()
+
+      cache.connection()
+
+      const driverContactFromCache = await cache.getCache(`driverContact`)
+
+      if(driverContactFromCache) {
+
+         const data = JSON.parse(driverContactFromCache)
+         
+         res.status(200).json({
+                             data: { inCache: 'yes', data }
+                         })
+          
+         await cache.disconnection()
+                         
+         return
+     }
 
       const data = await driverContactService.getAll()
 
-      if(data.length === 0)  return res.status(404)
-                                           .json({
-                                             error: 'no data'
-                                           }) 
+      if(data.length === 0) {
 
-      return res.status(200).json(data)
+         res.status(404).json({
+                           error: 'no data'
+                        })
+         
+         await cache.disconnection()
+
+         return 
+      } 
+
+      await cache.setCache(`driverContact`, JSON.stringify(data), 300)
+
+      res.status(200).json({ 
+                        data: { inCache: 'no', data }
+                     })
+
+      await cache.disconnection()
+
+      return 
 
    }catch(__){
 
@@ -98,17 +133,51 @@ driverContactController.route('/org/driver/contact/get-by-id/:id').get(async(req
    const DriverContact = { ...req.params }
 
    const driverContactService = new DriverContactService()
+
+   const cache = new RedisOperations()
    
    try{
 
+      cache.connection()
+
+      const driverContactFromCache = await cache.getCache(`driverContact_${DriverContact.id}`)
+
+      if(driverContactFromCache) {
+
+          const data = JSON.parse(driverContactFromCache)
+          
+          res.status(200).json({
+                              data: { inCache: 'yes', data }
+                          })
+              
+          await cache.disconnection()
+                          
+          return
+      }
+
       const data = await driverContactService.getById(DriverContact.id)
 
-      if(data.length === 0) return res.status(404)
-                                      .json({
-                                          error: 'driver telephone not found'
-                                       })
+      if(data.length === 0) {
 
-      return res.status(200).json(data)
+         res.status(404).json({
+                           error: 'driver telephone not found'
+                        })
+                        
+         await cache.disconnection()
+
+         return
+      }
+
+      await cache.setCache(`driverContact_${DriverContact.id}`, JSON.stringify(data), 300)
+
+      res.status(200).json({ 
+                          data: { inCache: 'no', data }
+                      })
+
+      await cache.disconnection()
+
+      return 
+
    }catch(__){
 
       return res.status(500)
