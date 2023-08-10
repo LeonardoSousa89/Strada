@@ -16,6 +16,7 @@ exports.orgContactController = void 0;
 const express_1 = __importDefault(require("express"));
 const orgContactService_1 = __importDefault(require("../../services/org/orgContactService"));
 const handleError_1 = __importDefault(require("../../interface/error/handleError"));
+const redis_cache_operation_1 = __importDefault(require("../../repositories/redis/cache/services/redis.cache.operation"));
 const orgContactController = express_1.default.Router();
 exports.orgContactController = orgContactController;
 const err = new handleError_1.default();
@@ -84,14 +85,32 @@ orgContactController.route('/org/contact/update/:id').put((req, res) => __awaite
 }));
 orgContactController.route('/org/contact/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const orgContactService = new orgContactService_1.default();
+    const cache = new redis_cache_operation_1.default();
     try {
+        cache.connection();
+        const orgContactFromCache = yield cache.getCache(`orgContact`);
+        if (orgContactFromCache) {
+            const data = JSON.parse(orgContactFromCache);
+            res.status(200).json({
+                data: { inCache: 'yes', data }
+            });
+            yield cache.disconnection();
+            return;
+        }
         const data = yield orgContactService.getAll();
-        if (data.length === 0)
-            return res.status(404)
-                .json({
+        if (data.length === 0) {
+            res.status(404).json({
                 error: 'no data'
             });
-        return res.status(200).json(data);
+            yield cache.disconnection();
+            return;
+        }
+        yield cache.setCache(`orgContact`, JSON.stringify(data), 300);
+        res.status(200).json({
+            data: { inCache: 'no', data }
+        });
+        yield cache.disconnection();
+        return;
     }
     catch (__) {
         return res.status(500)
@@ -103,14 +122,32 @@ orgContactController.route('/org/contact/get-all').get((req, res) => __awaiter(v
 orgContactController.route('/org/contact/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgContact = Object.assign({}, req.params);
     const orgContactService = new orgContactService_1.default();
+    const cache = new redis_cache_operation_1.default();
     try {
+        cache.connection();
+        const orgContactFromCache = yield cache.getCache(`orgContact_${OrgContact.id}`);
+        if (orgContactFromCache) {
+            const data = JSON.parse(orgContactFromCache);
+            res.status(200).json({
+                data: { inCache: 'yes', data }
+            });
+            yield cache.disconnection();
+            return;
+        }
         const data = yield orgContactService.getById(OrgContact.id);
-        if (data.length === 0)
-            return res.status(404)
-                .json({
+        if (data.length === 0) {
+            res.status(404).json({
                 error: 'organization contact not found'
             });
-        return res.status(200).json(data);
+            yield cache.disconnection();
+            return;
+        }
+        yield cache.setCache(`orgContact_${OrgContact.id}`, JSON.stringify(data), 300);
+        res.status(200).json({
+            data: { inCache: 'no', data }
+        });
+        yield cache.disconnection();
+        return;
     }
     catch (__) {
         return res.status(500)

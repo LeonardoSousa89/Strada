@@ -209,7 +209,7 @@ orgAddressController.route('/org/address/get-by-id/:id').get(async(req, res)=>{
         if(data.length === 0) {
 
             res.status(404).json({ 
-                                error: 'no data' 
+                                error: 'organization address not found' 
                             })
 
             await cache.disconnection()

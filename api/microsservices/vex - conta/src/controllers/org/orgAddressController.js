@@ -153,7 +153,7 @@ orgAddressController.route('/org/address/get-by-id/:id').get((req, res) => __awa
         const data = yield orgAddressService.getById(OrgAddress.id);
         if (data.length === 0) {
             res.status(404).json({
-                error: 'no data'
+                error: 'organization address not found'
             });
             yield cache.disconnection();
             return;
