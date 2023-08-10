@@ -1,0 +1,56 @@
+version: '3.7'
+
+services:
+  nginx:
+    container_name: nginx
+    image: nginx
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports: 
+      - 80:80
+    networks:
+      proxy:
+        ipv4_address: 172.16.238.2
+
+  server1:
+    container_name: server1
+    image: server1
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+    networks:
+      proxy:
+        ipv4_address: 172.16.238.3
+
+  
+  server2:
+    container_name: server2
+    image: server2
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+    networks:
+      proxy:
+        ipv4_address: 172.16.238.4
+
+networks:
+  proxy:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.238.0/16

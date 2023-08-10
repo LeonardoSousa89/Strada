@@ -1,16 +1,9 @@
--- Gera��o de Modelo f�sico
--- Sql ANSI 2003 - brModelo.
-
--- adaptar ao postgreSql
-
 CREATE DATABASE vex;
 
 \c vex
 
 CREATE SCHEMA vex_schema;
-DROP SCHEMA vex;
 
-/* Organização e suas relações */
 CREATE TABLE IF NOT EXISTS vex_schema.org (
     org_id SERIAL PRIMARY KEY,
     fantasy_name VARCHAR(250),
@@ -55,15 +48,6 @@ CREATE TABLE IF NOT EXISTS vex_schema.org_contact_relation_table (
     FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
 );
 
-CREATE TABLE IF NOT EXISTS vex_schema.org_driver_relation_table (
-    org_relation_id INT,
-    driver_relation_id INT,
-    FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id),
-    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id)
-);
-
-/* Motorista e suas relações */
-
 CREATE TABLE IF NOT EXISTS vex_schema.driver (
     driver_id SERIAL PRIMARY KEY,
     first_name VARCHAR(250) NOT NULL,
@@ -97,8 +81,14 @@ CREATE TABLE IF NOT EXISTS vex_schema.information (
     notes VARCHAR(250) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS vex_schema.driver_address_relation_table (
+CREATE TABLE IF NOT EXISTS vex_schema.org_driver_relation_table (
+    org_relation_id INT,
+    driver_relation_id INT,
+    FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id),
+    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id)
+);
 
+CREATE TABLE IF NOT EXISTS vex_schema.driver_address_relation_table (
     driver_address_relation_id INT,
     driver_relation_id INT,
     org_relation_id INT,
@@ -134,93 +124,13 @@ CREATE TABLE IF NOT EXISTS vex_schema.driver_information_relation_table (
     FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
 ); 
 
-
 ALTER TABLE vex_schema.information ADD COLUMN date_time_registry VARCHAR(250);
 
 ALTER TABLE vex_schema.org_address_relation_table ADD COLUMN org_address_relation_table_id SERIAL;
 ALTER TABLE vex_schema.org_contact_relation_table ADD COLUMN org_contact_relation_table_id SERIAL;
 ALTER TABLE vex_schema.org_driver_relation_table  ADD COLUMN org_driver_relation_table_id  SERIAL;
 
-ALTER TABLE vex_schema.driver_address_relation_table     ADD COLUMN driver_address_relation_table_id SERIAL;
-ALTER TABLE vex_schema.driver_document_relation_table    ADD COLUMN driver_document_relation_table_id SERIAL;
-ALTER TABLE vex_schema.driver_contact_relation_table     ADD COLUMN driver_contact_relation_table_id SERIAL;
+ALTER TABLE vex_schema.driver_address_relation_table     ADD COLUMN driver_address_relation_table_id     SERIAL;
+ALTER TABLE vex_schema.driver_document_relation_table    ADD COLUMN driver_document_relation_table_id    SERIAL;
+ALTER TABLE vex_schema.driver_contact_relation_table     ADD COLUMN driver_contact_relation_table_id     SERIAL;
 ALTER TABLE vex_schema.driver_information_relation_table ADD COLUMN driver_information_relation_table_id SERIAL;
-
-
-DROP TABLE vex_schema.org;
-DROP TABLE vex_schema.org_address;
-DROP TABLE vex_schema.org_contact;
-DROP TABLE vex_schema.org_address_relation_table;
-DROP TABLE vex_schema.org_contact_relation_table;
-DROP TABLE vex_schema.org_driver_relation_table;
-
-DROP TABLE vex_schema.driver;
-DROP TABLE vex_schema.driver_address;
-DROP TABLE vex_schema.driver_contact;
-DROP TABLE vex_schema.driver_document;
-DROP TABLE vex_schema.driver_address_relation_table;
-DROP TABLE vex_schema.driver_document_relation_table;
-DROP TABLE vex_schema.driver_contact_relation_table;
-DROP TABLE vex_schema.driver_information_relation_table;
-
-DROP TABLE vex_schema.information;
-
-
-SELECT * FROM vex_schema.org;
-SELECT * FROM vex_schema.org_address;
-SELECT * FROM vex_schema.org_contact;
-SELECT * FROM vex_schema.org_address_relation_table;
-SELECT * FROM vex_schema.org_contact_relation_table;
-SELECT * FROM vex_schema.org_driver_relation_table;
-
-SELECT * FROM vex_schema.driver;
-SELECT * FROM vex_schema.driver_address;
-SELECT * FROM vex_schema.driver_contact;
-SELECT * FROM vex_schema.driver_document;
-SELECT * FROM vex_schema.driver_address_relation_table;
-SELECT * FROM vex_schema.driver_document_relation_table;
-SELECT * FROM vex_schema.driver_contact_relation_table;
-SELECT * FROM vex_schema.driver_information_relation_table;
-
-SELECT * FROM vex_schema.information;
-
-SELECT  org.org_id, 
-        org.fantasy_name, 
-        org.cnpj, 
-        org.org_status,
-        org.cnae_main_code,
-        org.open_date,
-        address.org_address_id, 
-        address.zip_code, 
-        address.street_type,
-        address.public_place,
-        address.org_number,
-        address.complement,
-        address.neighborhood,
-        address.county,
-        address.country
-FROM vex_schema.org_address_relation_table
-INNER JOIN vex_schema.org_address address
-ON org_address_relation_table.org_address_relation_id = address.org_address_id
-INNER JOIN vex_schema.org org
-ON org_address_relation_table.org_relation_id = org.org_id
-WHERE org.org_id = 37;
-
-
-DELETE FROM vex_schema.org;
-DELETE FROM vex_schema.org_address;
-DELETE FROM vex_schema.org_contact;
-DELETE FROM vex_schema.org_address_relation_table;
-DELETE FROM vex_schema.org_contact_relation_table;
-DELETE FROM vex_schema.org_driver_relation_table;
-
-DELETE FROM vex_schema.driver;
-DELETE FROM vex_schema.driver_address;
-DELETE FROM vex_schema.driver_contact;
-DELETE FROM vex_schema.driver_document;
-DELETE FROM vex_schema.driver_address_relation_table;
-DELETE FROM vex_schema.driver_document_relation_table;
-DELETE FROM vex_schema.driver_contact_relation_table;
-DELETE FROM vex_schema.driver_information_relation_table;
-
-DELETE FROM vex_schema.information;

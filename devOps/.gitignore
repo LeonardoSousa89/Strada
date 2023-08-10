@@ -1,0 +1,3 @@
+./app/.env
+./db/.env.postgres
+./mq/.env.rabbit.mq
