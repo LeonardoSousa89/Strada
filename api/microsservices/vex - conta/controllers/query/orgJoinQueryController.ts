@@ -28,10 +28,7 @@ OrgJoinQueryController.route('/org/join/data').get(async(req, res)=>{
             const data = JSON.parse(orgJoinDataFromCache)
             
             res.status(200).json({
-                                data: {
-                                inCache: 'yes',
-                                data 
-                                }
+                                data: { inCache: 'yes', data }
                             })
              
                             
