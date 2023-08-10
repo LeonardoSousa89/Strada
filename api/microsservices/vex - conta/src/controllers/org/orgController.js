@@ -42,6 +42,7 @@ const handleError_1 = __importDefault(require("../../interface/error/handleError
 const axios_1 = __importDefault(require("axios"));
 const dotenv = __importStar(require("dotenv"));
 const bcrypt_1 = require("../../security/cryptography/bcrypt");
+const redis_cache_operation_1 = __importDefault(require("../../repositories/redis/cache/services/redis.cache.operation"));
 dotenv.config();
 const orgController = express_1.default.Router();
 exports.orgController = orgController;
@@ -172,14 +173,32 @@ orgController.route('/org/update/:id').put((req, res) => __awaiter(void 0, void 
 }));
 orgController.route('/org/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const orgService = new orgService_1.default();
+    const cache = new redis_cache_operation_1.default();
     try {
+        cache.connection();
+        const orgFromCache = yield cache.getCache(`org`);
+        if (orgFromCache) {
+            const data = JSON.parse(orgFromCache);
+            res.status(200).json({
+                data: { inCache: 'yes', data }
+            });
+            yield cache.disconnection();
+            return;
+        }
         const data = yield orgService.getAll();
-        if (data.length === 0)
-            return res.status(404)
-                .json({
+        if (data.length === 0) {
+            res.status(404).json({
                 error: 'no data'
             });
-        return res.status(200).json(data);
+            yield cache.disconnection();
+            return;
+        }
+        yield cache.setCache(`org`, JSON.stringify(data), 300);
+        res.status(200).json({
+            data: { inCache: 'no', data }
+        });
+        yield cache.disconnection();
+        return;
     }
     catch (__) {
         return res.status(500)
@@ -191,14 +210,32 @@ orgController.route('/org/get-all').get((req, res) => __awaiter(void 0, void 0, 
 orgController.route('/org/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.params);
     const orgService = new orgService_1.default();
+    const cache = new redis_cache_operation_1.default();
     try {
+        cache.connection();
+        const orgFromCache = yield cache.getCache(`org_${Org.id}`);
+        if (orgFromCache) {
+            const data = JSON.parse(orgFromCache);
+            res.status(200).json({
+                data: { inCache: 'yes', data }
+            });
+            yield cache.disconnection();
+            return;
+        }
         const data = yield orgService.getById(Org.id);
-        if (data.length === 0)
-            return res.status(404)
-                .json({
+        if (data.length === 0) {
+            res.status(404).json({
                 error: 'organization not found'
             });
-        return res.status(200).json(data);
+            yield cache.disconnection();
+            return;
+        }
+        yield cache.setCache(`org_${Org.id}`, JSON.stringify(data), 300);
+        res.status(200).json({
+            data: { inCache: 'no', data }
+        });
+        yield cache.disconnection();
+        return;
     }
     catch (__) {
         return res.status(500)

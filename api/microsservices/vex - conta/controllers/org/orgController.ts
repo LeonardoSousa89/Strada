@@ -6,6 +6,7 @@ import axios from 'axios'
 import * as dotenv from 'dotenv' 
 
 import { cryptograph } from '../../security/cryptography/bcrypt'
+import RedisOperations from '../../repositories/redis/cache/services/redis.cache.operation'
 
 dotenv.config()
 
@@ -193,16 +194,50 @@ orgController.route('/org/get-all').get(async (req, res)=>{
 
     const orgService = new OrgService()
     
+    const cache = new RedisOperations()
+
     try{
+
+        cache.connection()
+
+        const orgFromCache = await cache.getCache(`org`)
+  
+        if(orgFromCache) {
+  
+            const data = JSON.parse(orgFromCache)
+            
+            res.status(200).json({
+                                data: { inCache: 'yes', data }
+                            })
+                
+            await cache.disconnection()
+                            
+            return
+        }
         
         const data = await orgService.getAll()
         
-        if(data.length === 0) return res.status(404)
-                                        .json({ 
-                                            error: 'no data' 
-                                        })
-            
-        return res.status(200).json(data)
+        if(data.length === 0) {
+
+            res.status(404).json({ 
+                                error: 'no data' 
+                            })
+
+            await cache.disconnection()
+                            
+            return
+        }
+                        
+        await cache.setCache(`org`, JSON.stringify(data), 300)
+
+        res.status(200).json({ 
+                            data: { inCache: 'no', data }
+                       })
+                        
+        await cache.disconnection()
+  
+        return
+
     }catch(__){
 
         return res.status(500)
@@ -219,16 +254,50 @@ orgController.route('/org/get-by-id/:id').get(async (req, res)=>{
     
     const orgService = new OrgService()  
     
+    const cache = new RedisOperations()
+
     try{
+
+        cache.connection()
+
+        const orgFromCache = await cache.getCache(`org_${Org.id}`)
+  
+        if(orgFromCache) {
+  
+            const data = JSON.parse(orgFromCache)
+            
+            res.status(200).json({
+                                data: { inCache: 'yes', data }
+                            })
+                
+            await cache.disconnection()
+                            
+            return
+        }
 
         const data = await orgService.getById(Org.id)
 
-        if(data.length === 0) return res.status(404)
-                                        .json({
-                                            error: 'organization not found'
-                                        })
+        if(data.length === 0) {
 
-        return res.status(200).json(data)
+            res.status(404).json({
+                                error: 'organization not found'
+                            })
+
+            await cache.disconnection()
+
+            return 
+        }
+
+        await cache.setCache(`org_${Org.id}`, JSON.stringify(data), 300)
+
+        res.status(200).json({ 
+                            data: { inCache: 'no', data }
+                       })
+                        
+        await cache.disconnection()
+  
+        return
+
     }catch(__){
        
         return res.status(500)
