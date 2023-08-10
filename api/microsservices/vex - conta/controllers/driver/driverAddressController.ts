@@ -4,6 +4,7 @@ import HandleError from '../../interface/error/handleError'
 import DriverAddressService from '../../services/driver/driverAddressService'
 import axios from 'axios'
 import * as dotenv from 'dotenv' 
+import RedisOperations from '../../repositories/redis/cache/services/redis.cache.operation'
 
 dotenv.config()
 
@@ -115,17 +116,50 @@ driverAddressController.route('/org/driver/address/update/:id').put(async (req, 
 driverAddressController.route('/org/driver/address/get-all').get(async (req, res)=>{
 
    const driverAddressService = new DriverAddressService()
+
+   const cache = new RedisOperations()
    
    try{
       
+      cache.connection()
+
+      const driverAddressFromCache = await cache.getCache(`driverAddress`)
+
+      if(driverAddressFromCache) {
+
+         const data = JSON.parse(driverAddressFromCache)
+         
+         res.status(200).json({
+                             data: { inCache: 'yes', data }
+                         })
+          
+         await cache.disconnection()
+                         
+         return
+     }
+
       const data = await driverAddressService.getAll()
 
-      if(data.length === 0)  return res.status(404)
-                                           .json({
-                                             error: 'no data'
-                                           }) 
+      if(data.length === 0){
 
-      return res.status(200).json(data)
+         res.status(404).json({
+                           error: 'no data'
+                        }) 
+         
+         await cache.disconnection()
+
+         return 
+      }  
+
+      await cache.setCache(`driverAddress`, JSON.stringify(data), 300)
+
+      res.status(200).json({ 
+                        data: { inCache: 'no', data }
+                     })
+
+      await cache.disconnection()
+
+      return 
 
    }catch(__){
 
@@ -136,18 +170,54 @@ driverAddressController.route('/org/driver/address/get-all').get(async (req, res
 
 driverAddressController.route('/org/driver/address/get-by-id/:id').get(async(req, res)=>{
 
+   const Driver = { ...req.params }
+
    const driverAddressService = new DriverAddressService()
    
+   const cache = new RedisOperations()
+
    try{
 
-      const data = await driverAddressService.getById(req.params.id)
+      cache.connection()
 
-      if(data.length === 0) return res.status(404)
-                                      .json({
-                                          error: 'driver address not found'
-                                       })
+      const driverAddressFromCache = await cache.getCache(`driverAddress_${Driver.id}`)
 
-      return res.status(200).json(data)
+      if(driverAddressFromCache) {
+
+          const data = JSON.parse(driverAddressFromCache)
+          
+          res.status(200).json({
+                              data: { inCache: 'yes', data }
+                          })
+              
+          await cache.disconnection()
+                          
+          return
+      }
+
+      const data = await driverAddressService.getById(Driver.id)
+
+      if(data.length === 0) {
+
+         res.status(404).json({
+                           error: 'driver address not found'
+                        })
+         
+         await cache.disconnection()             
+                        
+         return 
+      }
+
+      await cache.setCache(`driverAddress_${Driver.id}`, JSON.stringify(data), 300)
+
+      res.status(200).json({ 
+                          data: { inCache: 'no', data }
+                      })
+
+      await cache.disconnection()
+
+      return 
+
    }catch(__){
 
       return res.status(500)

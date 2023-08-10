@@ -58,6 +58,7 @@ OrgJoinQueryController.route('/org/join/data').get(async(req, res)=>{
         await cache.disconnection()
 
         return 
+        
      }catch(__){
             
             return res.status(500)

@@ -159,6 +159,7 @@ informationController.route('/org/driver/information/get-by-id/:id').get(async(r
       await cache.disconnection()
 
       return 
+      
    }catch(__){
 
       return res.status(500)
