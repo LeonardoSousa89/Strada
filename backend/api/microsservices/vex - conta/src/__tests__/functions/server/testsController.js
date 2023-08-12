@@ -148,3 +148,16 @@ orgTestsController.route('/tests/redis-cache/get/org/data/:id').get((req, res) =
         return;
     }
 }));
+orgTestsController.route('/tests/org/crypted/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = Object.assign({}, req.body);
+        (0, request_test_1.cipherDataAndSave)(data);
+        return res.json({ data: 'crypted with success' });
+    }
+    catch (__) {
+        res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server' + __
+        });
+    }
+}));

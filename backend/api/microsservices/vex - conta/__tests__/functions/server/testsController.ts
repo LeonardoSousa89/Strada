@@ -9,7 +9,8 @@ import * as dotenv from 'dotenv'
 import { cryptograph } from '../../../security/cryptography/bcrypt'
 
 import { testDeleteByTimeInformation } from '../server/functions'
-import { loadDataTest, loadDataTest2 } from '../../request/request.test'
+import { cipherDataAndSave, loadDataTest, 
+         loadDataTest2 } from '../../request/request.test'
 import { connection, disconnection, getCache, setCache } from '../../cache/redis'
 import InformationService from '../../../services/driver/information/informationService'
 import e from 'express'
@@ -166,6 +167,24 @@ orgTestsController.route('/tests/redis-cache/get/org/data/:id').get(async(req, r
         
         return 
         
+    }
+})
+
+orgTestsController.route('/tests/org/crypted/save').post(async(req, res)=>{
+
+    try{
+        
+        const data = { ...req.body }
+
+        cipherDataAndSave(data)
+
+        return res.json({ data: 'crypted with success' })
+    }catch(__){
+
+        res.status(500)
+        .json({ 
+             error: 'i am sorry, there is an error with server'+__
+         })
     }
 })
 
