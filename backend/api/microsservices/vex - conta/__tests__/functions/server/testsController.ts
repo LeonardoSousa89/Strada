@@ -2,18 +2,12 @@ import express, { json, response } from 'express'
 
 import HandleError from '../../../interface/error/handleError'
 
-import axios from 'axios'
-
 import * as dotenv from 'dotenv' 
 
-import { cryptograph } from '../../../security/cryptography/bcrypt'
-
-import { testDeleteByTimeInformation } from '../server/functions'
 import { loadDataTest, 
          loadDataTest2 } from '../../request/request.test'
 import { connection, disconnection, getCache, setCache } from '../../cache/redis'
-import InformationService from '../../../services/driver/information/informationService'
-import e from 'express'
+
 import OrgJoinQuery from '../../../services/query/orgJoinQueryService'
 import { cipherDataAndSave, decipherDataAndGet } from '../../security/crypto'
 

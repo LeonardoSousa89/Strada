@@ -47,7 +47,7 @@ dotenv.config();
 const orgTestsController = express_1.default.Router();
 exports.orgTestsController = orgTestsController;
 const err = new handleError_1.default();
-//teste de cargas
+//testes de cargas/stress
 orgTestsController.route('/tests/org/information/stress').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // 40  requisições/s direto do banco de dados [gravação e leitura]
@@ -147,6 +147,7 @@ orgTestsController.route('/tests/redis-cache/get/org/data/:id').get((req, res) =
         return;
     }
 }));
+//testes de operações com dados criptografados
 orgTestsController.route('/tests/org/crypted/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = Object.assign({}, req.body);
