@@ -17,6 +17,7 @@ const crypto_1 = require("../../security/cryptography/crypto");
 const orgService_1 = __importDefault(require("../../services/org/orgService"));
 const bcrypt_1 = require("../../security/cryptography/bcrypt");
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
+const OrgProjection_1 = require("../../repositories/projections/OrgProjection");
 function cipherDataAndSave(data) {
     return __awaiter(this, void 0, void 0, function* () {
         data.fantasy_name = (0, crypto_1.cipher)(data.fantasy_name);
@@ -33,7 +34,16 @@ function cipherDataAndSave(data) {
 exports.cipherDataAndSave = cipherDataAndSave;
 function decipherDataAndGet() {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield knex_1.default.select('*').from('vex_schema.org');
+        const data = yield knex_1.default.select(OrgProjection_1.orgProjection).from('vex_schema.org');
+        for (let cipherDataPosition in data) {
+            data[cipherDataPosition].fantasy_name = (0, crypto_1.decipher)(data[cipherDataPosition].fantasy_name);
+            data[cipherDataPosition].corporate_name = (0, crypto_1.decipher)(data[cipherDataPosition].corporate_name);
+            data[cipherDataPosition].cnpj = (0, crypto_1.decipher)(data[cipherDataPosition].cnpj);
+            data[cipherDataPosition].org_status = (0, crypto_1.decipher)(data[cipherDataPosition].org_status);
+            data[cipherDataPosition].cnae_main_code = (0, crypto_1.decipher)(data[cipherDataPosition].cnae_main_code);
+            data[cipherDataPosition].open_date = (0, crypto_1.decipher)(data[cipherDataPosition].open_date);
+        }
+        return data;
     });
 }
 exports.decipherDataAndGet = decipherDataAndGet;
