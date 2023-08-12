@@ -12,11 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decipherDataAndGet = exports.cipherDataAndSave = exports.loadDataTest2 = exports.loadDataTest = void 0;
+exports.loadDataTest2 = exports.loadDataTest = void 0;
 const axios_1 = __importDefault(require("axios"));
-const crypto_1 = require("../../security/cryptography/crypto");
-const orgService_1 = __importDefault(require("../../services/org/orgService"));
-const bcrypt_1 = require("../../security/cryptography/bcrypt");
 /**
  *
  * neste momento foi testado a carga suportada atual pela api,
@@ -147,18 +144,3 @@ function loadDataTest2() {
     return request;
 }
 exports.loadDataTest2 = loadDataTest2;
-function cipherDataAndSave(data) {
-    data.fantasy_name = (0, crypto_1.cipher)(data.fantasy_name);
-    data.corporate_name = (0, crypto_1.cipher)(data.corporate_name);
-    data.cnpj = (0, crypto_1.cipher)(data.cnpj);
-    data.org_status = (0, crypto_1.cipher)(data.org_status);
-    data.cnae_main_code = (0, crypto_1.cipher)(data.cnae_main_code);
-    data.open_date = (0, crypto_1.cipher)(data.open_date);
-    data.password = (0, bcrypt_1.cryptograph)(data.password);
-    const orgService = new orgService_1.default(data.fantasy_name, data.corporate_name, data.cnpj, data.org_status, data.cnae_main_code, data.open_date, data.password);
-    orgService.save();
-}
-exports.cipherDataAndSave = cipherDataAndSave;
-function decipherDataAndGet() {
-}
-exports.decipherDataAndGet = decipherDataAndGet;

@@ -9,12 +9,13 @@ import * as dotenv from 'dotenv'
 import { cryptograph } from '../../../security/cryptography/bcrypt'
 
 import { testDeleteByTimeInformation } from '../server/functions'
-import { cipherDataAndSave, loadDataTest, 
+import { loadDataTest, 
          loadDataTest2 } from '../../request/request.test'
 import { connection, disconnection, getCache, setCache } from '../../cache/redis'
 import InformationService from '../../../services/driver/information/informationService'
 import e from 'express'
 import OrgJoinQuery from '../../../services/query/orgJoinQueryService'
+import { cipherDataAndSave, decipherDataAndGet } from '../../security/crypto'
 
 dotenv.config()
 
@@ -173,12 +174,28 @@ orgTestsController.route('/tests/redis-cache/get/org/data/:id').get(async(req, r
 orgTestsController.route('/tests/org/crypted/save').post(async(req, res)=>{
 
     try{
-        
+
         const data = { ...req.body }
 
         cipherDataAndSave(data)
 
         return res.json({ data: 'crypted with success' })
+    }catch(__){
+
+        res.status(500)
+        .json({ 
+             error: 'i am sorry, there is an error with server'+__
+         })
+    }
+})
+
+orgTestsController.route('/tests/org/crypted/data').get(async(req, res)=>{
+
+    try{
+
+        const data = await decipherDataAndGet()
+
+        return res.json(data)
     }catch(__){
 
         res.status(500)

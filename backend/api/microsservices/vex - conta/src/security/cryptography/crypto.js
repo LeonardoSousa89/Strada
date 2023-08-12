@@ -27,7 +27,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.decipher = exports.cipher = void 0;
-/** atualizar para a versão  mais nova de uso do crypto */
+/** atualizar para a versão mais nova de uso do crypto */
 const crypto_1 = __importDefault(require("crypto"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();

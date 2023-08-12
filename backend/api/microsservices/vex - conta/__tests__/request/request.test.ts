@@ -1,8 +1,5 @@
 import axios from "axios";
-import { cipher } from "../../security/cryptography/crypto";
-import Org from "../../entities/org/org";
-import OrgService from "../../services/org/orgService";
-import { cryptograph } from "../../security/cryptography/bcrypt";
+
 
 /**
  * 
@@ -154,31 +151,4 @@ export function loadDataTest2() {
      
  
      return request
- }
-
- export function cipherDataAndSave(data: any): void {
-
-    data.fantasy_name = cipher(data.fantasy_name)
-    data.corporate_name = cipher(data.corporate_name)
-    data.cnpj = cipher(data.cnpj)
-    data.org_status = cipher(data.org_status)
-    data.cnae_main_code = cipher(data.cnae_main_code)
-    data.open_date = cipher(data.open_date) 
-     
-    data.password = cryptograph(data.password)
-
-    const orgService = new OrgService(data.fantasy_name,
-                                      data.corporate_name,
-                                      data.cnpj,
-                                      data.org_status,
-                                      data.cnae_main_code,
-                                      data.open_date,
-                                      data.password)
-
-    orgService.save()
- }
-
- export function decipherDataAndGet() {
-
-    
  }

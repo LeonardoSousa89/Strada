@@ -42,6 +42,7 @@ const dotenv = __importStar(require("dotenv"));
 const request_test_1 = require("../../request/request.test");
 const redis_1 = require("../../cache/redis");
 const orgJoinQueryService_1 = __importDefault(require("../../../services/query/orgJoinQueryService"));
+const crypto_1 = require("../../security/crypto");
 dotenv.config();
 const orgTestsController = express_1.default.Router();
 exports.orgTestsController = orgTestsController;
@@ -151,8 +152,20 @@ orgTestsController.route('/tests/redis-cache/get/org/data/:id').get((req, res) =
 orgTestsController.route('/tests/org/crypted/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = Object.assign({}, req.body);
-        (0, request_test_1.cipherDataAndSave)(data);
+        (0, crypto_1.cipherDataAndSave)(data);
         return res.json({ data: 'crypted with success' });
+    }
+    catch (__) {
+        res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server' + __
+        });
+    }
+}));
+orgTestsController.route('/tests/org/crypted/data').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = yield (0, crypto_1.decipherDataAndGet)();
+        return res.json(data);
     }
     catch (__) {
         res.status(500)
