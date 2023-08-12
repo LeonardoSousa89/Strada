@@ -14,6 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loadDataTest2 = exports.loadDataTest = void 0;
 const axios_1 = __importDefault(require("axios"));
+const url1 = 'http://localhost:8765/org/join/data?org_id=46';
+const url2 = 'http://localhost:8765/org/driver/information/save';
 /**
  *
  * neste momento foi testado a carga suportada atual pela api,
@@ -26,7 +28,6 @@ const axios_1 = __importDefault(require("axios"));
  */
 // 20 requisições/s, comunicação direta com o banco de dados [leitura]
 function loadDataTest() {
-    const url1 = 'http://localhost:80/org/join/data?org_id=46';
     const request = setInterval(() => __awaiter(this, void 0, void 0, function* () {
         const org1 = yield axios_1.default.get(url1);
         const org2 = yield axios_1.default.get(url1);
@@ -80,7 +81,6 @@ function loadDataTest() {
 exports.loadDataTest = loadDataTest;
 // 20 requisições/s direto do banco de dados [gravação]
 function loadDataTest2() {
-    const url2 = 'http://localhost:80/org/driver/information/save';
     const request = setInterval(() => __awaiter(this, void 0, void 0, function* () {
         const data1 = {
             starting_km: "89568",

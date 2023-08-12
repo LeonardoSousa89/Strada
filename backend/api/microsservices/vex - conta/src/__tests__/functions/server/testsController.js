@@ -48,16 +48,14 @@ const orgTestsController = express_1.default.Router();
 exports.orgTestsController = orgTestsController;
 const err = new handleError_1.default();
 //teste de cargas
-orgTestsController.route('/tests').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController.route('/tests/org/information/stress').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // const data = testDeleteByTimeInformation()
-        // console.log(data)
         // 40  requisições/s direto do banco de dados [gravação e leitura]
         const request = (0, request_test_1.loadDataTest)();
         console.log(request);
         const request2 = (0, request_test_1.loadDataTest2)();
         console.log(request2);
-        return res.status(200).json({ tests: 'testing Ok!' });
+        return res.status(200).json({ tests: 'testing start Ok! looking in your bash terminal!' });
     }
     catch (__) {
         return res.status(500).json({ error: 'ops! there is an error' + __ });

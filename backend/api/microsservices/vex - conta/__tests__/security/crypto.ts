@@ -1,5 +1,4 @@
 import { cipher } from "../../security/cryptography/crypto";
-import Org from "../../entities/org/org";
 import OrgService from "../../services/org/orgService";
 import { cryptograph } from "../../security/cryptography/bcrypt";
 import knex from "../../repositories/knex/knex";

@@ -23,14 +23,10 @@ const orgTestsController = express.Router()
 
 const err = new HandleError() 
 
-//teste de cargas
-orgTestsController.route('/tests').get(async(req, res)=>{
+//testes de cargas/stress
+orgTestsController.route('/tests/org/information/stress').get(async(req, res)=>{
 
     try{
-
-        // const data = testDeleteByTimeInformation()
-    
-        // console.log(data)
         
         // 40  requisições/s direto do banco de dados [gravação e leitura]
         const request = loadDataTest()
@@ -41,7 +37,7 @@ orgTestsController.route('/tests').get(async(req, res)=>{
     
         console.log(request2)
     
-        return res.status(200).json({tests: 'testing Ok!'})
+        return res.status(200).json({tests: 'testing start Ok! looking in your bash terminal!'})
     }catch(__){
 
         return res.status(500).json({ error: 'ops! there is an error'+__ })
@@ -171,6 +167,7 @@ orgTestsController.route('/tests/redis-cache/get/org/data/:id').get(async(req, r
     }
 })
 
+//testes de operações com dados criptografados
 orgTestsController.route('/tests/org/crypted/save').post(async(req, res)=>{
 
     try{

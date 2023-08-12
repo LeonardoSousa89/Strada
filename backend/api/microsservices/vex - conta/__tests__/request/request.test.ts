@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const url1 = 'http://localhost:8765/org/join/data?org_id=46'
+const url2 = 'http://localhost:8765/org/driver/information/save'
 
 /**
  * 
@@ -15,7 +17,6 @@ import axios from "axios";
 // 20 requisições/s, comunicação direta com o banco de dados [leitura]
 export function loadDataTest() {
    
-  const url1 = 'http://localhost:80/org/join/data?org_id=46'
 
    const request =  setInterval(async ()=>{
 
@@ -77,7 +78,6 @@ export function loadDataTest() {
 // 20 requisições/s direto do banco de dados [gravação]
 export function loadDataTest2() {
 
-    const url2 = 'http://localhost:80/org/driver/information/save'
 
     const request =  setInterval(async ()=>{
         
