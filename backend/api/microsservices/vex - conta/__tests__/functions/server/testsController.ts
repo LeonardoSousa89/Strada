@@ -1,4 +1,4 @@
-import express, { json, response } from 'express'
+import express from 'express'
 
 import HandleError from '../../../interface/error/handleError'
 
