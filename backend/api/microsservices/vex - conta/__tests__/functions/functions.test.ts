@@ -1,4 +1,4 @@
-import { cipherDataAndSave, decipherDataAndGet } from "../security/crypto"
+import { cipherDriverDataAndSave, cipherOrgDataAndSave, decipherOrgDataAndGet, verifyDeciphedCnpjAndGetData, verifyDeciphedEmailAndGetData } from "../security/crypto"
 
 test('expect cypher data args', function(){
 
@@ -12,13 +12,31 @@ test('expect cypher data args', function(){
         password: 'FAmiLIAaNDRAdE'
     }
 
-    expect(cipherDataAndSave(data)).not.toBeNull()
+    expect(cipherOrgDataAndSave(data)).not.toBeNull()
 })
 
 test('expect decipher data args', function(){
 
-    expect(decipherDataAndGet()).not.toBeNull()
-    expect(decipherDataAndGet()).not.toBeUndefined()
+    expect(decipherOrgDataAndGet()).not.toBeNull()
+    expect(decipherOrgDataAndGet()).not.toBeUndefined()
+})
+
+test('expect cypher data args', function(){
+
+    const data = {
+        first_name: "Alberto",
+        last_name: "Botelho",
+        email: "botelho@outlook.com",
+        password: "logistica2023"
+    }
+
+    expect(cipherDriverDataAndSave(data)).not.toBeNull()
+})
+
+test('expect decipher data args', function(){
+
+    expect(decipherOrgDataAndGet()).not.toBeNull()
+    expect(decipherOrgDataAndGet()).not.toBeUndefined()
 })
 
 

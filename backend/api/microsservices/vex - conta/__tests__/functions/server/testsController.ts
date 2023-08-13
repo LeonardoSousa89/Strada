@@ -9,13 +9,15 @@ import { loadDataTest,
 import { connection, disconnection, getCache, setCache } from '../../cache/redis'
 
 import OrgJoinQuery from '../../../services/query/orgJoinQueryService'
-import { cipherDataAndSave, decipherDataAndGet } from '../../security/crypto'
+import { cipherDriverDataAndSave, cipherOrgDataAndSave, decipherDriverDataAndGet, decipherOrgDataAndGet, verifyDeciphedCnpjAndGetData, verifyDeciphedEmailAndGetData } from '../../security/crypto'
 
 dotenv.config()
 
 const orgTestsController = express.Router()
 
 const err = new HandleError() 
+
+
 
 //testes de cargas/stress
 orgTestsController.route('/tests/org/information/stress').get(async(req, res)=>{
@@ -37,6 +39,8 @@ orgTestsController.route('/tests/org/information/stress').get(async(req, res)=>{
         return res.status(500).json({ error: 'ops! there is an error'+__ })
     }
 })
+
+
 
 // testes de performance com cache utilizando o db redis
 orgTestsController.route('/tests/redis-cache/on-storage').post(async(req, res)=>{
@@ -161,6 +165,8 @@ orgTestsController.route('/tests/redis-cache/get/org/data/:id').get(async(req, r
     }
 })
 
+
+
 //testes de operações com dados criptografados
 orgTestsController.route('/tests/org/crypted/save').post(async(req, res)=>{
 
@@ -168,15 +174,33 @@ orgTestsController.route('/tests/org/crypted/save').post(async(req, res)=>{
 
         const data = { ...req.body }
 
-        cipherDataAndSave(data)
+        cipherOrgDataAndSave(data)
 
-        return res.json({ data: 'crypted with success' })
+        return res.json({ data: 'organization saved and crypted with success' })
     }catch(__){
 
-        res.status(500)
-        .json({ 
-             error: 'i am sorry, there is an error with server'+__
-         })
+        return res.status(500)
+                  .json({ 
+                    error: 'i am sorry, there is an error with server'+__
+                })
+    }
+})
+
+orgTestsController.route('/tests/org/driver/crypted/save').post(async(req, res)=>{
+
+    try{
+
+        const data = { ...req.body }
+
+        cipherDriverDataAndSave(data)
+
+        return res.json({ data: 'driver saved and crypted with success' })
+    }catch(__){
+
+        return res.status(500)
+                  .json({ 
+                    error: 'i am sorry, there is an error with server'+__
+                })
     }
 })
 
@@ -184,15 +208,67 @@ orgTestsController.route('/tests/org/crypted/data').get(async(req, res)=>{
 
     try{
 
-        const data = await decipherDataAndGet()
+        const data = await decipherOrgDataAndGet()
 
         return res.json(data)
     }catch(__){
 
-        res.status(500)
-        .json({ 
-             error: 'i am sorry, there is an error with server'+__
-         })
+        return res.status(500)
+                  .json({ 
+                    error: 'i am sorry, there is an error with server'+__
+                })
+    }
+})
+
+orgTestsController.route('/tests/org/driver/crypted/data').get(async(req, res)=>{
+
+    try{
+
+        const data = await decipherDriverDataAndGet()
+
+        return res.json(data)
+    }catch(__){
+
+        return res.status(500)
+                  .json({ 
+                    error: 'i am sorry, there is an error with server'+__
+                })
+    }
+})
+
+orgTestsController.route('/tests/org/cnpj/verify').get(async(req, res)=>{
+
+    const Org = { ...req.query }
+
+    try{
+
+        const cnpjExistsOrNotexists = await verifyDeciphedCnpjAndGetData(Org.cnpj)
+
+        return res.json(cnpjExistsOrNotexists)
+    }catch(__){
+
+        return res.status(500)
+                  .json({ 
+                    error: 'i am sorry, there is an error with server'+__
+                })
+    }
+})
+
+orgTestsController.route('/tests/org/driver/email/verify').get(async(req, res)=>{
+
+    const Driver = { ...req.query }
+
+    try{
+
+        const emailExistsOrNotexists = await verifyDeciphedEmailAndGetData(Driver.email)
+
+        return res.json(emailExistsOrNotexists)
+    }catch(__){
+
+        return res.status(500)
+                  .json({ 
+                    error: 'i am sorry, there is an error with server'+__
+                })
     }
 })
 

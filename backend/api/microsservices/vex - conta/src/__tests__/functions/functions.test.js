@@ -11,9 +11,22 @@ test('expect cypher data args', function () {
         open_date: '17/05/2013',
         password: 'FAmiLIAaNDRAdE'
     };
-    expect((0, crypto_1.cipherDataAndSave)(data)).not.toBeNull();
+    expect((0, crypto_1.cipherOrgDataAndSave)(data)).not.toBeNull();
 });
 test('expect decipher data args', function () {
-    expect((0, crypto_1.decipherDataAndGet)()).not.toBeNull();
-    expect((0, crypto_1.decipherDataAndGet)()).not.toBeUndefined();
+    expect((0, crypto_1.decipherOrgDataAndGet)()).not.toBeNull();
+    expect((0, crypto_1.decipherOrgDataAndGet)()).not.toBeUndefined();
+});
+test('expect cypher data args', function () {
+    const data = {
+        first_name: "Alberto",
+        last_name: "Botelho",
+        email: "botelho@outlook.com",
+        password: "logistica2023"
+    };
+    expect((0, crypto_1.cipherDriverDataAndSave)(data)).not.toBeNull();
+});
+test('expect decipher data args', function () {
+    expect((0, crypto_1.decipherOrgDataAndGet)()).not.toBeNull();
+    expect((0, crypto_1.decipherOrgDataAndGet)()).not.toBeUndefined();
 });

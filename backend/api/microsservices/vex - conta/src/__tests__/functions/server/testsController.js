@@ -151,11 +151,24 @@ orgTestsController.route('/tests/redis-cache/get/org/data/:id').get((req, res) =
 orgTestsController.route('/tests/org/crypted/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = Object.assign({}, req.body);
-        (0, crypto_1.cipherDataAndSave)(data);
-        return res.json({ data: 'crypted with success' });
+        (0, crypto_1.cipherOrgDataAndSave)(data);
+        return res.json({ data: 'organization saved and crypted with success' });
     }
     catch (__) {
-        res.status(500)
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server' + __
+        });
+    }
+}));
+orgTestsController.route('/tests/org/driver/crypted/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = Object.assign({}, req.body);
+        (0, crypto_1.cipherDriverDataAndSave)(data);
+        return res.json({ data: 'driver saved and crypted with success' });
+    }
+    catch (__) {
+        return res.status(500)
             .json({
             error: 'i am sorry, there is an error with server' + __
         });
@@ -163,11 +176,49 @@ orgTestsController.route('/tests/org/crypted/save').post((req, res) => __awaiter
 }));
 orgTestsController.route('/tests/org/crypted/data').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield (0, crypto_1.decipherDataAndGet)();
+        const data = yield (0, crypto_1.decipherOrgDataAndGet)();
         return res.json(data);
     }
     catch (__) {
-        res.status(500)
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server' + __
+        });
+    }
+}));
+orgTestsController.route('/tests/org/driver/crypted/data').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = yield (0, crypto_1.decipherDriverDataAndGet)();
+        return res.json(data);
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server' + __
+        });
+    }
+}));
+orgTestsController.route('/tests/org/cnpj/verify').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Org = Object.assign({}, req.query);
+    try {
+        const cnpjExistsOrNotexists = yield (0, crypto_1.verifyDeciphedCnpjAndGetData)(Org.cnpj);
+        return res.json(cnpjExistsOrNotexists);
+    }
+    catch (__) {
+        return res.status(500)
+            .json({
+            error: 'i am sorry, there is an error with server' + __
+        });
+    }
+}));
+orgTestsController.route('/tests/org/driver/email/verify').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Driver = Object.assign({}, req.query);
+    try {
+        const emailExistsOrNotexists = yield (0, crypto_1.verifyDeciphedEmailAndGetData)(Driver.email);
+        return res.json(emailExistsOrNotexists);
+    }
+    catch (__) {
+        return res.status(500)
             .json({
             error: 'i am sorry, there is an error with server' + __
         });
