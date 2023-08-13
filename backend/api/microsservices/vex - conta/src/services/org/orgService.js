@@ -22,8 +22,9 @@ class OrgService extends org_1.default {
     }
     verifyCnpj(cnpj) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExistsCnpj = yield knex_1.default.where('cnpj', cnpj)
-                .from('vex_schema.org')
+            const existsOrNotExistsCnpj = yield knex_1.default
+                .where("cnpj", cnpj)
+                .from("vex_schema.org")
                 .first();
             if (existsOrNotExistsCnpj)
                 return true;
@@ -33,8 +34,9 @@ class OrgService extends org_1.default {
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExistsId = yield knex_1.default.where('org_id', id)
-                .from('vex_schema.org')
+            const existsOrNotExistsId = yield knex_1.default
+                .where("org_id", id)
+                .from("vex_schema.org")
                 .first();
             if (existsOrNotExistsId)
                 return true;
@@ -44,35 +46,33 @@ class OrgService extends org_1.default {
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.insert(this.org).from('vex_schema.org');
+            yield knex_1.default.insert(this.org).from("vex_schema.org");
         });
     }
     update(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.where('org_id', id)
-                .update(this.org)
-                .from('vex_schema.org');
+            yield knex_1.default.where("org_id", id).update(this.org).from("vex_schema.org");
         });
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select(OrgProjection_1.orgProjection)
-                .from('vex_schema.org');
+            const data = yield knex_1.default.select(OrgProjection_1.orgProjection).from("vex_schema.org");
             return data;
         });
     }
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.where('org_id', id)
+            const data = yield knex_1.default
+                .where("org_id", id)
                 .select(OrgProjection_1.orgProjection)
-                .from('vex_schema.org');
+                .from("vex_schema.org");
             return data;
         });
     }
     deleteAll() { }
     deleteById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.where('org_id', id).delete().from('vex_schema.org');
+            yield knex_1.default.where("org_id", id).delete().from("vex_schema.org");
         });
     }
 }

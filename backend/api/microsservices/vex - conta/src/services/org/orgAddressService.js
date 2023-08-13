@@ -22,8 +22,9 @@ class OrgAddressService extends orgAddress_1.default {
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExistsId = yield knex_1.default.where('org_address_id', id)
-                .from('vex_schema.org_address')
+            const existsOrNotExistsId = yield knex_1.default
+                .where("org_address_id", id)
+                .from("vex_schema.org_address")
                 .first();
             if (existsOrNotExistsId)
                 return true;
@@ -33,36 +34,41 @@ class OrgAddressService extends orgAddress_1.default {
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.insert(this.orgAddress).from('vex_schema.org_address');
+            yield knex_1.default.insert(this.orgAddress).from("vex_schema.org_address");
         });
     }
     update(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.where('org_address_id', id)
+            yield knex_1.default
+                .where("org_address_id", id)
                 .update(this.orgAddress)
-                .from('vex_schema.org_address');
+                .from("vex_schema.org_address");
         });
     }
     getAll(size, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select(OrgProjection_1.orgAddressProjection).from('vex_schema.org_address');
+            const data = yield knex_1.default
+                .select(OrgProjection_1.orgAddressProjection)
+                .from("vex_schema.org_address");
             return data;
         });
     }
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.where('org_address_id', id)
+            const data = yield knex_1.default
+                .where("org_address_id", id)
                 .select(OrgProjection_1.orgAddressProjection)
-                .from('vex_schema.org_address');
+                .from("vex_schema.org_address");
             return data;
         });
     }
     deleteAll() { }
     deleteById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.where('org_address_id', id)
+            yield knex_1.default
+                .where("org_address_id", id)
                 .delete()
-                .from('vex_schema.org_address');
+                .from("vex_schema.org_address");
         });
     }
 }

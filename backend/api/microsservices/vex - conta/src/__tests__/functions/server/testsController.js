@@ -48,179 +48,171 @@ const orgTestsController = express_1.default.Router();
 exports.orgTestsController = orgTestsController;
 const err = new handleError_1.default();
 //testes de cargas/stress
-orgTestsController.route('/tests/org/information/stress').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController
+    .route("/tests/org/information/stress")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // 40  requisições/s direto do banco de dados [gravação e leitura]
+        // 60  requisições/s direto do banco de dados [gravação e leitura]
         const request = (0, request_test_1.loadDataTest)();
         console.log(request);
         const request2 = (0, request_test_1.loadDataTest2)();
         console.log(request2);
-        return res.status(200).json({ tests: 'testing start Ok! looking in your bash terminal!' });
+        return res
+            .status(200)
+            .json({ tests: "testing start Ok! looking in your bash terminal!" });
     }
     catch (__) {
-        return res.status(500).json({ error: 'ops! there is an error' + __ });
+        return res.status(500).json({ error: "ops! there is an error" + __ });
     }
 }));
 // testes de performance com cache utilizando o db redis
-orgTestsController.route('/tests/redis-cache/on-storage').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController
+    .route("/tests/redis-cache/on-storage")
+    .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, redis_1.connection)();
         yield (0, redis_1.setCache)(req.body.key, req.body.value, req.body.expiration);
-        res.status(201).json({ msg: 'cache on storage' });
-        yield (0, redis_1.disconnection)();
-        return;
+        return res.status(201).json({ msg: "cache on storage" });
     }
     catch (__) {
-        return res.status(500).json({ error: 'ops! there is an error' + __ });
+        return res.status(500).json({ error: "ops! there is an error" + __ });
     }
-})).get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+}))
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, redis_1.connection)();
         const cache = yield (0, redis_1.getCache)(req.query.cache);
-        res.status(200).json(cache);
-        yield (0, redis_1.disconnection)();
-        return;
+        return res.status(200).json(cache);
     }
     catch (__) {
-        return res.status(500).json({ error: 'ops! there is an error' + __ });
+        return res.status(500).json({ error: "ops! there is an error" + __ });
     }
 }));
-orgTestsController.route('/tests/redis-cache/get/org/data/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController
+    .route("/tests/redis-cache/get/org/data/:id")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, redis_1.connection)();
         const orgDataFromCache = yield (0, redis_1.getCache)(`org_data_${req.params.id}`);
         if (orgDataFromCache) {
             const data = JSON.parse(orgDataFromCache);
-            res.status(200).json({
+            return res.status(200).json({
                 data: {
-                    inCache: 'yes',
-                    data
-                }
+                    inCache: "yes",
+                    data,
+                },
             });
-            yield (0, redis_1.disconnection)();
-            return;
         }
         const query = new orgJoinQueryService_1.default();
         const data = yield query.getById(Number(req.params.id));
         if (data.data.organization.length === 0) {
-            res.status(404)
-                .json({
-                msg: 'no data'
+            return res.status(404).json({
+                msg: "no data",
             });
-            yield (0, redis_1.disconnection)();
-            return;
         }
         // 60 * 60 * 24 * 7 (expiration: 7 dias)
         //a lógica é a seguinte: a informação será salva,
         // na api de registro, no database de registro e no banco de cache
         // o usuário de nível gratuito, somente acessará os dados em cache,
-        // com ttl equivalente a 1 semana, após isso os dados em cache serão 
+        // com ttl equivalente a 1 semana, após isso os dados em cache serão
         // eliminados e a API de registro somente será acessível a administração
         // do app, para fins de consulta ou jurídico, será eliminar primeiro a
-        // associação da informação e logo após a informação, ambos estarão 
+        // associação da informação e logo após a informação, ambos estarão
         // em cache
         yield (0, redis_1.setCache)(`org_data_${req.params.id}`, JSON.stringify(data), 300);
         // neste ponto a tentativa de parse levaria a erros continuos,
-        // pois aqui o valor da value de informationFromCache é null 
-        // e a tentativa de parse para JSON, seria o mesmo que 
+        // pois aqui o valor da value de informationFromCache é null
+        // e a tentativa de parse para JSON, seria o mesmo que
         // converter um valor null em JSON.
-        // então se na chamada não houver dados em cache, 
+        // então se na chamada não houver dados em cache,
         // os dados obtidos na requisição REST serão salvos no redis e
         // apresentados ao usuário, na próxima chamada o valor já será
         // diferente de null, aí sim poderá ser parseado para JSON
-        // e obtido do banco de dados de cache. 
-        res.status(200).json({
+        // e obtido do banco de dados de cache.
+        return res.status(200).json({
             data: {
-                inCache: 'no',
-                data
-            }
+                inCache: "no",
+                data,
+            },
         });
-        yield (0, redis_1.disconnection)();
-        return;
     }
     catch (__) {
-        res.status(500)
-            .json({
-            error: 'i am sorry, there is an error with server' + __
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
         });
-        yield (0, redis_1.disconnection)();
-        return;
     }
 }));
 //testes de operações com dados criptografados
-orgTestsController.route('/tests/org/crypted/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController.route("/tests/org/crypted/save").post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = Object.assign({}, req.body);
         (0, crypto_1.cipherOrgDataAndSave)(data);
-        return res.json({ data: 'organization saved and crypted with success' });
+        return res.json({ data: "organization saved and crypted with success" });
     }
     catch (__) {
-        return res.status(500)
-            .json({
-            error: 'i am sorry, there is an error with server' + __
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
         });
     }
 }));
-orgTestsController.route('/tests/org/driver/crypted/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController
+    .route("/tests/org/driver/crypted/save")
+    .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = Object.assign({}, req.body);
         (0, crypto_1.cipherDriverDataAndSave)(data);
-        return res.json({ data: 'driver saved and crypted with success' });
+        return res.json({ data: "driver saved and crypted with success" });
     }
     catch (__) {
-        return res.status(500)
-            .json({
-            error: 'i am sorry, there is an error with server' + __
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
         });
     }
 }));
-orgTestsController.route('/tests/org/crypted/data').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController.route("/tests/org/crypted/data").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield (0, crypto_1.decipherOrgDataAndGet)();
         return res.json(data);
     }
     catch (__) {
-        return res.status(500)
-            .json({
-            error: 'i am sorry, there is an error with server' + __
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
         });
     }
 }));
-orgTestsController.route('/tests/org/driver/crypted/data').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController
+    .route("/tests/org/driver/crypted/data")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield (0, crypto_1.decipherDriverDataAndGet)();
         return res.json(data);
     }
     catch (__) {
-        return res.status(500)
-            .json({
-            error: 'i am sorry, there is an error with server' + __
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
         });
     }
 }));
-orgTestsController.route('/tests/org/cnpj/verify').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController.route("/tests/org/cnpj/verify").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.query);
     try {
         const cnpjExistsOrNotexists = yield (0, crypto_1.verifyDeciphedCnpjAndGetData)(Org.cnpj);
         return res.json(cnpjExistsOrNotexists);
     }
     catch (__) {
-        return res.status(500)
-            .json({
-            error: 'i am sorry, there is an error with server' + __
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
         });
     }
 }));
-orgTestsController.route('/tests/org/driver/email/verify').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController
+    .route("/tests/org/driver/email/verify")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Driver = Object.assign({}, req.query);
     try {
         const emailExistsOrNotexists = yield (0, crypto_1.verifyDeciphedEmailAndGetData)(Driver.email);
         return res.json(emailExistsOrNotexists);
     }
     catch (__) {
-        return res.status(500)
-            .json({
-            error: 'i am sorry, there is an error with server' + __
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
         });
     }
 }));

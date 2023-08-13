@@ -31,6 +31,6 @@ dotenv.config();
 exports.client = (0, redis_1.createClient)({
     socket: {
         host: process.env.DEV_REDIS_CLIENT,
-        port: 6379
-    }
+        port: 6379,
+    },
 });

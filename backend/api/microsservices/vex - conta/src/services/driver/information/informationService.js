@@ -22,8 +22,9 @@ class InformationService extends information_1.default {
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExistsId = yield knex_1.default.where('information_id', id)
-                .from('vex_schema.information')
+            const existsOrNotExistsId = yield knex_1.default
+                .where("information_id", id)
+                .from("vex_schema.information")
                 .first();
             if (existsOrNotExistsId)
                 return true;
@@ -32,68 +33,68 @@ class InformationService extends information_1.default {
         });
     }
     verifyInformation(starting_km, final_km) {
-        if (starting_km === null &&
-            final_km === null)
+        if (starting_km === null && final_km === null)
             return false;
-        if (starting_km === '' &&
-            final_km === '')
+        if (starting_km === "" && final_km === "")
             return false;
-        if (starting_km === null &&
-            final_km === '')
+        if (starting_km === null && final_km === "")
             return false;
-        if (starting_km === '' &&
-            final_km === null)
+        if (starting_km === "" && final_km === null)
             return false;
     }
     getTime() {
         const southAmericaTimeZone = new Date();
-        const date = new Intl.DateTimeFormat('pt-BR', {
-            timeZone: 'America/Sao_Paulo',
-            dateStyle: 'long'
+        const date = new Intl.DateTimeFormat("pt-BR", {
+            timeZone: "America/Sao_Paulo",
+            dateStyle: "long",
         }).format(southAmericaTimeZone);
-        const time = new Intl.DateTimeFormat('pt-BR', {
-            timeZone: 'America/Sao_Paulo',
-            timeStyle: 'short'
+        const time = new Intl.DateTimeFormat("pt-BR", {
+            timeZone: "America/Sao_Paulo",
+            timeStyle: "short",
         }).format(southAmericaTimeZone);
         return `${date}, ${time}`;
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.insert(this.information).from('vex_schema.information');
+            yield knex_1.default.insert(this.information).from("vex_schema.information");
         });
     }
     update(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.where('information_id', id)
+            yield knex_1.default
+                .where("information_id", id)
                 .update(this.information)
-                .from('vex_schema.information');
+                .from("vex_schema.information");
         });
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select(informationProjection_1.informationProjection)
-                .from('vex_schema.information');
+            const data = yield knex_1.default
+                .select(informationProjection_1.informationProjection)
+                .from("vex_schema.information");
             return data;
         });
     }
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.where('information_id', id)
+            const data = yield knex_1.default
+                .where("information_id", id)
                 .select(informationProjection_1.informationProjection)
-                .from('vex_schema.information');
+                .from("vex_schema.information");
             return data;
         });
     }
     deleteAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.delete().from('vex_schema.information');
+            yield knex_1.default.delete().from("vex_schema.information");
         });
     }
     deleteById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.where('information_id', id)
+            yield knex_1.default
+                .where("information_id", id)
                 .delete()
-                .from('vex_schema.information');
+                .from("vex_schema.information");
         });
     }
 }

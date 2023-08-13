@@ -36,13 +36,13 @@ const key = process.env.CRYPTO_SECRET_KEY;
 const strategy = process.env.STRATEGY;
 function cipher(args) {
     const cryptography = crypto_1.default.createCipher(algorithm, key);
-    const crypt = cryptography.update(args, 'utf8', strategy);
+    const crypt = cryptography.update(args, "utf8", strategy);
     return crypt;
 }
 exports.cipher = cipher;
 function decipher(args) {
     const cryptography = crypto_1.default.createDecipher(algorithm, key);
-    const decrypt = cryptography.update(args, strategy, 'utf8');
+    const decrypt = cryptography.update(args, strategy, "utf8");
     return decrypt;
 }
 exports.decipher = decipher;

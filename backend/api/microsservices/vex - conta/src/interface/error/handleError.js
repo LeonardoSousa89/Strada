@@ -11,7 +11,7 @@ class HandleError {
             throw error;
     }
     exceptionFieldIsEmpty(args, error) {
-        if (args === '')
+        if (args === "")
             throw error;
     }
     exceptionFieldValueLessToType(args, error) {

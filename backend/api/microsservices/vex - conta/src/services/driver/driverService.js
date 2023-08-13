@@ -22,8 +22,9 @@ class DriverService extends driver_1.default {
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExistsId = yield knex_1.default.where('driver_id', id)
-                .from('vex_schema.driver')
+            const existsOrNotExistsId = yield knex_1.default
+                .where("driver_id", id)
+                .from("vex_schema.driver")
                 .first();
             if (existsOrNotExistsId)
                 return true;
@@ -33,8 +34,9 @@ class DriverService extends driver_1.default {
     }
     verifyEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExistsEmail = yield knex_1.default.where('email', email)
-                .from('vex_schema.driver')
+            const existsOrNotExistsEmail = yield knex_1.default
+                .where("email", email)
+                .from("vex_schema.driver")
                 .first();
             if (existsOrNotExistsEmail)
                 return true;
@@ -44,41 +46,40 @@ class DriverService extends driver_1.default {
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.insert(this.driver).from('vex_schema.driver');
+            yield knex_1.default.insert(this.driver).from("vex_schema.driver");
         });
     }
     update(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.where('driver_id', id)
+            yield knex_1.default
+                .where("driver_id", id)
                 .update(this.driver)
-                .from('vex_schema.driver');
+                .from("vex_schema.driver");
         });
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select(driverProjection_1.driverProjection)
-                .from('vex_schema.driver');
+            const data = yield knex_1.default.select(driverProjection_1.driverProjection).from("vex_schema.driver");
             return data;
         });
     }
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.where('driver_id', id)
+            const data = yield knex_1.default
+                .where("driver_id", id)
                 .select(driverProjection_1.driverProjection)
-                .from('vex_schema.driver');
+                .from("vex_schema.driver");
             return data;
         });
     }
     deleteAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.delete().from('vex_schema.driver');
+            yield knex_1.default.delete().from("vex_schema.driver");
         });
     }
     deleteById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.where('driver_id', id)
-                .delete()
-                .from('vex_schema.driver');
+            yield knex_1.default.where("driver_id", id).delete().from("vex_schema.driver");
         });
     }
 }

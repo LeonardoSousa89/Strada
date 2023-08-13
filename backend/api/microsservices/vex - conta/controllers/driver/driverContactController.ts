@@ -1,241 +1,222 @@
-import express from 'express'
+import express from "express";
 
-import HandleError from '../../interface/error/handleError'
-import DriverContactService from '../../services/driver/driverContactService'
-import RedisOperations from '../../repositories/redis/cache/services/redis.cache.operation'
+import HandleError from "../../interface/error/handleError";
+import DriverContactService from "../../services/driver/driverContactService";
+import RedisOperations from "../../repositories/redis/cache/services/redis.cache.operation";
 
-const driverContactController = express.Router()
+const driverContactController = express.Router();
 
-const err = new HandleError()
+const err = new HandleError();
 
-driverContactController.route('/org/driver/contact/save').post(async (req, res)=>{
+driverContactController
+  .route("/org/driver/contact/save")
+  .post(async (req, res) => {
+    const DriverContact = { ...req.body };
 
-   const DriverContact = { ...req.body }
+    try {
+      err.exceptionFieldNullOrUndefined(
+        DriverContact.telephone,
+        "telephone is undefined or null"
+      );
 
-   try{
+      err.exceptionFieldIsEmpty(
+        DriverContact.telephone.trim(),
+        "telephone can not be empty"
+      );
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
 
-      err.exceptionFieldNullOrUndefined(DriverContact.telephone, 'telephone is undefined or null')
+    try {
+      const driverContactService = new DriverContactService(
+        DriverContact.telephone
+      );
 
-      err.exceptionFieldIsEmpty(DriverContact.telephone.trim(), 'telephone can not be empty')
-   }catch(e){
+      await driverContactService.save();
 
-      return res.status(400).json({ error: e })
-   }
-   
-   try{
+      return res.status(201).json({ msg: "driver telephone save" });
+    } catch (__) {
+      return res
+        .status(500)
+        .json({ error: "i am sorry, there is an error with server" });
+    }
+  });
 
-      const driverContactService = new DriverContactService(DriverContact.telephone)
+driverContactController
+  .route("/org/driver/contact/update/:id")
+  .put(async (req, res) => {
+    const DriverContact = { ...req.body };
 
-      await driverContactService.save()
+    try {
+      err.exceptionFieldNullOrUndefined(
+        DriverContact.telephone,
+        "telephone is undefined or null"
+      );
 
-      return res.status(201).json({ msg: 'driver telephone save' })
+      err.exceptionFieldIsEmpty(
+        DriverContact.telephone.trim(),
+        "telephone can not be empty"
+      );
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
 
-   }catch(__){
+    const driverTelephoneExistsOrNotExists =
+      await new DriverContactService().verifyId(req.params.id);
 
-      return res.status(500)
-                .json({ error: 'i am sorry, there is an error with server' })
-   }
-})
+    if (driverTelephoneExistsOrNotExists === false)
+      return res.status(404).json({
+        error: "driver telephone not found",
+      });
 
-driverContactController.route('/org/driver/contact/update/:id').put(async (req, res)=>{
+    try {
+      const driverContactService = new DriverContactService(
+        DriverContact.telephone
+      );
 
-   const DriverContact = { ...req.body }
+      await driverContactService.update(req.params.id);
 
-   try{
+      return res.status(201).json({ msg: "driver telephone update" });
+    } catch (__) {
+      return res
+        .status(500)
+        .json({ error: "i am sorry, there is an error with server" });
+    }
+  });
 
-      err.exceptionFieldNullOrUndefined(DriverContact.telephone, 'telephone is undefined or null')
-  
-      err.exceptionFieldIsEmpty(DriverContact.telephone.trim(), 'telephone can not be empty')
-   }catch(e){
+driverContactController
+  .route("/org/driver/contact/get-all")
+  .get(async (req, res) => {
+    const driverContactService = new DriverContactService();
 
-      return res.status(400).json({ error: e })
-   }
-   
-   const driverTelephoneExistsOrNotExists = await new DriverContactService()
-                                                         .verifyId(req.params.id)
+    const cache = new RedisOperations();
 
-   if(driverTelephoneExistsOrNotExists === false) return res.status(404)
-                                                            .json({
-                                                               error: 'driver telephone not found'
-                                                            })
+    try {
+      const driverContactFromCache = await cache.getCache(`driverContact`);
 
-   try{
+      if (driverContactFromCache) {
+        const data = JSON.parse(driverContactFromCache);
 
-      const driverContactService = new DriverContactService(DriverContact.telephone)
-
-      await driverContactService.update(req.params.id)
-
-      return res.status(201).json({ msg: 'driver telephone update' })
-   }catch(__){
-
-      return res.status(500)
-                .json({ error: 'i am sorry, there is an error with server' })
-   }
-})
-
-driverContactController.route('/org/driver/contact/get-all').get(async (req, res)=>{
-
-   const driverContactService = new DriverContactService()
-   
-   const cache = new RedisOperations()
-
-   try{
-
-      cache.connection()
-
-      const driverContactFromCache = await cache.getCache(`driverContact`)
-
-      if(driverContactFromCache) {
-
-         const data = JSON.parse(driverContactFromCache)
-         
-         res.status(200).json({
-                             data: { inCache: 'yes', data }
-                         })
-          
-         await cache.disconnection()
-                         
-         return
-     }
-
-      const data = await driverContactService.getAll()
-
-      if(data.length === 0) {
-
-         res.status(404).json({
-                           error: 'no data'
-                        })
-         
-         await cache.disconnection()
-
-         return 
-      } 
-
-      await cache.setCache(`driverContact`, JSON.stringify(data), 300)
-
-      res.status(200).json({ 
-                        data: { inCache: 'no', data }
-                     })
-
-      await cache.disconnection()
-
-      return 
-
-   }catch(__){
-
-      return res.status(500)
-                .json({ error: 'i am sorry, there is an error with server' })
-   }
-})
-
-driverContactController.route('/org/driver/contact/get-by-id/:id').get(async(req, res)=>{
-
-   const DriverContact = { ...req.params }
-
-   const driverContactService = new DriverContactService()
-
-   const cache = new RedisOperations()
-   
-   try{
-
-      cache.connection()
-
-      const driverContactFromCache = await cache.getCache(`driverContact_${DriverContact.id}`)
-
-      if(driverContactFromCache) {
-
-          const data = JSON.parse(driverContactFromCache)
-          
-          res.status(200).json({
-                              data: { inCache: 'yes', data }
-                          })
-              
-          await cache.disconnection()
-                          
-          return
+        return res.status(200).json({
+          data: { inCache: "yes", data },
+        });
       }
 
-      const data = await driverContactService.getById(DriverContact.id)
+      const data = await driverContactService.getAll();
 
-      if(data.length === 0) {
-
-         res.status(404).json({
-                           error: 'driver telephone not found'
-                        })
-                        
-         await cache.disconnection()
-
-         return
+      if (data.length === 0) {
+        return res.status(404).json({
+          error: "no data",
+        });
       }
 
-      await cache.setCache(`driverContact_${DriverContact.id}`, JSON.stringify(data), 300)
+      await cache.setCache(`driverContact`, JSON.stringify(data), 300);
 
-      res.status(200).json({ 
-                          data: { inCache: 'no', data }
-                      })
+      return res.status(200).json({
+        data: { inCache: "no", data },
+      });
+    } catch (__) {
+      return res
+        .status(500)
+        .json({ error: "i am sorry, there is an error with server" });
+    }
+  });
 
-      await cache.disconnection()
+driverContactController
+  .route("/org/driver/contact/get-by-id/:id")
+  .get(async (req, res) => {
+    const DriverContact = { ...req.params };
 
-      return 
+    const driverContactService = new DriverContactService();
 
-   }catch(__){
+    const cache = new RedisOperations();
 
-      return res.status(500)
-                .json({ 
-                  error: 'i am sorry, there is an error with server' 
-               })
+    try {
+      const driverContactFromCache = await cache.getCache(
+        `driverContact_${DriverContact.id}`
+      );
 
-   }
-})
+      if (driverContactFromCache) {
+        const data = JSON.parse(driverContactFromCache);
 
-driverContactController.route('/org/driver/contact/delete-all').delete(async (req, res)=>{
+        return res.status(200).json({
+          data: { inCache: "yes", data },
+        });
+      }
 
-   const driverContactService = new DriverContactService()
+      const data = await driverContactService.getById(DriverContact.id);
 
-   try{
+      if (data.length === 0) {
+        return res.status(404).json({
+          error: "driver telephone not found",
+        });
+      }
 
-      const driverContactExistsOrNotExists = await driverContactService.getAll()
+      await cache.setCache(
+        `driverContact_${DriverContact.id}`,
+        JSON.stringify(data),
+        300
+      );
 
-      if(driverContactExistsOrNotExists.length === 0) return res.status(404)
-                                                         .json({
-                                                            error: 'no data'
-                                                         })
+      return res.status(200).json({
+        data: { inCache: "no", data },
+      });
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
 
-      await driverContactService.deleteAll()
+driverContactController
+  .route("/org/driver/contact/delete-all")
+  .delete(async (req, res) => {
+    const driverContactService = new DriverContactService();
 
-      return res.status(204).json({})
+    try {
+      const driverContactExistsOrNotExists =
+        await driverContactService.getAll();
 
-   }catch(__){
+      if (driverContactExistsOrNotExists.length === 0)
+        return res.status(404).json({
+          error: "no data",
+        });
 
-      return res.status(500)
-                .json({ error: 'i am sorry, there is an error with server' })
-   }
-})
+      await driverContactService.deleteAll();
 
-driverContactController.route('/org/driver/contact/delete-by-id/:id').delete(async (req, res)=>{
+      return res.status(204).json({});
+    } catch (__) {
+      return res
+        .status(500)
+        .json({ error: "i am sorry, there is an error with server" });
+    }
+  });
 
-   const DriverContact = { ...req.params }
-   
-   const driverContactService = new DriverContactService()
+driverContactController
+  .route("/org/driver/contact/delete-by-id/:id")
+  .delete(async (req, res) => {
+    const DriverContact = { ...req.params };
 
-   try{  
+    const driverContactService = new DriverContactService();
 
-      const driverExistsOrNotExists = await driverContactService.getById(DriverContact.id)
+    try {
+      const driverExistsOrNotExists = await driverContactService.getById(
+        DriverContact.id
+      );
 
-      if(driverExistsOrNotExists.length === 0) return res.status(404)
-                                                         .json({
-                                                            error: 'driver telephone not found'
-                                                         })
+      if (driverExistsOrNotExists.length === 0)
+        return res.status(404).json({
+          error: "driver telephone not found",
+        });
 
-      await driverContactService.deleteById(DriverContact.id)
+      await driverContactService.deleteById(DriverContact.id);
 
-      return res.status(204).json({})
+      return res.status(204).json({});
+    } catch (__) {
+      return res
+        .status(500)
+        .json({ error: "i am sorry, there is an error with server" });
+    }
+  });
 
-   }catch(__){
-
-      return res.status(500)
-                .json({ error: 'i am sorry, there is an error with server' })
-   }
-})
-
-export { driverContactController }
+export { driverContactController };

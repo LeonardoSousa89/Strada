@@ -1,122 +1,105 @@
-import knex from '../../../repositories/knex/knex'
-import { DbOperations } from '../../../interface/operations';
-import Information from '../../../entities/driver/information/information';
+import knex from "../../../repositories/knex/knex";
+import { DbOperations } from "../../../interface/operations";
+import Information from "../../../entities/driver/information/information";
 
-import { informationProjection } from '../../../repositories/projections/informationProjection';
-import DriverInformationRelationTableService from '../relations/driverInformationRelationTableService';
+import { informationProjection } from "../../../repositories/projections/informationProjection";
+import DriverInformationRelationTableService from "../relations/driverInformationRelationTableService";
 
-export default class InformationService extends Information implements DbOperations {
-    
-    constructor(starting_km?: string,
-                final_km?: string, 
-                plate?: string,
-                notes?: string,
-                date_time_registry?: string 
- 
-    ) {
-        super(starting_km,
-              final_km,
-              plate,
-              notes,
-              date_time_registry)
-    }
+export default class InformationService
+  extends Information
+  implements DbOperations
+{
+  constructor(
+    starting_km?: string,
+    final_km?: string,
+    plate?: string,
+    notes?: string,
+    date_time_registry?: string
+  ) {
+    super(starting_km, final_km, plate, notes, date_time_registry);
+  }
 
-    information = new Information(this.starting_km,
-                        this.final_km, 
-                        this.plate, 
-                        this.notes,
-                        this.date_time_registry)
+  information = new Information(
+    this.starting_km,
+    this.final_km,
+    this.plate,
+    this.notes,
+    this.date_time_registry
+  );
 
-    async verifyId(id: string) {
+  async verifyId(id: string) {
+    const existsOrNotExistsId = await knex
+      .where("information_id", id)
+      .from("vex_schema.information")
+      .first();
 
-        const existsOrNotExistsId = await knex.where('information_id', id)
-                                            .from('vex_schema.information')
-                                            .first()
+    if (existsOrNotExistsId) return true;
 
-        if(existsOrNotExistsId)  return true
+    if (!existsOrNotExistsId) return false;
+  }
 
-        if(!existsOrNotExistsId) return false
-    }
-    
-    verifyInformation(starting_km: string, final_km: string) {
+  verifyInformation(starting_km: string, final_km: string) {
+    if (starting_km === null && final_km === null) return false;
 
-        if(starting_km === null && 
-           final_km === null) return false
-           
-        if(starting_km === '' && 
-            final_km === '') return false 
-            
-        if(starting_km === null && 
-            final_km === '') return false 
-        
-        if(starting_km === '' && 
-           final_km === null) return false 
-    }
+    if (starting_km === "" && final_km === "") return false;
 
-    getTime(){
+    if (starting_km === null && final_km === "") return false;
 
-        const southAmericaTimeZone = new Date()
+    if (starting_km === "" && final_km === null) return false;
+  }
 
-        const date = new Intl.DateTimeFormat(
-           
-           'pt-BR', {
-              
-              timeZone: 'America/Sao_Paulo',
-              dateStyle: 'long'
-  
-        }).format(southAmericaTimeZone)
-           
-        const time = new Intl.DateTimeFormat(
-           
-           'pt-BR', {
-              
-              timeZone: 'America/Sao_Paulo',
-              timeStyle: 'short'
-  
-        }).format(southAmericaTimeZone)
+  getTime() {
+    const southAmericaTimeZone = new Date();
 
-  
-        return `${date}, ${time}`
-    }
+    const date = new Intl.DateTimeFormat("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+      dateStyle: "long",
+    }).format(southAmericaTimeZone);
 
-    async save(){
-        
-        await knex.insert(this.information).from('vex_schema.information')
-    }
+    const time = new Intl.DateTimeFormat("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+      timeStyle: "short",
+    }).format(southAmericaTimeZone);
 
-    async update(id?: string | number){
+    return `${date}, ${time}`;
+  }
 
-        await knex.where('information_id', id)
-                  .update(this.information)
-                  .from('vex_schema.information')
-    }
+  async save() {
+    await knex.insert(this.information).from("vex_schema.information");
+  }
 
-    async getAll() {
+  async update(id?: string | number) {
+    await knex
+      .where("information_id", id)
+      .update(this.information)
+      .from("vex_schema.information");
+  }
 
-        const data = await knex.select(informationProjection)
-                               .from('vex_schema.information')
+  async getAll() {
+    const data = await knex
+      .select(informationProjection)
+      .from("vex_schema.information");
 
-        return data
-    }
+    return data;
+  }
 
-    async getById(id?: string | number){
+  async getById(id?: string | number) {
+    const data = await knex
+      .where("information_id", id)
+      .select(informationProjection)
+      .from("vex_schema.information");
 
-        const data = await knex.where('information_id', id)
-                               .select(informationProjection)
-                               .from('vex_schema.information')
+    return data;
+  }
 
-        return data
-    }
+  async deleteAll() {
+    await knex.delete().from("vex_schema.information");
+  }
 
-    async deleteAll(){
-
-        await knex.delete().from('vex_schema.information')
-    }
-
-    async deleteById(id?: string | number){
-
-        await knex.where('information_id', id)
-                  .delete()
-                  .from('vex_schema.information')
-    }
+  async deleteById(id?: string | number) {
+    await knex
+      .where("information_id", id)
+      .delete()
+      .from("vex_schema.information");
+  }
 }

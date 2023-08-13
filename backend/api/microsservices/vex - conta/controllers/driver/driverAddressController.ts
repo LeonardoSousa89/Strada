@@ -1,281 +1,289 @@
-import express from 'express'
+import express from "express";
 
-import HandleError from '../../interface/error/handleError'
-import DriverAddressService from '../../services/driver/driverAddressService'
-import axios from 'axios'
-import * as dotenv from 'dotenv' 
-import RedisOperations from '../../repositories/redis/cache/services/redis.cache.operation'
+import HandleError from "../../interface/error/handleError";
+import DriverAddressService from "../../services/driver/driverAddressService";
+import axios from "axios";
+import * as dotenv from "dotenv";
+import RedisOperations from "../../repositories/redis/cache/services/redis.cache.operation";
 
-dotenv.config()
+dotenv.config();
 
-const driverAddressController = express.Router()
+const driverAddressController = express.Router();
 
-const err = new HandleError()
+const err = new HandleError();
 
-driverAddressController.route('/org/driver/address/search/zip-code').get(async (req, res)=>{
+// https://brasilaberto.com/blog/posts/5-melhores-apis-de-cep-2023
+driverAddressController
+  .route("/org/driver/address/search/zip-code")
+  .get(async (req, res) => {
+    const DriverAddress = { ...req.query };
 
-   const DriverAddress = { ...req.query }
+    if (!DriverAddress.ZipCode)
+      return res.status(400).json({ error: "query params required" });
 
-   if(!DriverAddress.ZipCode) return res.status(400).json({error: 'query params required'})
+    try {
+      const zipcode = Number(DriverAddress.ZipCode);
 
-   try{
+      const url = `${process.env.CEP_API_URL_BASE}/v1/${zipcode}`;
 
-      const url = `${process.env.CEP_API_URL_BASE}/api/cep/v2/{DriverAddress.ZipCode}`
-      
-      const verifyZipCode = new DriverAddressService()
-      
-      const getZipCode = await verifyZipCode.getZipCode(axios, url)
+      const verifyZipCode = new DriverAddressService();
 
-      return res.status(200).json(getZipCode)
-   }catch(__){
+      const getZipCode = await verifyZipCode.getZipCode(axios, url);
 
-      return res.status(500)
-                .json({ 
-                  error: 'i am sorry, there is an error with server'
-               })
-   }
-})
+      return res.status(200).json(getZipCode);
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error to try verify your zip code" + __,
+      });
+    }
+  });
 
-driverAddressController.route('/org/driver/address/save').post(async (req, res)=>{
+driverAddressController
+  .route("/org/driver/address/save")
+  .post(async (req, res) => {
+    const DriverAddress = { ...req.body };
 
-   const DriverAddress = { ...req.body }
+    try {
+      err.exceptionFieldNullOrUndefined(
+        DriverAddress.zip_code,
+        "zip code is undefined or null"
+      );
+      err.exceptionFieldNullOrUndefined(
+        DriverAddress.state,
+        "state is undefined or null"
+      );
+      err.exceptionFieldNullOrUndefined(
+        DriverAddress.city,
+        "city is undefined or null"
+      );
 
-   try{
+      err.exceptionFieldIsEmpty(
+        DriverAddress.zip_code.trim(),
+        "zip code can not be empty"
+      );
+      err.exceptionFieldIsEmpty(
+        DriverAddress.state.trim(),
+        "state can not be empty"
+      );
+      err.exceptionFieldIsEmpty(
+        DriverAddress.city.trim(),
+        "city can not be empty"
+      );
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
 
-      err.exceptionFieldNullOrUndefined(DriverAddress.zip_code, 'zip code is undefined or null')
-      err.exceptionFieldNullOrUndefined(DriverAddress.state, 'state is undefined or null')
-      err.exceptionFieldNullOrUndefined(DriverAddress.city, 'city is undefined or null')
-  
-      err.exceptionFieldIsEmpty(DriverAddress.zip_code.trim(), 'zip code can not be empty')
-      err.exceptionFieldIsEmpty(DriverAddress.state.trim(), 'state can not be empty')
-      err.exceptionFieldIsEmpty(DriverAddress.city.trim(), 'city can not be empty')
-   }catch(e){
+    try {
+      const driverAddressService = new DriverAddressService(
+        DriverAddress.zip_code,
+        DriverAddress.state,
+        DriverAddress.city
+      );
 
-      return res.status(400).json({ error: e })
-   }
-   
-   try{
+      await driverAddressService.save();
 
-      const driverAddressService = new DriverAddressService(DriverAddress.zip_code, 
-                                       DriverAddress.state,
-                                       DriverAddress.city)
+      return res.status(201).json({ msg: "driver address saved" });
+    } catch (__) {
+      return res
+        .status(500)
+        .json({ error: "i am sorry, there is an error with server" });
+    }
+  });
 
-      await driverAddressService.save()
+driverAddressController
+  .route("/org/driver/address/update/:id")
+  .put(async (req, res) => {
+    const DriverAddress = { ...req.body };
 
-      return res.status(201).json({ msg: 'driver address saved' })
+    try {
+      err.exceptionFieldNullOrUndefined(
+        DriverAddress.zip_code,
+        "zip code is undefined or null"
+      );
+      err.exceptionFieldNullOrUndefined(
+        DriverAddress.state,
+        "state is undefined or null"
+      );
+      err.exceptionFieldNullOrUndefined(
+        DriverAddress.city,
+        "city is undefined or null"
+      );
 
-   }catch(__){
+      err.exceptionFieldIsEmpty(
+        DriverAddress.zip_code.trim(),
+        "zip code can not be empty"
+      );
+      err.exceptionFieldIsEmpty(
+        DriverAddress.state.trim(),
+        "state can not be empty"
+      );
+      err.exceptionFieldIsEmpty(
+        DriverAddress.city.trim(),
+        "city can not be empty"
+      );
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
 
-      return res.status(500)
-                .json({ error: 'i am sorry, there is an error with server' })
-   }
-})
+    const driverAddressIdExistsOnDb = await new DriverAddressService().verifyId(
+      req.params.id
+    );
 
-driverAddressController.route('/org/driver/address/update/:id').put(async (req, res)=>{
+    if (driverAddressIdExistsOnDb === false)
+      return res.status(404).json({
+        error: "driver not found",
+      });
 
-   const DriverAddress = { ...req.body }
+    try {
+      const driverAddressService = new DriverAddressService(
+        DriverAddress.zip_code,
+        DriverAddress.state,
+        DriverAddress.city
+      );
 
-   try{
+      await driverAddressService.update(req.params.id);
 
-      err.exceptionFieldNullOrUndefined(DriverAddress.zip_code, 'zip code is undefined or null')
-      err.exceptionFieldNullOrUndefined(DriverAddress.state, 'state is undefined or null')
-      err.exceptionFieldNullOrUndefined(DriverAddress.city, 'city is undefined or null')
-  
-      err.exceptionFieldIsEmpty(DriverAddress.zip_code.trim(), 'zip code can not be empty')
-      err.exceptionFieldIsEmpty(DriverAddress.state.trim(), 'state can not be empty')
-      err.exceptionFieldIsEmpty(DriverAddress.city.trim(), 'city can not be empty')
-   }catch(e){
+      return res.status(201).json({ msg: "driver address updated" });
+    } catch (__) {
+      return res
+        .status(500)
+        .json({ error: "i am sorry, there is an error with server" });
+    }
+  });
 
-      return res.status(400).json({ error: e })
-   }
-   
-   const driverAddressIdExistsOnDb = await new DriverAddressService()
-                                                .verifyId(req.params.id)
-   
-   if(driverAddressIdExistsOnDb === false) return res.status(404)
-                                                   .json({
-                                                      error: 'driver not found'
-                                                   }) 
+driverAddressController
+  .route("/org/driver/address/get-all")
+  .get(async (req, res) => {
+    const driverAddressService = new DriverAddressService();
 
-   try{
+    const cache = new RedisOperations();
 
-      const driverAddressService = new DriverAddressService(DriverAddress.zip_code, 
-                                       DriverAddress.state,
-                                       DriverAddress.city)
+    try {
+      const driverAddressFromCache = await cache.getCache(`driverAddress`);
 
-      await driverAddressService.update(req.params.id)
+      if (driverAddressFromCache) {
+        const data = JSON.parse(driverAddressFromCache);
 
-      return res.status(201).json({ msg: 'driver address updated' })
-   }catch(__){
-
-      return res.status(500)
-                .json({ error: 'i am sorry, there is an error with server' })
-   }
-})
-
-driverAddressController.route('/org/driver/address/get-all').get(async (req, res)=>{
-
-   const driverAddressService = new DriverAddressService()
-
-   const cache = new RedisOperations()
-   
-   try{
-      
-      cache.connection()
-
-      const driverAddressFromCache = await cache.getCache(`driverAddress`)
-
-      if(driverAddressFromCache) {
-
-         const data = JSON.parse(driverAddressFromCache)
-         
-         res.status(200).json({
-                             data: { inCache: 'yes', data }
-                         })
-          
-         await cache.disconnection()
-                         
-         return
-     }
-
-      const data = await driverAddressService.getAll()
-
-      if(data.length === 0){
-
-         res.status(404).json({
-                           error: 'no data'
-                        }) 
-         
-         await cache.disconnection()
-
-         return 
-      }  
-
-      await cache.setCache(`driverAddress`, JSON.stringify(data), 300)
-
-      res.status(200).json({ 
-                        data: { inCache: 'no', data }
-                     })
-
-      await cache.disconnection()
-
-      return 
-
-   }catch(__){
-
-      return res.status(500)
-                .json({ error: 'i am sorry, there is an error with server' })
-   }
-})
-
-driverAddressController.route('/org/driver/address/get-by-id/:id').get(async(req, res)=>{
-
-   const DriverAddress = { ...req.params }
-
-   const driverAddressService = new DriverAddressService()
-   
-   const cache = new RedisOperations()
-
-   try{
-
-      cache.connection()
-
-      const driverAddressFromCache = await cache.getCache(`driverAddress_${DriverAddress.id}`)
-
-      if(driverAddressFromCache) {
-
-          const data = JSON.parse(driverAddressFromCache)
-          
-          res.status(200).json({
-                              data: { inCache: 'yes', data }
-                          })
-              
-          await cache.disconnection()
-                          
-          return
+        return res.status(200).json({
+          data: { inCache: "yes", data },
+        });
       }
 
-      const data = await driverAddressService.getById(DriverAddress.id)
+      const data = await driverAddressService.getAll();
 
-      if(data.length === 0) {
-
-         res.status(404).json({
-                           error: 'driver address not found'
-                        })
-         
-         await cache.disconnection()             
-                        
-         return 
+      if (data.length === 0) {
+        return res.status(404).json({
+          error: "no data",
+        });
       }
 
-      await cache.setCache(`driverAddress_${DriverAddress.id}`, JSON.stringify(data), 300)
+      await cache.setCache(`driverAddress`, JSON.stringify(data), 300);
 
-      res.status(200).json({ 
-                          data: { inCache: 'no', data }
-                      })
+      return res.status(200).json({
+        data: { inCache: "no", data },
+      });
+    } catch (__) {
+      return res
+        .status(500)
+        .json({ error: "i am sorry, there is an error with server" });
+    }
+  });
 
-      await cache.disconnection()
+driverAddressController
+  .route("/org/driver/address/get-by-id/:id")
+  .get(async (req, res) => {
+    const DriverAddress = { ...req.params };
 
-      return 
+    const driverAddressService = new DriverAddressService();
 
-   }catch(__){
+    const cache = new RedisOperations();
 
-      return res.status(500)
-                .json({ 
-                  error: 'i am sorry, there is an error with server' 
-               })
+    try {
+      const driverAddressFromCache = await cache.getCache(
+        `driverAddress_${DriverAddress.id}`
+      );
 
-   }
-})
+      if (driverAddressFromCache) {
+        const data = JSON.parse(driverAddressFromCache);
 
-driverAddressController.route('/org/driver/address/delete-all').delete(async (req, res)=>{
+        return res.status(200).json({
+          data: { inCache: "yes", data },
+        });
+      }
 
-   const driverAddressService = new DriverAddressService()
-   
-   try{
-      
-      const driverAddressExistsOrNotExists = await driverAddressService.getAll()
+      const data = await driverAddressService.getById(DriverAddress.id);
 
-      if(driverAddressExistsOrNotExists.length === 0) return res.status(404)
-                                                         .json({
-                                                            error: 'no data'
-                                                         })
+      if (data.length === 0) {
+        return res.status(404).json({
+          error: "driver address not found",
+        });
+      }
 
-      await driverAddressService.deleteAll()
+      await cache.setCache(
+        `driverAddress_${DriverAddress.id}`,
+        JSON.stringify(data),
+        300
+      );
 
-      return res.status(204).json({})
+      return res.status(200).json({
+        data: { inCache: "no", data },
+      });
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
 
-   }catch(__){
+driverAddressController
+  .route("/org/driver/address/delete-all")
+  .delete(async (req, res) => {
+    const driverAddressService = new DriverAddressService();
 
-      return res.status(500)
-                .json({ error: 'i am sorry, there is an error with server' })
-   }
-})
+    try {
+      const driverAddressExistsOrNotExists =
+        await driverAddressService.getAll();
 
-driverAddressController.route('/org/driver/address/delete-by-id/:id').delete(async (req, res)=>{
+      if (driverAddressExistsOrNotExists.length === 0)
+        return res.status(404).json({
+          error: "no data",
+        });
 
-   const DriverAddress = { ...req.params }
-   
-   const driverAddressService = new DriverAddressService()
-   
-   try{   
+      await driverAddressService.deleteAll();
 
-      const driverExistsOrNotExists = await driverAddressService.getById(DriverAddress.id)
+      return res.status(204).json({});
+    } catch (__) {
+      return res
+        .status(500)
+        .json({ error: "i am sorry, there is an error with server" });
+    }
+  });
 
-      if(driverExistsOrNotExists.length === 0) return res.status(404)
-                                                         .json({
-                                                            error: 'driver address not found'
-                                                         })
+driverAddressController
+  .route("/org/driver/address/delete-by-id/:id")
+  .delete(async (req, res) => {
+    const DriverAddress = { ...req.params };
 
-      await driverAddressService.deleteById(DriverAddress.id)
+    const driverAddressService = new DriverAddressService();
 
-      return res.status(204).json({})
+    try {
+      const driverExistsOrNotExists = await driverAddressService.getById(
+        DriverAddress.id
+      );
 
-   }catch(__){
+      if (driverExistsOrNotExists.length === 0)
+        return res.status(404).json({
+          error: "driver address not found",
+        });
 
-      return res.status(500)
-                .json({ error: 'i am sorry, there is an error with server' })
-   }
-})
+      await driverAddressService.deleteById(DriverAddress.id);
 
-export { driverAddressController }
+      return res.status(204).json({});
+    } catch (__) {
+      return res
+        .status(500)
+        .json({ error: "i am sorry, there is an error with server" });
+    }
+  });
+
+export { driverAddressController };

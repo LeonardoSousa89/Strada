@@ -22,8 +22,9 @@ class DriverInformationRelationTableService extends driverInformationRelationTab
     }
     verifyRelationshipExists(information_relation_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExistsId = yield knex_1.default.where('information_relation_id', information_relation_id)
-                .from('vex_schema.driver_information_relation_table')
+            const existsOrNotExistsId = yield knex_1.default
+                .where("information_relation_id", information_relation_id)
+                .from("vex_schema.driver_information_relation_table")
                 .first();
             if (existsOrNotExistsId)
                 return true;
@@ -33,16 +34,17 @@ class DriverInformationRelationTableService extends driverInformationRelationTab
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.insert(this.driverInformationRelationTable)
-                .from('vex_schema.driver_information_relation_table');
+            yield knex_1.default
+                .insert(this.driverInformationRelationTable)
+                .from("vex_schema.driver_information_relation_table");
         });
     }
-    update(id) {
-    }
+    update(id) { }
     getAll(size, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select(joinProjection_1.joinDriverAndInformationRelationProjection)
-                .from('vex_schema.driver_information_relation_table');
+            const data = yield knex_1.default
+                .select(joinProjection_1.joinDriverAndInformationRelationProjection)
+                .from("vex_schema.driver_information_relation_table");
             return data;
         });
     }

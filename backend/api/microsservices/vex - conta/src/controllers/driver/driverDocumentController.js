@@ -20,161 +20,157 @@ const redis_cache_operation_1 = __importDefault(require("../../repositories/redi
 const driverDocumentController = express_1.default.Router();
 exports.driverDocumentController = driverDocumentController;
 const err = new handleError_1.default();
-driverDocumentController.route('/org/driver/document/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+driverDocumentController
+    .route("/org/driver/document/save")
+    .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverDocument = Object.assign({}, req.body);
     try {
-        err.exceptionFieldNullOrUndefined(DriverDocument.cnh, 'document is undefined or null');
-        err.exceptionFieldIsEmpty(DriverDocument.cnh.trim(), 'document can not be empty');
+        err.exceptionFieldNullOrUndefined(DriverDocument.cnh, "document is undefined or null");
+        err.exceptionFieldIsEmpty(DriverDocument.cnh.trim(), "document can not be empty");
     }
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    const driverDocumentExistsOrNotExists = yield new driverDocumentService_1.default()
-        .verifyDocument(DriverDocument.cnh);
+    const driverDocumentExistsOrNotExists = yield new driverDocumentService_1.default().verifyDocument(DriverDocument.cnh);
     if (driverDocumentExistsOrNotExists === true)
-        return res.status(400)
-            .json({
-            error: 'driver document already exists'
+        return res.status(400).json({
+            error: "driver document already exists",
         });
     try {
         const driverDocumentService = new driverDocumentService_1.default(DriverDocument.cnh);
         yield driverDocumentService.save();
-        return res.status(201).json({ msg: 'driver document saved' });
+        return res.status(201).json({ msg: "driver document saved" });
     }
     catch (__) {
-        return res.status(500)
-            .json({ error: 'i am sorry, there is an error with server' });
+        return res
+            .status(500)
+            .json({ error: "i am sorry, there is an error with server" });
     }
 }));
-driverDocumentController.route('/org/driver/document/update/:id').put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+driverDocumentController
+    .route("/org/driver/document/update/:id")
+    .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverDocument = Object.assign({}, req.body);
     try {
-        err.exceptionFieldNullOrUndefined(DriverDocument.cnh, 'document is undefined or null');
-        err.exceptionFieldIsEmpty(DriverDocument.cnh.trim(), 'document can not be empty');
+        err.exceptionFieldNullOrUndefined(DriverDocument.cnh, "document is undefined or null");
+        err.exceptionFieldIsEmpty(DriverDocument.cnh.trim(), "document can not be empty");
     }
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    const driverDocumentExistsOrNotExists = yield new driverDocumentService_1.default()
-        .verifyId(req.params.id);
+    const driverDocumentExistsOrNotExists = yield new driverDocumentService_1.default().verifyId(req.params.id);
     if (driverDocumentExistsOrNotExists === false)
-        return res.status(404)
-            .json({
-            error: 'driver document not found'
+        return res.status(404).json({
+            error: "driver document not found",
         });
     try {
         const driverDocumentService = new driverDocumentService_1.default(DriverDocument.cnh);
         yield driverDocumentService.update(req.params.id);
-        return res.status(201).json({ msg: 'driver document updated' });
+        return res.status(201).json({ msg: "driver document updated" });
     }
     catch (__) {
-        return res.status(500)
-            .json({ error: 'i am sorry, there is an error with server' });
+        return res
+            .status(500)
+            .json({ error: "i am sorry, there is an error with server" });
     }
 }));
-driverDocumentController.route('/org/driver/document/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+driverDocumentController
+    .route("/org/driver/document/get-all")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const driverDocumentService = new driverDocumentService_1.default();
     const cache = new redis_cache_operation_1.default();
     try {
-        cache.connection();
         const driverDocumentFromCache = yield cache.getCache(`driverDocument`);
         if (driverDocumentFromCache) {
             const data = JSON.parse(driverDocumentFromCache);
-            res.status(200).json({
-                data: { inCache: 'yes', data }
+            return res.status(200).json({
+                data: { inCache: "yes", data },
             });
-            yield cache.disconnection();
-            return;
         }
         const data = yield driverDocumentService.getAll();
         if (data.length === 0) {
-            res.status(404).json({
-                error: 'no data'
+            return res.status(404).json({
+                error: "no data",
             });
-            yield cache.disconnection();
-            return;
         }
         yield cache.setCache(`driverDocument`, JSON.stringify(data), 300);
-        res.status(200).json({
-            data: { inCache: 'no', data }
+        return res.status(200).json({
+            data: { inCache: "no", data },
         });
-        yield cache.disconnection();
-        return;
     }
     catch (__) {
-        return res.status(500)
-            .json({ error: 'i am sorry, there is an error with server' });
+        return res
+            .status(500)
+            .json({ error: "i am sorry, there is an error with server" });
     }
 }));
-driverDocumentController.route('/org/driver/document/get-by-id/:id').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+driverDocumentController
+    .route("/org/driver/document/get-by-id/:id")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverDocument = Object.assign({}, req.params);
     const driverDocumentService = new driverDocumentService_1.default();
     const cache = new redis_cache_operation_1.default();
     try {
-        cache.connection();
         const driverDocumentFromCache = yield cache.getCache(`driverDocument_${DriverDocument.id}`);
         if (driverDocumentFromCache) {
             const data = JSON.parse(driverDocumentFromCache);
-            res.status(200).json({
-                data: { inCache: 'yes', data }
+            return res.status(200).json({
+                data: { inCache: "yes", data },
             });
-            yield cache.disconnection();
-            return;
         }
         const data = yield driverDocumentService.getById(DriverDocument.id);
         if (data.length === 0) {
-            res.status(404).json({
-                error: 'driver document not found'
+            return res.status(404).json({
+                error: "driver document not found",
             });
-            yield cache.disconnection();
-            return;
         }
         yield cache.setCache(`driverDocument_${DriverDocument.id}`, JSON.stringify(data), 300);
-        res.status(200).json({
-            data: { inCache: 'no', data }
+        return res.status(200).json({
+            data: { inCache: "no", data },
         });
-        yield cache.disconnection();
-        return;
     }
     catch (__) {
-        return res.status(500)
-            .json({
-            error: 'i am sorry, there is an error with server'
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server",
         });
     }
 }));
-driverDocumentController.route('/org/driver/document/delete-all').delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+driverDocumentController
+    .route("/org/driver/document/delete-all")
+    .delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const driverDocumentService = new driverDocumentService_1.default();
         const driverDocumentExistsOrNotExists = yield driverDocumentService.getAll();
         if (driverDocumentExistsOrNotExists.length === 0)
-            return res.status(404)
-                .json({
-                error: 'no data'
+            return res.status(404).json({
+                error: "no data",
             });
         yield driverDocumentService.deleteAll();
         return res.status(204).json({});
     }
     catch (__) {
-        return res.status(500)
-            .json({ error: 'i am sorry, there is an error with server' });
+        return res
+            .status(500)
+            .json({ error: "i am sorry, there is an error with server" });
     }
 }));
-driverDocumentController.route('/org/driver/document/delete-by-id/:id').delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+driverDocumentController
+    .route("/org/driver/document/delete-by-id/:id")
+    .delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverDocument = Object.assign({}, req.params);
     const driverDocumentService = new driverDocumentService_1.default();
     try {
         const driverDocumentExistsOrNotExists = yield driverDocumentService.getById(DriverDocument.id);
         if (driverDocumentExistsOrNotExists.length === 0)
-            return res.status(404)
-                .json({
-                error: 'driver document not found'
+            return res.status(404).json({
+                error: "driver document not found",
             });
         yield driverDocumentService.deleteById(DriverDocument.id);
         return res.status(204).json({});
     }
     catch (__) {
-        return res.status(500)
-            .json({ error: 'i am sorry, there is an error with server' });
+        return res
+            .status(500)
+            .json({ error: "i am sorry, there is an error with server" });
     }
 }));

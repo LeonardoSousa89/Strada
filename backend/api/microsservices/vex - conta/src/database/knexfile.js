@@ -31,12 +31,12 @@ exports.default = {
         connection: {
             database: process.env.DEV_DATABASE,
             user: process.env.DEV_USER,
-            password: process.env.DEV_PASSWORD
+            password: process.env.DEV_PASSWORD,
         },
         pool: {
             min: 2,
-            max: 10
-        }
+            max: 10,
+        },
     },
     production: {
         client: process.env.PROD_CLIENT,
@@ -44,11 +44,11 @@ exports.default = {
             host: process.env.PROD_HOST,
             database: process.env.PROD_DATABASE,
             user: process.env.PROD_USER,
-            password: process.env.PROD_PASSWORD
+            password: process.env.PROD_PASSWORD,
         },
         pool: {
             min: 2,
-            max: 10
+            max: 10,
         },
-    }
+    },
 };

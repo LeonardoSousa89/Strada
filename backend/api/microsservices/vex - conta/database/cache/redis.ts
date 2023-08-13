@@ -1,13 +1,13 @@
-import { createClient } from 'redis';
+import { createClient } from "redis";
 
-import * as dotenv from 'dotenv' 
+import * as dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
 // https://docs.redis.com/latest/rs/references/client_references/client_nodejs/
 export const client = createClient({
-    socket: {
-        host:  process.env.DEV_REDIS_CLIENT,
-        port: 6379
-    }
-})
+  socket: {
+    host: process.env.DEV_REDIS_CLIENT,
+    port: 6379,
+  },
+});

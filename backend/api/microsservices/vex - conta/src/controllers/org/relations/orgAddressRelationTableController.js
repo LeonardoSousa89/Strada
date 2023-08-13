@@ -21,65 +21,62 @@ const orgAddressService_1 = __importDefault(require("../../../services/org/orgAd
 const orgAddressRelationTableController = express_1.default.Router();
 exports.orgAddressRelationTableController = orgAddressRelationTableController;
 const err = new handleError_1.default();
-orgAddressRelationTableController.route('/org/address/relation-table/save').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgAddressRelationTableController
+    .route("/org/address/relation-table/save")
+    .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
     try {
-        err.exceptionFieldNullOrUndefined(Org.org_address_relation_id, 'org address id is undefined or null');
-        err.exceptionFieldNullOrUndefined(Org.org_relation_id, 'org id is undefined or null');
-        err.exceptionFieldIsEqualZero(Org.org_address_relation_id, 'org address id code can not be 0');
-        err.exceptionFieldIsEqualZero(Org.org_relation_id, 'org id can not be 0');
+        err.exceptionFieldNullOrUndefined(Org.org_address_relation_id, "org address id is undefined or null");
+        err.exceptionFieldNullOrUndefined(Org.org_relation_id, "org id is undefined or null");
+        err.exceptionFieldIsEqualZero(Org.org_address_relation_id, "org address id code can not be 0");
+        err.exceptionFieldIsEqualZero(Org.org_relation_id, "org id can not be 0");
     }
     catch (e) {
         return res.status(400).json({ error: e });
     }
     const verifyOrgIdExixts = yield new orgService_1.default().verifyId(Org.org_relation_id);
     if (verifyOrgIdExixts == false)
-        return res.status(404)
-            .json({
-            error: "organization id not found"
+        return res.status(404).json({
+            error: "organization id not found",
         });
     const verifyOrgAddressIdExixts = yield new orgAddressService_1.default().verifyId(Org.org_address_relation_id);
     if (verifyOrgAddressIdExixts == false)
-        return res.status(404)
-            .json({
-            error: "organization address id not found"
+        return res.status(404).json({
+            error: "organization address id not found",
         });
-    const verifyRelationshipExists = yield new orgAddressRelationTableService_1.default()
-        .verifyRelationshipExists(Org.org_address_relation_id);
+    const verifyRelationshipExists = yield new orgAddressRelationTableService_1.default().verifyRelationshipExists(Org.org_address_relation_id);
     if (verifyRelationshipExists == true)
         return res.status(400).json({
-            error: "relationship already exists"
+            error: "relationship already exists",
         });
     try {
         const orgAddressRelationTableService = new orgAddressRelationTableService_1.default(Org.org_address_relation_id, Org.org_relation_id);
         yield orgAddressRelationTableService.save();
-        return res.status(201)
-            .json({
-            msg: 'organization address relation saved'
+        return res.status(201).json({
+            msg: "organization address relation saved",
         });
     }
     catch (__) {
-        return res.status(500)
-            .json({
-            error: 'i am sorry, there is an error with server'
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server",
         });
     }
 }));
-orgAddressRelationTableController.route('/org/address/relation-table/get-all').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgAddressRelationTableController
+    .route("/org/address/relation-table/get-all")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const orgAddressRelationTableService = new orgAddressRelationTableService_1.default();
     try {
         const data = yield orgAddressRelationTableService.getAll();
         if (data.length === 0)
-            return res.status(404)
-                .json({
-                error: 'no data relationship'
+            return res.status(404).json({
+                error: "no data relationship",
             });
         return res.status(200).json(data);
     }
     catch (__) {
-        return res.status(500)
-            .json({
-            error: 'i am sorry, there is an error with server'
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server",
         });
     }
 }));

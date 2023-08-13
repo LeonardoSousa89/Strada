@@ -22,8 +22,9 @@ class OrgDriverRelationTableService extends orgDriverRelationTable_1.default {
     }
     verifyRelationshipExists(driver_relation_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExistsId = yield knex_1.default.where('driver_relation_id', driver_relation_id)
-                .from('vex_schema.org_driver_relation_table')
+            const existsOrNotExistsId = yield knex_1.default
+                .where("driver_relation_id", driver_relation_id)
+                .from("vex_schema.org_driver_relation_table")
                 .first();
             if (existsOrNotExistsId)
                 return true;
@@ -33,8 +34,9 @@ class OrgDriverRelationTableService extends orgDriverRelationTable_1.default {
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.insert(this.orgDriverRelationTableService)
-                .from('vex_schema.org_driver_relation_table');
+            yield knex_1.default
+                .insert(this.orgDriverRelationTableService)
+                .from("vex_schema.org_driver_relation_table");
         });
     }
     update() {
@@ -42,8 +44,9 @@ class OrgDriverRelationTableService extends orgDriverRelationTable_1.default {
     }
     getAll(size, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select(joinProjection_1.joinOrgAndDriverRelationProjection)
-                .from('vex_schema.org_driver_relation_table');
+            const data = yield knex_1.default
+                .select(joinProjection_1.joinOrgAndDriverRelationProjection)
+                .from("vex_schema.org_driver_relation_table");
             return data;
         });
     }

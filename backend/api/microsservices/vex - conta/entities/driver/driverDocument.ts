@@ -1,9 +1,7 @@
-export default class DriverDocume{
+export default class DriverDocume {
+  cnh?: string;
 
-    cnh?: string
-
-    constructor(cnh?: string 
-    ){ 
-        this.cnh = cnh 
-    }
+  constructor(cnh?: string) {
+    this.cnh = cnh;
+  }
 }

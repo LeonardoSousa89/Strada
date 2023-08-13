@@ -14,10 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyDeciphedDocumentAndGetData = exports.verifyDeciphedEmailAndGetData = exports.verifyDeciphedCnpjAndGetData = exports.decipherDriverDataAndGet = exports.decipherOrgDataAndGet = exports.cipherDriverDataAndSave = exports.cipherOrgDataAndSave = void 0;
 const crypto_1 = require("../../security/cryptography/crypto");
-const orgService_1 = __importDefault(require("../../services/org/orgService"));
-const OrgProjection_1 = require("../../repositories/projections/OrgProjection");
 const bcrypt_1 = require("../../security/cryptography/bcrypt");
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
+const orgService_1 = __importDefault(require("../../services/org/orgService"));
+const OrgProjection_1 = require("../../repositories/projections/OrgProjection");
 const driverService_1 = __importDefault(require("../../services/driver/driverService"));
 const driverProjection_1 = require("../../repositories/projections/driverProjection");
 function cipherOrgDataAndSave(data) {
@@ -47,7 +47,7 @@ function cipherDriverDataAndSave(data) {
 exports.cipherDriverDataAndSave = cipherDriverDataAndSave;
 function decipherOrgDataAndGet() {
     return __awaiter(this, void 0, void 0, function* () {
-        const data = yield knex_1.default.select(OrgProjection_1.orgProjection).from('vex_schema.org');
+        const data = yield knex_1.default.select(OrgProjection_1.orgProjection).from("vex_schema.org");
         for (let cipherDataPosition in data) {
             data[cipherDataPosition].fantasy_name = (0, crypto_1.decipher)(data[cipherDataPosition].fantasy_name);
             data[cipherDataPosition].corporate_name = (0, crypto_1.decipher)(data[cipherDataPosition].corporate_name);
@@ -62,7 +62,7 @@ function decipherOrgDataAndGet() {
 exports.decipherOrgDataAndGet = decipherOrgDataAndGet;
 function decipherDriverDataAndGet() {
     return __awaiter(this, void 0, void 0, function* () {
-        const data = yield knex_1.default.select(driverProjection_1.driverProjection).from('vex_schema.driver');
+        const data = yield knex_1.default.select(driverProjection_1.driverProjection).from("vex_schema.driver");
         for (let cipherDataPosition in data) {
             data[cipherDataPosition].first_name = (0, crypto_1.decipher)(data[cipherDataPosition].first_name);
             data[cipherDataPosition].last_name = (0, crypto_1.decipher)(data[cipherDataPosition].last_name);
@@ -74,7 +74,7 @@ function decipherDriverDataAndGet() {
 exports.decipherDriverDataAndGet = decipherDriverDataAndGet;
 function verifyDeciphedCnpjAndGetData(cnpj) {
     return __awaiter(this, void 0, void 0, function* () {
-        const data = yield knex_1.default.select(OrgProjection_1.orgProjection).from('vex_schema.org');
+        const data = yield knex_1.default.select(OrgProjection_1.orgProjection).from("vex_schema.org");
         for (let cipherDataPosition in data) {
             data[cipherDataPosition].fantasy_name = (0, crypto_1.decipher)(data[cipherDataPosition].fantasy_name);
             data[cipherDataPosition].corporate_name = (0, crypto_1.decipher)(data[cipherDataPosition].corporate_name);
@@ -85,14 +85,14 @@ function verifyDeciphedCnpjAndGetData(cnpj) {
         }
         const search = data.find((dataElement) => dataElement.cnpj === cnpj);
         if (!search)
-            return 'cnpj not found';
+            return "cnpj not found";
         return search;
     });
 }
 exports.verifyDeciphedCnpjAndGetData = verifyDeciphedCnpjAndGetData;
 function verifyDeciphedEmailAndGetData(email) {
     return __awaiter(this, void 0, void 0, function* () {
-        const data = yield knex_1.default.select(driverProjection_1.driverProjection).from('vex_schema.driver');
+        const data = yield knex_1.default.select(driverProjection_1.driverProjection).from("vex_schema.driver");
         for (let cipherDataPosition in data) {
             data[cipherDataPosition].first_name = (0, crypto_1.decipher)(data[cipherDataPosition].first_name);
             data[cipherDataPosition].last_name = (0, crypto_1.decipher)(data[cipherDataPosition].last_name);
@@ -100,13 +100,12 @@ function verifyDeciphedEmailAndGetData(email) {
         }
         const search = data.find((dataElement) => dataElement.email === email);
         if (!search)
-            return 'email not found';
+            return "email not found";
         return search;
     });
 }
 exports.verifyDeciphedEmailAndGetData = verifyDeciphedEmailAndGetData;
 function verifyDeciphedDocumentAndGetData(cnh) {
-    return __awaiter(this, void 0, void 0, function* () {
-    });
+    return __awaiter(this, void 0, void 0, function* () { });
 }
 exports.verifyDeciphedDocumentAndGetData = verifyDeciphedDocumentAndGetData;

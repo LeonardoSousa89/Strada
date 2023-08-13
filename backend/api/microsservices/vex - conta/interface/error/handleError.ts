@@ -1,26 +1,21 @@
 import { Err } from "./error";
 
-export default class HandleError implements Err{
-    
-    constructor(){}
-    
-    exceptionFieldNullOrUndefined(args: any, error: any) {
+export default class HandleError implements Err {
+  constructor() {}
 
-        if(args === null || args === undefined) throw error
-    }
+  exceptionFieldNullOrUndefined(args: any, error: any) {
+    if (args === null || args === undefined) throw error;
+  }
 
-    exceptionFieldIsEqualZero(args: any, error: any) {
-        
-        if(args === 0) throw error
-    }
+  exceptionFieldIsEqualZero(args: any, error: any) {
+    if (args === 0) throw error;
+  }
 
-    exceptionFieldIsEmpty(args: any, error: any) {
-        
-        if(args === '') throw error
-    }
+  exceptionFieldIsEmpty(args: any, error: any) {
+    if (args === "") throw error;
+  }
 
-    exceptionFieldValueLessToType(args: any, error: any) {
-        
-        if(args.length < 4) throw error
-    }
-} 
+  exceptionFieldValueLessToType(args: any, error: any) {
+    if (args.length < 4) throw error;
+  }
+}

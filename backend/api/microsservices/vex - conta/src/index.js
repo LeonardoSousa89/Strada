@@ -32,11 +32,12 @@ const driverContactRelationTableController_1 = require("./controllers/driver/rel
 const driverDocumentRelationTableController_1 = require("./controllers/driver/relations/driverDocumentRelationTableController");
 const driverInformationRelationTableController_1 = require("./controllers/driver/relations/driverInformationRelationTableController");
 const testsController_1 = require("./__tests__/functions/server/testsController");
+const redis_cache_operation_1 = __importDefault(require("./repositories/redis/cache/services/redis.cache.operation"));
 const app = (0, express_1.default)();
-app.use((0, morgan_1.default)('dev'));
+app.use((0, morgan_1.default)("dev"));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-app.use('/', [
+app.use("/", [
     testsController_1.orgTestsController,
     orgController_1.orgController,
     orgJoinQueryController_1.OrgJoinQueryController,
@@ -53,15 +54,16 @@ app.use('/', [
     driverAddressRelationTableController_1.driverAddressRelationTableController,
     driverContactRelationTableController_1.driverContactRelationTableController,
     driverDocumentRelationTableController_1.driverDocumentRelationTableController,
-    driverInformationRelationTableController_1.driverInformationRelationTableController
+    driverInformationRelationTableController_1.driverInformationRelationTableController,
 ]);
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
+    yield new redis_cache_operation_1.default().connection();
     const serve = app.listen(port[0]);
     console.table({
         port_range: port,
         port_in_use: port[0],
         network: serve.address(),
-        maxListeners: serve.getMaxListeners()
+        maxListeners: serve.getMaxListeners(),
     });
 });
 server();

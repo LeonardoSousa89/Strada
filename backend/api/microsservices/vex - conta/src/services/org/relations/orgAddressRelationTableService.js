@@ -22,8 +22,9 @@ class OrgAddressRelationTableService extends orgAddressRelationTable_1.default {
     }
     verifyRelationshipExists(org_address_relation_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExistsId = yield knex_1.default.where('org_address_relation_id', org_address_relation_id)
-                .from('vex_schema.org_address_relation_table')
+            const existsOrNotExistsId = yield knex_1.default
+                .where("org_address_relation_id", org_address_relation_id)
+                .from("vex_schema.org_address_relation_table")
                 .first();
             if (existsOrNotExistsId)
                 return true;
@@ -33,16 +34,17 @@ class OrgAddressRelationTableService extends orgAddressRelationTable_1.default {
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.insert(this.orgAddressRelationTable)
-                .from('vex_schema.org_address_relation_table');
+            yield knex_1.default
+                .insert(this.orgAddressRelationTable)
+                .from("vex_schema.org_address_relation_table");
         });
     }
-    update(id) {
-    }
+    update(id) { }
     getAll(size, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select(joinProjection_1.joinOrgAndAddressRelationProjection)
-                .from('vex_schema.org_address_relation_table');
+            const data = yield knex_1.default
+                .select(joinProjection_1.joinOrgAndAddressRelationProjection)
+                .from("vex_schema.org_address_relation_table");
             return data;
         });
     }

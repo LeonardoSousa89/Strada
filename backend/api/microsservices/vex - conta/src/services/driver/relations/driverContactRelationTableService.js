@@ -22,8 +22,9 @@ class DriverContactRelationTableService extends driverContactRelationTable_1.def
     }
     verifyRelationshipExists(driver_contact_relation_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExistsId = yield knex_1.default.where('driver_contact_relation_id', driver_contact_relation_id)
-                .from('vex_schema.driver_contact_relation_table')
+            const existsOrNotExistsId = yield knex_1.default
+                .where("driver_contact_relation_id", driver_contact_relation_id)
+                .from("vex_schema.driver_contact_relation_table")
                 .first();
             if (existsOrNotExistsId)
                 return true;
@@ -33,16 +34,17 @@ class DriverContactRelationTableService extends driverContactRelationTable_1.def
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.insert(this.driverContactRelationTable)
-                .from('vex_schema.driver_contact_relation_table');
+            yield knex_1.default
+                .insert(this.driverContactRelationTable)
+                .from("vex_schema.driver_contact_relation_table");
         });
     }
-    update(id) {
-    }
+    update(id) { }
     getAll(size, page) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select(joinProjection_1.joinDriverAndContactRelationProjection)
-                .from('vex_schema.driver_contact_relation_table');
+            const data = yield knex_1.default
+                .select(joinProjection_1.joinDriverAndContactRelationProjection)
+                .from("vex_schema.driver_contact_relation_table");
             return data;
         });
     }

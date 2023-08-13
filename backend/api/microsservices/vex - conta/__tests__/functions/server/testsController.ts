@@ -1,275 +1,220 @@
-import express from 'express'
+import express from "express";
 
-import HandleError from '../../../interface/error/handleError'
+import HandleError from "../../../interface/error/handleError";
 
-import * as dotenv from 'dotenv' 
+import * as dotenv from "dotenv";
 
-import { loadDataTest, 
-         loadDataTest2 } from '../../request/request.test'
-import { connection, disconnection, getCache, setCache } from '../../cache/redis'
+import { loadDataTest, loadDataTest2 } from "../../request/request.test";
+import { getCache, setCache } from "../../cache/redis";
 
-import OrgJoinQuery from '../../../services/query/orgJoinQueryService'
-import { cipherDriverDataAndSave, cipherOrgDataAndSave, decipherDriverDataAndGet, decipherOrgDataAndGet, verifyDeciphedCnpjAndGetData, verifyDeciphedEmailAndGetData } from '../../security/crypto'
+import OrgJoinQuery from "../../../services/query/orgJoinQueryService";
+import {
+  cipherDriverDataAndSave,
+  cipherOrgDataAndSave,
+  decipherDriverDataAndGet,
+  decipherOrgDataAndGet,
+  verifyDeciphedCnpjAndGetData,
+  verifyDeciphedEmailAndGetData,
+} from "../../security/crypto";
 
-dotenv.config()
+dotenv.config();
 
-const orgTestsController = express.Router()
+const orgTestsController = express.Router();
 
-const err = new HandleError() 
-
-
+const err = new HandleError();
 
 //testes de cargas/stress
-orgTestsController.route('/tests/org/information/stress').get(async(req, res)=>{
+orgTestsController
+  .route("/tests/org/information/stress")
+  .get(async (req, res) => {
+    try {
+      // 60  requisições/s direto do banco de dados [gravação e leitura]
+      const request = loadDataTest();
 
-    try{
-        
-        // 40  requisições/s direto do banco de dados [gravação e leitura]
-        const request = loadDataTest()
-    
-        console.log(request)
-    
-        const request2 = loadDataTest2()
-    
-        console.log(request2)
-    
-        return res.status(200).json({tests: 'testing start Ok! looking in your bash terminal!'})
-    }catch(__){
+      console.log(request);
 
-        return res.status(500).json({ error: 'ops! there is an error'+__ })
+      const request2 = loadDataTest2();
+
+      console.log(request2);
+
+      return res
+        .status(200)
+        .json({ tests: "testing start Ok! looking in your bash terminal!" });
+    } catch (__) {
+      return res.status(500).json({ error: "ops! there is an error" + __ });
     }
-})
-
-
+  });
 
 // testes de performance com cache utilizando o db redis
-orgTestsController.route('/tests/redis-cache/on-storage').post(async(req, res)=>{
+orgTestsController
+  .route("/tests/redis-cache/on-storage")
+  .post(async (req, res) => {
+    try {
+      await setCache(req.body.key, req.body.value, req.body.expiration);
 
-    try{
-
-        await connection()
-
-        await setCache(req.body.key, req.body.value, req.body.expiration)
-
-        res.status(201).json({ msg: 'cache on storage' })
-        
-        await disconnection()
-        
-        return 
-    }catch(__){
-
-        return res.status(500).json({ error: 'ops! there is an error'+__ })
+      return res.status(201).json({ msg: "cache on storage" });
+    } catch (__) {
+      return res.status(500).json({ error: "ops! there is an error" + __ });
     }
-}).get(async(req, res)=>{
+  })
+  .get(async (req, res) => {
+    try {
+      const cache = await getCache(req.query.cache);
 
-    try{
-
-        await connection()
-
-        const cache = await getCache(req.query.cache)
-
-        res.status(200).json(cache)
-        
-        await disconnection()
-        
-        return 
-    }catch(__){
-
-        return res.status(500).json({ error: 'ops! there is an error'+__ })
+      return res.status(200).json(cache);
+    } catch (__) {
+      return res.status(500).json({ error: "ops! there is an error" + __ });
     }
-})
+  });
 
-orgTestsController.route('/tests/redis-cache/get/org/data/:id').get(async(req, res)=>{
+orgTestsController
+  .route("/tests/redis-cache/get/org/data/:id")
+  .get(async (req, res) => {
+    try {
+      const orgDataFromCache = await getCache(`org_data_${req.params.id}`);
 
-    try{
+      if (orgDataFromCache) {
+        const data = JSON.parse(orgDataFromCache);
 
-        await connection()
-             
-        const orgDataFromCache = await getCache(`org_data_${req.params.id}`)
+        return res.status(200).json({
+          data: {
+            inCache: "yes",
+            data,
+          },
+        });
+      }
 
-        if(orgDataFromCache) {
+      const query = new OrgJoinQuery();
 
-            const data = JSON.parse(orgDataFromCache)
-            
-            res.status(200).json({
-                                data: {
-                                inCache: 'yes',
-                                data 
-                                }
-                            })
-                
-            await disconnection()
-    
-            return
-        }
+      const data = await query.getById(Number(req.params.id));
 
-        const query = new OrgJoinQuery()
+      if (data.data.organization.length === 0) {
+        return res.status(404).json({
+          msg: "no data",
+        });
+      }
 
-        const data = await query.getById(Number(req.params.id))
-        
-        if(data.data.organization.length === 0){
+      // 60 * 60 * 24 * 7 (expiration: 7 dias)
+      //a lógica é a seguinte: a informação será salva,
+      // na api de registro, no database de registro e no banco de cache
+      // o usuário de nível gratuito, somente acessará os dados em cache,
+      // com ttl equivalente a 1 semana, após isso os dados em cache serão
+      // eliminados e a API de registro somente será acessível a administração
+      // do app, para fins de consulta ou jurídico, será eliminar primeiro a
+      // associação da informação e logo após a informação, ambos estarão
+      // em cache
+      await setCache(`org_data_${req.params.id}`, JSON.stringify(data), 300);
 
-            res.status(404)
-               .json({
-                    msg: 'no data'
-                })
+      // neste ponto a tentativa de parse levaria a erros continuos,
+      // pois aqui o valor da value de informationFromCache é null
+      // e a tentativa de parse para JSON, seria o mesmo que
+      // converter um valor null em JSON.
+      // então se na chamada não houver dados em cache,
+      // os dados obtidos na requisição REST serão salvos no redis e
+      // apresentados ao usuário, na próxima chamada o valor já será
+      // diferente de null, aí sim poderá ser parseado para JSON
+      // e obtido do banco de dados de cache.
 
-            await disconnection()
-
-            return
-        }
-
-        // 60 * 60 * 24 * 7 (expiration: 7 dias)
-        //a lógica é a seguinte: a informação será salva,
-        // na api de registro, no database de registro e no banco de cache
-        // o usuário de nível gratuito, somente acessará os dados em cache,
-        // com ttl equivalente a 1 semana, após isso os dados em cache serão 
-        // eliminados e a API de registro somente será acessível a administração
-        // do app, para fins de consulta ou jurídico, será eliminar primeiro a
-        // associação da informação e logo após a informação, ambos estarão 
-        // em cache
-        await setCache(`org_data_${req.params.id}`, JSON.stringify(data), 300)
-                 
-           
-        // neste ponto a tentativa de parse levaria a erros continuos,
-        // pois aqui o valor da value de informationFromCache é null 
-        // e a tentativa de parse para JSON, seria o mesmo que 
-        // converter um valor null em JSON.
-        // então se na chamada não houver dados em cache, 
-        // os dados obtidos na requisição REST serão salvos no redis e
-        // apresentados ao usuário, na próxima chamada o valor já será
-        // diferente de null, aí sim poderá ser parseado para JSON
-        // e obtido do banco de dados de cache. 
-
-        res.status(200).json({
-                            data:{
-                                inCache: 'no',
-                                data
-                            }
-                        })
-        
-        await disconnection()
-
-        return 
-    }catch(__){
-
-        res.status(500)
-           .json({ 
-                error: 'i am sorry, there is an error with server'+__
-            })
-        
-        await disconnection()
-        
-        return 
-        
+      return res.status(200).json({
+        data: {
+          inCache: "no",
+          data,
+        },
+      });
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server" + __,
+      });
     }
-})
-
-
+  });
 
 //testes de operações com dados criptografados
-orgTestsController.route('/tests/org/crypted/save').post(async(req, res)=>{
+orgTestsController.route("/tests/org/crypted/save").post(async (req, res) => {
+  try {
+    const data = { ...req.body };
 
-    try{
+    cipherOrgDataAndSave(data);
 
-        const data = { ...req.body }
+    return res.json({ data: "organization saved and crypted with success" });
+  } catch (__) {
+    return res.status(500).json({
+      error: "i am sorry, there is an error with server" + __,
+    });
+  }
+});
 
-        cipherOrgDataAndSave(data)
+orgTestsController
+  .route("/tests/org/driver/crypted/save")
+  .post(async (req, res) => {
+    try {
+      const data = { ...req.body };
 
-        return res.json({ data: 'organization saved and crypted with success' })
-    }catch(__){
+      cipherDriverDataAndSave(data);
 
-        return res.status(500)
-                  .json({ 
-                    error: 'i am sorry, there is an error with server'+__
-                })
+      return res.json({ data: "driver saved and crypted with success" });
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server" + __,
+      });
     }
-})
+  });
 
-orgTestsController.route('/tests/org/driver/crypted/save').post(async(req, res)=>{
+orgTestsController.route("/tests/org/crypted/data").get(async (req, res) => {
+  try {
+    const data = await decipherOrgDataAndGet();
 
-    try{
+    return res.json(data);
+  } catch (__) {
+    return res.status(500).json({
+      error: "i am sorry, there is an error with server" + __,
+    });
+  }
+});
 
-        const data = { ...req.body }
+orgTestsController
+  .route("/tests/org/driver/crypted/data")
+  .get(async (req, res) => {
+    try {
+      const data = await decipherDriverDataAndGet();
 
-        cipherDriverDataAndSave(data)
-
-        return res.json({ data: 'driver saved and crypted with success' })
-    }catch(__){
-
-        return res.status(500)
-                  .json({ 
-                    error: 'i am sorry, there is an error with server'+__
-                })
+      return res.json(data);
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server" + __,
+      });
     }
-})
+  });
 
-orgTestsController.route('/tests/org/crypted/data').get(async(req, res)=>{
+orgTestsController.route("/tests/org/cnpj/verify").get(async (req, res) => {
+  const Org = { ...req.query };
 
-    try{
+  try {
+    const cnpjExistsOrNotexists = await verifyDeciphedCnpjAndGetData(Org.cnpj);
 
-        const data = await decipherOrgDataAndGet()
+    return res.json(cnpjExistsOrNotexists);
+  } catch (__) {
+    return res.status(500).json({
+      error: "i am sorry, there is an error with server" + __,
+    });
+  }
+});
 
-        return res.json(data)
-    }catch(__){
+orgTestsController
+  .route("/tests/org/driver/email/verify")
+  .get(async (req, res) => {
+    const Driver = { ...req.query };
 
-        return res.status(500)
-                  .json({ 
-                    error: 'i am sorry, there is an error with server'+__
-                })
+    try {
+      const emailExistsOrNotexists = await verifyDeciphedEmailAndGetData(
+        Driver.email
+      );
+
+      return res.json(emailExistsOrNotexists);
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server" + __,
+      });
     }
-})
+  });
 
-orgTestsController.route('/tests/org/driver/crypted/data').get(async(req, res)=>{
-
-    try{
-
-        const data = await decipherDriverDataAndGet()
-
-        return res.json(data)
-    }catch(__){
-
-        return res.status(500)
-                  .json({ 
-                    error: 'i am sorry, there is an error with server'+__
-                })
-    }
-})
-
-orgTestsController.route('/tests/org/cnpj/verify').get(async(req, res)=>{
-
-    const Org = { ...req.query }
-
-    try{
-
-        const cnpjExistsOrNotexists = await verifyDeciphedCnpjAndGetData(Org.cnpj)
-
-        return res.json(cnpjExistsOrNotexists)
-    }catch(__){
-
-        return res.status(500)
-                  .json({ 
-                    error: 'i am sorry, there is an error with server'+__
-                })
-    }
-})
-
-orgTestsController.route('/tests/org/driver/email/verify').get(async(req, res)=>{
-
-    const Driver = { ...req.query }
-
-    try{
-
-        const emailExistsOrNotexists = await verifyDeciphedEmailAndGetData(Driver.email)
-
-        return res.json(emailExistsOrNotexists)
-    }catch(__){
-
-        return res.status(500)
-                  .json({ 
-                    error: 'i am sorry, there is an error with server'+__
-                })
-    }
-})
-
-export { orgTestsController }
+export { orgTestsController };

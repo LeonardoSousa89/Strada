@@ -2,91 +2,86 @@ import Org from "../../entities/org/org";
 import { DbOperations } from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
 
-import { orgProjection } from '../../repositories/projections/OrgProjection'
+import { orgProjection } from "../../repositories/projections/OrgProjection";
 
 export default class OrgService extends Org implements DbOperations {
+  constructor(
+    fantasy_name?: string,
+    corporate_name?: string,
+    cnpj?: string,
+    org_status?: string,
+    cnae_main_code?: string,
+    open_date?: string,
+    password?: string
+  ) {
+    super(
+      fantasy_name,
+      corporate_name,
+      cnpj,
+      org_status,
+      cnae_main_code,
+      open_date,
+      password
+    );
+  }
 
-    constructor(
-        fantasy_name?: string,
-        corporate_name?: string,
-        cnpj?: string,
-        org_status?: string,
-        cnae_main_code?: string,
-        open_date?: string,
-        password?: string
-    ){
-        super(fantasy_name, 
-              corporate_name,
-              cnpj,
-              org_status,
-              cnae_main_code,
-              open_date,
-              password)
-    }
-    
-    org = new Org( 
-        this.fantasy_name, 
-        this.corporate_name,
-        this.cnpj,
-        this.org_status,
-        this.cnae_main_code,
-        this.open_date,
-        this.password)
+  org = new Org(
+    this.fantasy_name,
+    this.corporate_name,
+    this.cnpj,
+    this.org_status,
+    this.cnae_main_code,
+    this.open_date,
+    this.password
+  );
 
-    async verifyCnpj(cnpj: string) {
+  async verifyCnpj(cnpj: string) {
+    const existsOrNotExistsCnpj = await knex
+      .where("cnpj", cnpj)
+      .from("vex_schema.org")
+      .first();
 
-        const existsOrNotExistsCnpj = await knex.where('cnpj', cnpj)
-                                                .from('vex_schema.org')
-                                                .first()
+    if (existsOrNotExistsCnpj) return true;
 
-        if(existsOrNotExistsCnpj)  return true
+    if (!existsOrNotExistsCnpj) return false;
+  }
 
-        if(!existsOrNotExistsCnpj) return false
-    }
+  async verifyId(id: string | number) {
+    const existsOrNotExistsId = await knex
+      .where("org_id", id)
+      .from("vex_schema.org")
+      .first();
 
-    async verifyId(id: string | number) {
+    if (existsOrNotExistsId) return true;
 
-        const existsOrNotExistsId = await knex.where('org_id', id)
-                                              .from('vex_schema.org')
-                                              .first()
+    if (!existsOrNotExistsId) return false;
+  }
 
-        if(existsOrNotExistsId)  return true
+  async save() {
+    await knex.insert(this.org).from("vex_schema.org");
+  }
 
-        if(!existsOrNotExistsId) return false
-    }
+  async update(id?: number | string) {
+    await knex.where("org_id", id).update(this.org).from("vex_schema.org");
+  }
 
-    async save() {
+  async getAll() {
+    const data = await knex.select(orgProjection).from("vex_schema.org");
 
-        await knex.insert(this.org).from('vex_schema.org')
-    }
+    return data;
+  }
 
-    async update(id?: number | string) {
-        
-        await knex.where('org_id', id)
-                  .update(this.org)
-                  .from('vex_schema.org')
-    }
+  async getById(id?: number | string) {
+    const data = await knex
+      .where("org_id", id)
+      .select(orgProjection)
+      .from("vex_schema.org");
+    return data;
+  }
 
-    async getAll() {
+  deleteAll(): void {}
 
-        const data = await knex.select(orgProjection)
-                               .from('vex_schema.org') 
-    
-        return data
-    }
-
-    async getById(id?: number | string) {
-        
-        const data = await knex.where('org_id', id)
-                               .select(orgProjection)
-                               .from('vex_schema.org') 
-        return data
-    }
-
-    deleteAll(): void {}
-
-    async deleteById(id?: number | string) {
-        
-        await knex.where('org_id', id).delete().from('vex_schema.org') 
-    }
+  async deleteById(id?: number | string) {
+    await knex.where("org_id", id).delete().from("vex_schema.org");
+  }
 }

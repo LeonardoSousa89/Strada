@@ -1,9 +1,7 @@
-export default class DriverContact{
+export default class DriverContact {
+  telephone?: string;
 
-    telephone?: string
-
-    constructor(telephone?: string
-    ){
-        this.telephone = telephone 
-    }
+  constructor(telephone?: string) {
+    this.telephone = telephone;
+  }
 }

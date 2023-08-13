@@ -28,8 +28,9 @@ class DriverAddressService extends driverAddress_1.default {
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExistsId = yield knex_1.default.where('driver_address_id', id)
-                .from('vex_schema.driver_address')
+            const existsOrNotExistsId = yield knex_1.default
+                .where("driver_address_id", id)
+                .from("vex_schema.driver_address")
                 .first();
             if (existsOrNotExistsId)
                 return true;
@@ -39,41 +40,47 @@ class DriverAddressService extends driverAddress_1.default {
     }
     save() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.insert(this.driverAddressService).from('vex_schema.driver_address');
+            yield knex_1.default
+                .insert(this.driverAddressService)
+                .from("vex_schema.driver_address");
         });
     }
     update(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.where('driver_address_id', id)
+            yield knex_1.default
+                .where("driver_address_id", id)
                 .update(this.driverAddressService)
-                .from('vex_schema.driver_address');
+                .from("vex_schema.driver_address");
         });
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select(driverProjection_1.driverAddressProjection)
-                .from('vex_schema.driver_address');
+            const data = yield knex_1.default
+                .select(driverProjection_1.driverAddressProjection)
+                .from("vex_schema.driver_address");
             return data;
         });
     }
     getById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.where('driver_address_id', id)
+            const data = yield knex_1.default
+                .where("driver_address_id", id)
                 .select(driverProjection_1.driverAddressProjection)
-                .from('vex_schema.driver_address');
+                .from("vex_schema.driver_address");
             return data;
         });
     }
     deleteAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.delete().from('vex_schema.driver_address');
+            yield knex_1.default.delete().from("vex_schema.driver_address");
         });
     }
     deleteById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield knex_1.default.where('driver_address_id', id)
+            yield knex_1.default
+                .where("driver_address_id", id)
                 .delete()
-                .from('vex_schema.driver_address');
+                .from("vex_schema.driver_address");
         });
     }
 }
