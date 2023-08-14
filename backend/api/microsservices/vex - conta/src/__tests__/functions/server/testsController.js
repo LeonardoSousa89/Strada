@@ -141,6 +141,7 @@ orgTestsController
     }
 }));
 //testes de operações com dados criptografados
+//Org
 orgTestsController.route("/tests/org/crypted/save").post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
     try {
@@ -193,13 +194,69 @@ orgTestsController.route("/tests/org/crypted/save").post((req, res) => __awaiter
         });
     }
 }));
-orgTestsController
-    .route("/tests/org/driver/crypted/save")
-    .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController.route("/tests/org/update/:id").put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Org = Object.assign({}, req.body);
     try {
-        const data = Object.assign({}, req.body);
-        (0, crypto_1.cipherDriverDataAndSave)(data);
-        return res.json({ data: "driver saved and crypted with success" });
+        err.exceptionFieldNullOrUndefined(Org.fantasy_name, "fantasy name is undefined or null");
+        err.exceptionFieldNullOrUndefined(Org.corporate_name, "corporate name is undefined or null");
+        err.exceptionFieldNullOrUndefined(Org.cnpj, "cnpj is undefined or null");
+        err.exceptionFieldNullOrUndefined(Org.org_status, "org status is undefined or null");
+        err.exceptionFieldNullOrUndefined(Org.cnae_main_code, "cnae main code is undefined or null");
+        err.exceptionFieldNullOrUndefined(Org.open_date, "open date is undefined or null");
+        err.exceptionFieldNullOrUndefined(Org.password, "password is undefined or null");
+        err.exceptionFieldIsEmpty(Org.fantasy_name.trim(), "fantasy name can not be empty");
+        err.exceptionFieldIsEmpty(Org.corporate_name.trim(), "corporate name can not be empty");
+        err.exceptionFieldIsEmpty(Org.cnpj.trim(), "cnpj can not be empty");
+        err.exceptionFieldIsEmpty(Org.org_status.trim(), "org status can not be empty");
+        err.exceptionFieldIsEmpty(Org.cnae_main_code.trim(), "cnae main code can not be empty");
+        err.exceptionFieldIsEmpty(Org.open_date.trim(), "open date can not be empty");
+        err.exceptionFieldIsEmpty(Org.password.trim(), "password can not be empty");
+        err.exceptionFieldValueLessToType(Org.password.trim(), "password must be greather than 4");
+    }
+    catch (e) {
+        return res.status(400).json({ error: e });
+    }
+    const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
+    let cnpjExistsOnHttpResquest = "";
+    try {
+        cnpjExistsOnHttpResquest = yield axios_1.default.get(url);
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error to try verify cnpj" + __,
+        });
+    }
+    if (cnpjExistsOnHttpResquest.data.error)
+        return res.status(404).json({
+            error: "cnpj not found",
+        });
+    try {
+        const response = yield (0, crypto_1.cipherOrgDataAndUpdate)(req.params.id, Org);
+        return res.json(response);
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
+        });
+    }
+}));
+orgTestsController.route("/tests/org/verify").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Org = Object.assign({}, req.query);
+    try {
+        const response = yield (0, crypto_1.verifyDeciphedCnpj)(Org.cnpj);
+        return res.json(response);
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
+        });
+    }
+}));
+orgTestsController.route("/tests/org/cnpj/verify").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Org = Object.assign({}, req.query);
+    try {
+        const cnpjExistsOrNotexists = yield (0, crypto_1.verifyDeciphedCnpjAndGetData)(Org.cnpj);
+        return res.json(cnpjExistsOrNotexists);
     }
     catch (__) {
         return res.status(500).json({
@@ -218,12 +275,14 @@ orgTestsController.route("/tests/org/crypted/data").get((req, res) => __awaiter(
         });
     }
 }));
+//Driver
 orgTestsController
-    .route("/tests/org/driver/crypted/data")
-    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    .route("/tests/org/driver/crypted/save")
+    .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield (0, crypto_1.decipherDriverDataAndGet)();
-        return res.json(data);
+        const data = Object.assign({}, req.body);
+        (0, crypto_1.cipherDriverDataAndSave)(data);
+        return res.json({ data: "driver saved and crypted with success" });
     }
     catch (__) {
         return res.status(500).json({
@@ -231,11 +290,12 @@ orgTestsController
         });
     }
 }));
-orgTestsController.route("/tests/org/cnpj/verify").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Org = Object.assign({}, req.query);
+orgTestsController
+    .route("/tests/org/driver/crypted/data")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const cnpjExistsOrNotexists = yield (0, crypto_1.verifyDeciphedCnpjAndGetData)(Org.cnpj);
-        return res.json(cnpjExistsOrNotexists);
+        const data = yield (0, crypto_1.decipherDriverDataAndGet)();
+        return res.json(data);
     }
     catch (__) {
         return res.status(500).json({
@@ -257,36 +317,13 @@ orgTestsController
         });
     }
 }));
-orgTestsController.route("/tests/org/update/:id").put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Org = Object.assign({}, req.params);
-    const data = Object.assign({}, req.body);
-    try {
-        const response = yield (0, crypto_1.cipherOrgDataAndUpdate)(Org.id, data);
-        return res.json(response);
-    }
-    catch (__) {
-        return res.status(500).json({
-            error: "i am sorry, there is an error with server" + __,
-        });
-    }
-}));
-orgTestsController.route("/tests/org/driver/update/:id").put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController
+    .route("/tests/org/driver/update/:id")
+    .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Driver = Object.assign({}, req.params);
     const data = Object.assign({}, req.body);
     try {
         const response = yield (0, crypto_1.cipherDriverDataAndUpdate)(Driver.id, data);
-        return res.json(response);
-    }
-    catch (__) {
-        return res.status(500).json({
-            error: "i am sorry, there is an error with server" + __,
-        });
-    }
-}));
-orgTestsController.route("/tests/org/verify").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Org = Object.assign({}, req.query);
-    try {
-        const response = yield (0, crypto_1.verifyDeciphedCnpj)(Org.cnpj);
         return res.json(response);
     }
     catch (__) {
