@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url1 = "http://localhost:8765/org/join/data?org_id=103";
+const url1 = "http://localhost:8765/org/join/data?org_id=106";
 const url2 = "http://localhost:8765/org/driver/information/save";
 
 /**

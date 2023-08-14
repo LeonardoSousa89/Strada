@@ -6,6 +6,7 @@ import { orgProjection } from "../../repositories/projections/OrgProjection";
 import DriverService from "../../services/driver/driverService";
 import { driverProjection } from "../../repositories/projections/driverProjection";
 
+// salvar dados cifrados
 export async function cipherOrgDataAndSave(data: any) {
   data.fantasy_name = cipher(data.fantasy_name);
   data.corporate_name = cipher(data.corporate_name);
@@ -46,6 +47,7 @@ export async function cipherDriverDataAndSave(data: any) {
   await driverService.save();
 }
 
+// obter dados decifrados
 export async function decipherOrgDataAndGet() {
   const data = await knex.select(orgProjection).from("vex_schema.org");
 
@@ -86,6 +88,8 @@ export async function decipherDriverDataAndGet() {
 
   return data;
 }
+
+
 
 export async function verifyDeciphedCnpjAndGetData(cnpj: any) {
   const data = await knex.select(orgProjection).from("vex_schema.org");
@@ -136,4 +140,111 @@ export async function verifyDeciphedEmailAndGetData(email: any) {
   return search;
 }
 
-export async function verifyDeciphedDocumentAndGetData(cnh: any) {}
+//atualizar dados cifrados
+export async function cipherOrgDataAndUpdate(id: string | number, data: any) {
+  
+  const verifyId = new OrgService();
+
+  const orgIdExistsOnDb = await verifyId.verifyId(id);
+
+  if (orgIdExistsOnDb === false) return "organization not found";
+  
+  data.fantasy_name = cipher(data.fantasy_name);
+  data.corporate_name = cipher(data.corporate_name);
+  data.cnpj = cipher(data.cnpj);
+  data.org_status = cipher(data.org_status);
+  data.cnae_main_code = cipher(data.cnae_main_code);
+  data.open_date = cipher(data.open_date);
+
+  data.password = cryptograph(data.password);
+
+  const orgService = new OrgService(
+    data.fantasy_name,
+    data.corporate_name,
+    data.cnpj,
+    data.org_status,
+    data.cnae_main_code,
+    data.open_date,
+    data.password
+  );
+  
+  await orgService.update(id);
+
+  if (orgIdExistsOnDb === true) return  'organization updated and crypted with success'
+}
+
+export async function cipherDriverDataAndUpdate(id: string, data: any) {
+
+  const verifyId = new DriverService();
+
+  const orgIdExistsOnDb = await verifyId.verifyId(id);
+
+  if (orgIdExistsOnDb === false) return "driver not found";
+  
+  data.first_name = cipher(data.first_name);
+  data.last_name = cipher(data.last_name);
+  data.email = cipher(data.email);
+
+  data.password = cryptograph(data.password);
+
+  const driverService = new DriverService(
+    data.first_name,
+    data.last_name,
+    data.email,
+    data.password
+  );
+
+  await driverService.update(id);
+
+  if (orgIdExistsOnDb === true) return 'driver updated and crypted with success'
+}
+
+//verificação de existência no database
+export async function verifyDeciphedCnpj(cnpj: any) {
+  const data = await knex.select(orgProjection).from("vex_schema.org");
+
+  for (let cipherDataPosition in data) {
+    data[cipherDataPosition].fantasy_name = decipher(
+      data[cipherDataPosition].fantasy_name
+    );
+    data[cipherDataPosition].corporate_name = decipher(
+      data[cipherDataPosition].corporate_name
+    );
+    data[cipherDataPosition].cnpj = decipher(data[cipherDataPosition].cnpj);
+    data[cipherDataPosition].org_status = decipher(
+      data[cipherDataPosition].org_status
+    );
+    data[cipherDataPosition].cnae_main_code = decipher(
+      data[cipherDataPosition].cnae_main_code
+    );
+    data[cipherDataPosition].open_date = decipher(
+      data[cipherDataPosition].open_date
+    );
+  }
+
+  const search = data.find((dataElement) => dataElement.cnpj === cnpj);
+
+  if (!search) return false;
+
+  return true;
+}
+
+export async function verifyDeciphedEmail(email: any) {
+  const data = await knex.select(driverProjection).from("vex_schema.driver");
+
+  for (let cipherDataPosition in data) {
+    data[cipherDataPosition].first_name = decipher(
+      data[cipherDataPosition].first_name
+    );
+    data[cipherDataPosition].last_name = decipher(
+      data[cipherDataPosition].last_name
+    );
+    data[cipherDataPosition].email = decipher(data[cipherDataPosition].email);
+  }
+
+  const search = data.find((dataElement) => dataElement.email === email);
+
+  if (!search) return false;
+
+  return true;
+}
