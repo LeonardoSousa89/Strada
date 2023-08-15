@@ -73,6 +73,24 @@ export async function decipherOrgDataAndGet() {
   return data;
 }
 
+export async function decipherOrgDataByIdAndGet(id: number | string) {
+  const data = await knex
+    .where("org_id", id)
+    .select(orgProjection)
+    .from("vex_schema.org");
+
+  if(data.length === 0) return 'org not found'
+
+  data[0].fantasy_name = decipher(data[0].fantasy_name);
+  data[0].corporate_name = decipher(data[0].corporate_name);
+  data[0].cnpj = decipher(data[0].cnpj);
+  data[0].org_status = decipher(data[0].org_status);
+  data[0].cnae_main_code = decipher(data[0].cnae_main_code);
+  data[0].open_date = decipher(data[0].open_date);
+  
+  return data;
+}
+
 export async function decipherDriverDataAndGet() {
   const data = await knex.select(driverProjection).from("vex_schema.driver");
 
@@ -89,7 +107,20 @@ export async function decipherDriverDataAndGet() {
   return data;
 }
 
+export async function decipherDriverDataByIdAndGet(id: number | string) {
+  const data = await knex
+    .where("driver_id", id)
+    .select(driverProjection)
+    .from("vex_schema.driver");
 
+  if(data.length === 0) return 'driver not found'
+
+  data[0].first_name = decipher(data[0].first_name);
+  data[0].last_name = decipher(data[0].last_name);
+  data[0].email = decipher(data[0].email);
+
+  return data;
+}
 
 export async function verifyDeciphedCnpjAndGetData(cnpj: any) {
   const data = await knex.select(orgProjection).from("vex_schema.org");
@@ -142,13 +173,12 @@ export async function verifyDeciphedEmailAndGetData(email: any) {
 
 //atualizar dados cifrados
 export async function cipherOrgDataAndUpdate(id: string | number, data: any) {
-  
   const verifyId = new OrgService();
 
   const orgIdExistsOnDb = await verifyId.verifyId(id);
 
   if (orgIdExistsOnDb === false) return "organization not found";
-  
+
   data.fantasy_name = cipher(data.fantasy_name);
   data.corporate_name = cipher(data.corporate_name);
   data.cnpj = cipher(data.cnpj);
@@ -167,20 +197,20 @@ export async function cipherOrgDataAndUpdate(id: string | number, data: any) {
     data.open_date,
     data.password
   );
-  
+
   await orgService.update(id);
 
-  if (orgIdExistsOnDb === true) return  'organization updated and crypted with success'
+  if (orgIdExistsOnDb === true)
+    return "organization updated and crypted with success";
 }
 
 export async function cipherDriverDataAndUpdate(id: string, data: any) {
-
   const verifyId = new DriverService();
 
   const orgIdExistsOnDb = await verifyId.verifyId(id);
 
   if (orgIdExistsOnDb === false) return "driver not found";
-  
+
   data.first_name = cipher(data.first_name);
   data.last_name = cipher(data.last_name);
   data.email = cipher(data.email);
@@ -196,7 +226,8 @@ export async function cipherDriverDataAndUpdate(id: string, data: any) {
 
   await driverService.update(id);
 
-  if (orgIdExistsOnDb === true) return 'driver updated and crypted with success'
+  if (orgIdExistsOnDb === true)
+    return "driver updated and crypted with success";
 }
 
 //verificação de existência no database

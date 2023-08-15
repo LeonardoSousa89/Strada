@@ -252,6 +252,17 @@ orgTestsController.route("/tests/org/verify").get((req, res) => __awaiter(void 0
         });
     }
 }));
+orgTestsController.route("/tests/org/crypted/data").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = yield (0, crypto_1.decipherOrgDataAndGet)();
+        return res.json(data);
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
+        });
+    }
+}));
 orgTestsController.route("/tests/org/cnpj/verify").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.query);
     try {
@@ -264,10 +275,13 @@ orgTestsController.route("/tests/org/cnpj/verify").get((req, res) => __awaiter(v
         });
     }
 }));
-orgTestsController.route("/tests/org/crypted/data").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController.route("/tests/org/get/by/id/:id").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Org = Object.assign({}, req.params);
     try {
-        const data = yield (0, crypto_1.decipherOrgDataAndGet)();
-        return res.json(data);
+        const response = yield (0, crypto_1.decipherOrgDataByIdAndGet)(Org.id);
+        if (response === 'org not found')
+            return res.status(404).json(response);
+        return res.json(response);
     }
     catch (__) {
         return res.status(500).json({
@@ -279,9 +293,28 @@ orgTestsController.route("/tests/org/crypted/data").get((req, res) => __awaiter(
 orgTestsController
     .route("/tests/org/driver/crypted/save")
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Driver = Object.assign({}, req.body);
     try {
-        const data = Object.assign({}, req.body);
-        (0, crypto_1.cipherDriverDataAndSave)(data);
+        err.exceptionFieldNullOrUndefined(Driver.first_name, "first name is undefined or null");
+        err.exceptionFieldNullOrUndefined(Driver.last_name, "last name is undefined or null");
+        err.exceptionFieldNullOrUndefined(Driver.email, "email place is undefined or null");
+        err.exceptionFieldNullOrUndefined(Driver.password, "password place is undefined or null");
+        err.exceptionFieldIsEmpty(Driver.first_name.trim(), "first name can not be empty");
+        err.exceptionFieldIsEmpty(Driver.last_name.trim(), "last name can not be empty");
+        err.exceptionFieldIsEmpty(Driver.email.trim(), "email place can not be empty");
+        err.exceptionFieldIsEmpty(Driver.password.trim(), "password place can not be empty");
+        err.exceptionFieldValueLessToType(Driver.password, "password can not be less than 4");
+    }
+    catch (e) {
+        return res.status(400).json({ error: e });
+    }
+    const emailIdExistsOnDb = yield (0, crypto_1.verifyDeciphedEmail)(Driver.email);
+    if (emailIdExistsOnDb === true)
+        return res.status(400).json({
+            error: "email already exists",
+        });
+    try {
+        (0, crypto_1.cipherDriverDataAndSave)(Driver);
         return res.json({ data: "driver saved and crypted with success" });
     }
     catch (__) {
@@ -336,6 +369,20 @@ orgTestsController.route("/tests/org/driver/verify").get((req, res) => __awaiter
     const Driver = Object.assign({}, req.query);
     try {
         const response = yield (0, crypto_1.verifyDeciphedEmail)(Driver.email);
+        return res.json(response);
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
+        });
+    }
+}));
+orgTestsController.route("/tests/org/driver/get/by/id/:id").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Driver = Object.assign({}, req.params);
+    try {
+        const response = yield (0, crypto_1.decipherDriverDataByIdAndGet)(Driver.id);
+        if (response === 'driver not found')
+            return res.status(404).json(response);
         return res.json(response);
     }
     catch (__) {

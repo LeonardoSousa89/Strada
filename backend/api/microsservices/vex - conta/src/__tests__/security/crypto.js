@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyDeciphedEmail = exports.verifyDeciphedCnpj = exports.cipherDriverDataAndUpdate = exports.cipherOrgDataAndUpdate = exports.verifyDeciphedEmailAndGetData = exports.verifyDeciphedCnpjAndGetData = exports.decipherDriverDataAndGet = exports.decipherOrgDataAndGet = exports.cipherDriverDataAndSave = exports.cipherOrgDataAndSave = void 0;
+exports.verifyDeciphedEmail = exports.verifyDeciphedCnpj = exports.cipherDriverDataAndUpdate = exports.cipherOrgDataAndUpdate = exports.verifyDeciphedEmailAndGetData = exports.verifyDeciphedCnpjAndGetData = exports.decipherDriverDataByIdAndGet = exports.decipherDriverDataAndGet = exports.decipherOrgDataByIdAndGet = exports.decipherOrgDataAndGet = exports.cipherDriverDataAndSave = exports.cipherOrgDataAndSave = void 0;
 const crypto_1 = require("../../security/cryptography/crypto");
 const bcrypt_1 = require("../../security/cryptography/bcrypt");
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
@@ -62,6 +62,24 @@ function decipherOrgDataAndGet() {
     });
 }
 exports.decipherOrgDataAndGet = decipherOrgDataAndGet;
+function decipherOrgDataByIdAndGet(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield knex_1.default
+            .where("org_id", id)
+            .select(OrgProjection_1.orgProjection)
+            .from("vex_schema.org");
+        if (data.length === 0)
+            return 'org not found';
+        data[0].fantasy_name = (0, crypto_1.decipher)(data[0].fantasy_name);
+        data[0].corporate_name = (0, crypto_1.decipher)(data[0].corporate_name);
+        data[0].cnpj = (0, crypto_1.decipher)(data[0].cnpj);
+        data[0].org_status = (0, crypto_1.decipher)(data[0].org_status);
+        data[0].cnae_main_code = (0, crypto_1.decipher)(data[0].cnae_main_code);
+        data[0].open_date = (0, crypto_1.decipher)(data[0].open_date);
+        return data;
+    });
+}
+exports.decipherOrgDataByIdAndGet = decipherOrgDataByIdAndGet;
 function decipherDriverDataAndGet() {
     return __awaiter(this, void 0, void 0, function* () {
         const data = yield knex_1.default.select(driverProjection_1.driverProjection).from("vex_schema.driver");
@@ -74,6 +92,21 @@ function decipherDriverDataAndGet() {
     });
 }
 exports.decipherDriverDataAndGet = decipherDriverDataAndGet;
+function decipherDriverDataByIdAndGet(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield knex_1.default
+            .where("driver_id", id)
+            .select(driverProjection_1.driverProjection)
+            .from("vex_schema.driver");
+        if (data.length === 0)
+            return 'driver not found';
+        data[0].first_name = (0, crypto_1.decipher)(data[0].first_name);
+        data[0].last_name = (0, crypto_1.decipher)(data[0].last_name);
+        data[0].email = (0, crypto_1.decipher)(data[0].email);
+        return data;
+    });
+}
+exports.decipherDriverDataByIdAndGet = decipherDriverDataByIdAndGet;
 function verifyDeciphedCnpjAndGetData(cnpj) {
     return __awaiter(this, void 0, void 0, function* () {
         const data = yield knex_1.default.select(OrgProjection_1.orgProjection).from("vex_schema.org");
@@ -124,7 +157,7 @@ function cipherOrgDataAndUpdate(id, data) {
         const orgService = new orgService_1.default(data.fantasy_name, data.corporate_name, data.cnpj, data.org_status, data.cnae_main_code, data.open_date, data.password);
         yield orgService.update(id);
         if (orgIdExistsOnDb === true)
-            return 'organization updated and crypted with success';
+            return "organization updated and crypted with success";
     });
 }
 exports.cipherOrgDataAndUpdate = cipherOrgDataAndUpdate;
@@ -141,7 +174,7 @@ function cipherDriverDataAndUpdate(id, data) {
         const driverService = new driverService_1.default(data.first_name, data.last_name, data.email, data.password);
         yield driverService.update(id);
         if (orgIdExistsOnDb === true)
-            return 'driver updated and crypted with success';
+            return "driver updated and crypted with success";
     });
 }
 exports.cipherDriverDataAndUpdate = cipherDriverDataAndUpdate;

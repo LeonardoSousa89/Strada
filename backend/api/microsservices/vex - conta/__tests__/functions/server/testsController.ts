@@ -14,7 +14,9 @@ import {
   cipherOrgDataAndSave,
   cipherOrgDataAndUpdate,
   decipherDriverDataAndGet,
+  decipherDriverDataByIdAndGet,
   decipherOrgDataAndGet,
+  decipherOrgDataByIdAndGet,
   verifyDeciphedCnpj,
   verifyDeciphedCnpjAndGetData,
   verifyDeciphedEmail,
@@ -335,6 +337,18 @@ orgTestsController.route("/tests/org/verify").get(async (req, res) => {
   }
 });
 
+orgTestsController.route("/tests/org/crypted/data").get(async (req, res) => {
+  try {
+    const data = await decipherOrgDataAndGet();
+
+    return res.json(data);
+  } catch (__) {
+    return res.status(500).json({
+      error: "i am sorry, there is an error with server" + __,
+    });
+  }
+});
+
 orgTestsController.route("/tests/org/cnpj/verify").get(async (req, res) => {
   const Org = { ...req.query };
 
@@ -349,11 +363,15 @@ orgTestsController.route("/tests/org/cnpj/verify").get(async (req, res) => {
   }
 });
 
-orgTestsController.route("/tests/org/crypted/data").get(async (req, res) => {
-  try {
-    const data = await decipherOrgDataAndGet();
+orgTestsController.route("/tests/org/get/by/id/:id").get(async (req, res) => {
+  const Org = { ...req.params };
 
-    return res.json(data);
+  try {
+    const response = await decipherOrgDataByIdAndGet(Org.id);
+
+    if(response === 'org not found') return res.status(404).json(response)
+
+    return res.json(response)
   } catch (__) {
     return res.status(500).json({
       error: "i am sorry, there is an error with server" + __,
@@ -361,14 +379,64 @@ orgTestsController.route("/tests/org/crypted/data").get(async (req, res) => {
   }
 });
 
-//Driver atualizar as adaptações em update e save a partir daqui
+//Driver
 orgTestsController
   .route("/tests/org/driver/crypted/save")
   .post(async (req, res) => {
-    try {
-      const data = { ...req.body };
+    const Driver = { ...req.body };
 
-      cipherDriverDataAndSave(data);
+    try {
+      err.exceptionFieldNullOrUndefined(
+        Driver.first_name,
+        "first name is undefined or null"
+      );
+      err.exceptionFieldNullOrUndefined(
+        Driver.last_name,
+        "last name is undefined or null"
+      );
+      err.exceptionFieldNullOrUndefined(
+        Driver.email,
+        "email place is undefined or null"
+      );
+      err.exceptionFieldNullOrUndefined(
+        Driver.password,
+        "password place is undefined or null"
+      );
+
+      err.exceptionFieldIsEmpty(
+        Driver.first_name.trim(),
+        "first name can not be empty"
+      );
+      err.exceptionFieldIsEmpty(
+        Driver.last_name.trim(),
+        "last name can not be empty"
+      );
+      err.exceptionFieldIsEmpty(
+        Driver.email.trim(),
+        "email place can not be empty"
+      );
+      err.exceptionFieldIsEmpty(
+        Driver.password.trim(),
+        "password place can not be empty"
+      );
+
+      err.exceptionFieldValueLessToType(
+        Driver.password,
+        "password can not be less than 4"
+      );
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+
+    const emailIdExistsOnDb = await verifyDeciphedEmail(Driver.email);
+
+    if (emailIdExistsOnDb === true)
+      return res.status(400).json({
+        error: "email already exists",
+      });
+
+    try {
+      cipherDriverDataAndSave(Driver);
 
       return res.json({ data: "driver saved and crypted with success" });
     } catch (__) {
@@ -434,6 +502,22 @@ orgTestsController.route("/tests/org/driver/verify").get(async (req, res) => {
     const response = await verifyDeciphedEmail(Driver.email);
 
     return res.json(response);
+  } catch (__) {
+    return res.status(500).json({
+      error: "i am sorry, there is an error with server" + __,
+    });
+  }
+});
+
+orgTestsController.route("/tests/org/driver/get/by/id/:id").get(async (req, res) => {
+  const Driver = { ...req.params };
+
+  try {
+    const response = await decipherDriverDataByIdAndGet(Driver.id);
+
+    if(response === 'driver not found') return res.status(404).json(response)
+
+    return res.json(response)
   } catch (__) {
     return res.status(500).json({
       error: "i am sorry, there is an error with server" + __,
