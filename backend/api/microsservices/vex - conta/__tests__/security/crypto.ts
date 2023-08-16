@@ -79,7 +79,7 @@ export async function decipherOrgDataByIdAndGet(id: number | string) {
     .select(orgProjection)
     .from("vex_schema.org");
 
-  if(data.length === 0) return 'org not found'
+  if (data.length === 0) return "org not found";
 
   data[0].fantasy_name = decipher(data[0].fantasy_name);
   data[0].corporate_name = decipher(data[0].corporate_name);
@@ -87,7 +87,7 @@ export async function decipherOrgDataByIdAndGet(id: number | string) {
   data[0].org_status = decipher(data[0].org_status);
   data[0].cnae_main_code = decipher(data[0].cnae_main_code);
   data[0].open_date = decipher(data[0].open_date);
-  
+
   return data;
 }
 
@@ -113,7 +113,7 @@ export async function decipherDriverDataByIdAndGet(id: number | string) {
     .select(driverProjection)
     .from("vex_schema.driver");
 
-  if(data.length === 0) return 'driver not found'
+  if (data.length === 0) return "driver not found";
 
   data[0].first_name = decipher(data[0].first_name);
   data[0].last_name = decipher(data[0].last_name);
@@ -278,4 +278,43 @@ export async function verifyDeciphedEmail(email: any) {
   if (!search) return false;
 
   return true;
+}
+
+//deletar dados cifrados
+export async function deleteAllCiphedOrg() {
+  const data = await knex.select(orgProjection).from("vex_schema.org");
+
+  if (data.length === 0) return "no data";
+
+  await knex.delete().from("vex_schema.org");
+}
+
+export async function deleteByIdCiphedOrg(id: string | number) {
+  const data = await knex
+    .where("org_id", id)
+    .select(orgProjection)
+    .from("vex_schema.org");
+
+  if (data.length === 0) return "organization not found";
+
+  await knex.where("org_id", id).delete().from("vex_schema.org");
+}
+
+export async function deleteAllCiphedDriver() {
+  const data = await knex.select(driverProjection).from("vex_schema.driver");
+
+  if (data.length === 0) return "no data";
+
+  await knex.delete().from("vex_schema.driver");
+}
+
+export async function deleteByIdCiphedDriver(id: string | number) {
+  const data = await knex
+    .where("driver_id", id)
+    .select(driverProjection)
+    .from("vex_schema.driver");
+
+  if (data.length === 0) return "driver not found";
+
+  await knex.where("driver_id", id).delete().from("vex_schema.driver");
 }

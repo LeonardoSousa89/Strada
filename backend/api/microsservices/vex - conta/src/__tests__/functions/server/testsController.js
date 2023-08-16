@@ -279,9 +279,37 @@ orgTestsController.route("/tests/org/get/by/id/:id").get((req, res) => __awaiter
     const Org = Object.assign({}, req.params);
     try {
         const response = yield (0, crypto_1.decipherOrgDataByIdAndGet)(Org.id);
-        if (response === 'org not found')
+        if (response === "org not found")
             return res.status(404).json(response);
         return res.json(response);
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
+        });
+    }
+}));
+orgTestsController.route("/tests/org/delete/all").delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const response = yield (0, crypto_1.deleteAllCiphedOrg)();
+        if (response === "no data")
+            return res.status(404).json(response);
+        return res.status(204).json();
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
+        });
+    }
+}));
+orgTestsController
+    .route("/tests/org/delete/by/id/:id")
+    .delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const response = yield (0, crypto_1.deleteByIdCiphedOrg)(req.params.id);
+        if (response === "organization not found")
+            return res.status(404).json(response);
+        return res.status(204).json();
     }
     catch (__) {
         return res.status(500).json({
@@ -324,6 +352,34 @@ orgTestsController
     }
 }));
 orgTestsController
+    .route("/tests/org/driver/update/:id")
+    .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Driver = Object.assign({}, req.body);
+    try {
+        err.exceptionFieldNullOrUndefined(Driver.first_name, "first name is undefined or null");
+        err.exceptionFieldNullOrUndefined(Driver.last_name, "last name is undefined or null");
+        err.exceptionFieldNullOrUndefined(Driver.email, "email place is undefined or null");
+        err.exceptionFieldNullOrUndefined(Driver.password, "password place is undefined or null");
+        err.exceptionFieldIsEmpty(Driver.first_name.trim(), "first name can not be empty");
+        err.exceptionFieldIsEmpty(Driver.last_name.trim(), "last name can not be empty");
+        err.exceptionFieldIsEmpty(Driver.email.trim(), "email place can not be empty");
+        err.exceptionFieldIsEmpty(Driver.password.trim(), "password place can not be empty");
+        err.exceptionFieldValueLessToType(Driver.password, "password can not be less than 4");
+    }
+    catch (e) {
+        return res.status(400).json({ error: e });
+    }
+    try {
+        const response = yield (0, crypto_1.cipherDriverDataAndUpdate)(req.params.id, Driver);
+        return res.json(response);
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
+        });
+    }
+}));
+orgTestsController
     .route("/tests/org/driver/crypted/data")
     .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -350,21 +406,6 @@ orgTestsController
         });
     }
 }));
-orgTestsController
-    .route("/tests/org/driver/update/:id")
-    .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Driver = Object.assign({}, req.params);
-    const data = Object.assign({}, req.body);
-    try {
-        const response = yield (0, crypto_1.cipherDriverDataAndUpdate)(Driver.id, data);
-        return res.json(response);
-    }
-    catch (__) {
-        return res.status(500).json({
-            error: "i am sorry, there is an error with server" + __,
-        });
-    }
-}));
 orgTestsController.route("/tests/org/driver/verify").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Driver = Object.assign({}, req.query);
     try {
@@ -377,13 +418,43 @@ orgTestsController.route("/tests/org/driver/verify").get((req, res) => __awaiter
         });
     }
 }));
-orgTestsController.route("/tests/org/driver/get/by/id/:id").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController
+    .route("/tests/org/driver/get/by/id/:id")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Driver = Object.assign({}, req.params);
     try {
         const response = yield (0, crypto_1.decipherDriverDataByIdAndGet)(Driver.id);
-        if (response === 'driver not found')
+        if (response === "driver not found")
             return res.status(404).json(response);
         return res.json(response);
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
+        });
+    }
+}));
+orgTestsController.route("/tests/org/driver/delete/all").delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const response = yield (0, crypto_1.deleteAllCiphedDriver)();
+        if (response === "no data")
+            return res.status(404).json(response);
+        return res.status(204).json();
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
+        });
+    }
+}));
+orgTestsController
+    .route("/tests/org/driver/delete/by/id/:id")
+    .delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const response = yield (0, crypto_1.deleteByIdCiphedDriver)(req.params.id);
+        if (response === "driver not found")
+            return res.status(404).json(response);
+        return res.status(204).json();
     }
     catch (__) {
         return res.status(500).json({

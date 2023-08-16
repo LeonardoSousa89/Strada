@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyDeciphedEmail = exports.verifyDeciphedCnpj = exports.cipherDriverDataAndUpdate = exports.cipherOrgDataAndUpdate = exports.verifyDeciphedEmailAndGetData = exports.verifyDeciphedCnpjAndGetData = exports.decipherDriverDataByIdAndGet = exports.decipherDriverDataAndGet = exports.decipherOrgDataByIdAndGet = exports.decipherOrgDataAndGet = exports.cipherDriverDataAndSave = exports.cipherOrgDataAndSave = void 0;
+exports.deleteByIdCiphedDriver = exports.deleteAllCiphedDriver = exports.deleteByIdCiphedOrg = exports.deleteAllCiphedOrg = exports.verifyDeciphedEmail = exports.verifyDeciphedCnpj = exports.cipherDriverDataAndUpdate = exports.cipherOrgDataAndUpdate = exports.verifyDeciphedEmailAndGetData = exports.verifyDeciphedCnpjAndGetData = exports.decipherDriverDataByIdAndGet = exports.decipherDriverDataAndGet = exports.decipherOrgDataByIdAndGet = exports.decipherOrgDataAndGet = exports.cipherDriverDataAndSave = exports.cipherOrgDataAndSave = void 0;
 const crypto_1 = require("../../security/cryptography/crypto");
 const bcrypt_1 = require("../../security/cryptography/bcrypt");
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
@@ -69,7 +69,7 @@ function decipherOrgDataByIdAndGet(id) {
             .select(OrgProjection_1.orgProjection)
             .from("vex_schema.org");
         if (data.length === 0)
-            return 'org not found';
+            return "org not found";
         data[0].fantasy_name = (0, crypto_1.decipher)(data[0].fantasy_name);
         data[0].corporate_name = (0, crypto_1.decipher)(data[0].corporate_name);
         data[0].cnpj = (0, crypto_1.decipher)(data[0].cnpj);
@@ -99,7 +99,7 @@ function decipherDriverDataByIdAndGet(id) {
             .select(driverProjection_1.driverProjection)
             .from("vex_schema.driver");
         if (data.length === 0)
-            return 'driver not found';
+            return "driver not found";
         data[0].first_name = (0, crypto_1.decipher)(data[0].first_name);
         data[0].last_name = (0, crypto_1.decipher)(data[0].last_name);
         data[0].email = (0, crypto_1.decipher)(data[0].email);
@@ -212,3 +212,46 @@ function verifyDeciphedEmail(email) {
     });
 }
 exports.verifyDeciphedEmail = verifyDeciphedEmail;
+//deletar dados cifrados
+function deleteAllCiphedOrg() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield knex_1.default.select(OrgProjection_1.orgProjection).from("vex_schema.org");
+        if (data.length === 0)
+            return "no data";
+        yield knex_1.default.delete().from("vex_schema.org");
+    });
+}
+exports.deleteAllCiphedOrg = deleteAllCiphedOrg;
+function deleteByIdCiphedOrg(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield knex_1.default
+            .where("org_id", id)
+            .select(OrgProjection_1.orgProjection)
+            .from("vex_schema.org");
+        if (data.length === 0)
+            return "organization not found";
+        yield knex_1.default.where("org_id", id).delete().from("vex_schema.org");
+    });
+}
+exports.deleteByIdCiphedOrg = deleteByIdCiphedOrg;
+function deleteAllCiphedDriver() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield knex_1.default.select(driverProjection_1.driverProjection).from("vex_schema.driver");
+        if (data.length === 0)
+            return "no data";
+        yield knex_1.default.delete().from("vex_schema.driver");
+    });
+}
+exports.deleteAllCiphedDriver = deleteAllCiphedDriver;
+function deleteByIdCiphedDriver(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield knex_1.default
+            .where("driver_id", id)
+            .select(driverProjection_1.driverProjection)
+            .from("vex_schema.driver");
+        if (data.length === 0)
+            return "driver not found";
+        yield knex_1.default.where("driver_id", id).delete().from("vex_schema.driver");
+    });
+}
+exports.deleteByIdCiphedDriver = deleteByIdCiphedDriver;
