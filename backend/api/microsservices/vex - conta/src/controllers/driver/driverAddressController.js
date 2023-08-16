@@ -42,6 +42,7 @@ const driverAddressService_1 = __importDefault(require("../../services/driver/dr
 const axios_1 = __importDefault(require("axios"));
 const dotenv = __importStar(require("dotenv"));
 const redis_cache_operation_1 = __importDefault(require("../../repositories/redis/cache/services/redis.cache.operation"));
+const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 dotenv.config();
 const driverAddressController = express_1.default.Router();
 exports.driverAddressController = driverAddressController;
@@ -70,6 +71,7 @@ driverAddressController
     .route("/org/driver/address/save")
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverAddress = Object.assign({}, req.body);
+    const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(DriverAddress.zip_code, "zip code is undefined or null");
         err.exceptionFieldNullOrUndefined(DriverAddress.state, "state is undefined or null");
@@ -82,6 +84,9 @@ driverAddressController
         return res.status(400).json({ error: e });
     }
     try {
+        DriverAddress.zip_code = cryptography.encrypt(DriverAddress.zip_code);
+        DriverAddress.state = cryptography.encrypt(DriverAddress.state);
+        DriverAddress.city = cryptography.encrypt(DriverAddress.city);
         const driverAddressService = new driverAddressService_1.default(DriverAddress.zip_code, DriverAddress.state, DriverAddress.city);
         yield driverAddressService.save();
         return res.status(201).json({ msg: "driver address saved" });
@@ -96,6 +101,7 @@ driverAddressController
     .route("/org/driver/address/update/:id")
     .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverAddress = Object.assign({}, req.body);
+    const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(DriverAddress.zip_code, "zip code is undefined or null");
         err.exceptionFieldNullOrUndefined(DriverAddress.state, "state is undefined or null");
@@ -113,6 +119,9 @@ driverAddressController
             error: "driver not found",
         });
     try {
+        DriverAddress.zip_code = cryptography.encrypt(DriverAddress.zip_code);
+        DriverAddress.state = cryptography.encrypt(DriverAddress.state);
+        DriverAddress.city = cryptography.encrypt(DriverAddress.city);
         const driverAddressService = new driverAddressService_1.default(DriverAddress.zip_code, DriverAddress.state, DriverAddress.city);
         yield driverAddressService.update(req.params.id);
         return res.status(201).json({ msg: "driver address updated" });
@@ -137,9 +146,9 @@ driverAddressController
             });
         }
         const data = yield driverAddressService.getAll();
-        if (data.length === 0) {
+        if (data === 'no data') {
             return res.status(404).json({
-                error: "no data",
+                error: data,
             });
         }
         yield cache.setCache(`driverAddress`, JSON.stringify(data), 300);
@@ -168,9 +177,9 @@ driverAddressController
             });
         }
         const data = yield driverAddressService.getById(DriverAddress.id);
-        if (data.length === 0) {
+        if (data === 'driver address not found') {
             return res.status(404).json({
-                error: "driver address not found",
+                error: data,
             });
         }
         yield cache.setCache(`driverAddress_${DriverAddress.id}`, JSON.stringify(data), 300);
@@ -190,9 +199,9 @@ driverAddressController
     const driverAddressService = new driverAddressService_1.default();
     try {
         const driverAddressExistsOrNotExists = yield driverAddressService.getAll();
-        if (driverAddressExistsOrNotExists.length === 0)
+        if (driverAddressExistsOrNotExists === 'no data')
             return res.status(404).json({
-                error: "no data",
+                error: driverAddressExistsOrNotExists,
             });
         yield driverAddressService.deleteAll();
         return res.status(204).json({});
@@ -210,9 +219,9 @@ driverAddressController
     const driverAddressService = new driverAddressService_1.default();
     try {
         const driverExistsOrNotExists = yield driverAddressService.getById(DriverAddress.id);
-        if (driverExistsOrNotExists.length === 0)
+        if (driverExistsOrNotExists === 'driver address not found')
             return res.status(404).json({
-                error: "driver address not found",
+                error: driverExistsOrNotExists,
             });
         yield driverAddressService.deleteById(DriverAddress.id);
         return res.status(204).json({});

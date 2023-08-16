@@ -5,6 +5,7 @@ import DriverAddressService from "../../services/driver/driverAddressService";
 import axios from "axios";
 import * as dotenv from "dotenv";
 import RedisOperations from "../../repositories/redis/cache/services/redis.cache.operation";
+import Cryptography from "../../config/security/cryptography";
 
 dotenv.config();
 
@@ -43,6 +44,8 @@ driverAddressController
   .post(async (req, res) => {
     const DriverAddress = { ...req.body };
 
+    const cryptography = new Cryptography();
+
     try {
       err.exceptionFieldNullOrUndefined(
         DriverAddress.zip_code,
@@ -74,6 +77,10 @@ driverAddressController
     }
 
     try {
+      DriverAddress.zip_code = cryptography.encrypt(DriverAddress.zip_code);
+      DriverAddress.state = cryptography.encrypt(DriverAddress.state);
+      DriverAddress.city = cryptography.encrypt(DriverAddress.city);
+
       const driverAddressService = new DriverAddressService(
         DriverAddress.zip_code,
         DriverAddress.state,
@@ -94,6 +101,8 @@ driverAddressController
   .route("/org/driver/address/update/:id")
   .put(async (req, res) => {
     const DriverAddress = { ...req.body };
+
+    const cryptography = new Cryptography();
 
     try {
       err.exceptionFieldNullOrUndefined(
@@ -135,6 +144,10 @@ driverAddressController
       });
 
     try {
+      DriverAddress.zip_code = cryptography.encrypt(DriverAddress.zip_code);
+      DriverAddress.state = cryptography.encrypt(DriverAddress.state);
+      DriverAddress.city = cryptography.encrypt(DriverAddress.city);
+
       const driverAddressService = new DriverAddressService(
         DriverAddress.zip_code,
         DriverAddress.state,
@@ -171,9 +184,9 @@ driverAddressController
 
       const data = await driverAddressService.getAll();
 
-      if (data.length === 0) {
+      if (data === 'no data') {
         return res.status(404).json({
-          error: "no data",
+          error: data,
         });
       }
 
@@ -213,9 +226,9 @@ driverAddressController
 
       const data = await driverAddressService.getById(DriverAddress.id);
 
-      if (data.length === 0) {
+      if (data === 'driver address not found') {
         return res.status(404).json({
-          error: "driver address not found",
+          error: data,
         });
       }
 
@@ -244,9 +257,9 @@ driverAddressController
       const driverAddressExistsOrNotExists =
         await driverAddressService.getAll();
 
-      if (driverAddressExistsOrNotExists.length === 0)
+      if (driverAddressExistsOrNotExists === 'no data')
         return res.status(404).json({
-          error: "no data",
+          error: driverAddressExistsOrNotExists,
         });
 
       await driverAddressService.deleteAll();
@@ -271,9 +284,9 @@ driverAddressController
         DriverAddress.id
       );
 
-      if (driverExistsOrNotExists.length === 0)
+      if (driverExistsOrNotExists === 'driver address not found')
         return res.status(404).json({
-          error: "driver address not found",
+          error: driverExistsOrNotExists,
         });
 
       await driverAddressService.deleteById(DriverAddress.id);

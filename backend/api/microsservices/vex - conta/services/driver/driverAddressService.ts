@@ -3,6 +3,7 @@ import { DbOperations } from "../../interface/operations";
 import DriverAddress from "../../entities/driver/driverAddress";
 
 import { driverAddressProjection } from "../../repositories/projections/driverProjection";
+import Cryptography from "../../config/security/cryptography";
 
 export default class DriverAddressService
   extends DriverAddress
@@ -17,6 +18,8 @@ export default class DriverAddressService
     this.state,
     this.city
   );
+
+  cryptography = new Cryptography();
 
   async getZipCode(axios?: any, url?: string) {
     const data = await axios.get(url);
@@ -53,6 +56,20 @@ export default class DriverAddressService
       .select(driverAddressProjection)
       .from("vex_schema.driver_address");
 
+    if (data.length === 0) return "no data";
+
+    for (let cipherDataPosition in data) {
+      data[cipherDataPosition].zip_code = this.cryptography.decrypt(
+        data[cipherDataPosition].zip_code
+      );
+      data[cipherDataPosition].state = this.cryptography.decrypt(
+        data[cipherDataPosition].state
+      );
+      data[cipherDataPosition].city = this.cryptography.decrypt(
+        data[cipherDataPosition].city
+      );
+    }
+
     return data;
   }
 
@@ -61,6 +78,12 @@ export default class DriverAddressService
       .where("driver_address_id", id)
       .select(driverAddressProjection)
       .from("vex_schema.driver_address");
+
+    if (data.length === 0) return "driver address not found";
+
+    data[0].zip_code = this.cryptography.decrypt(data[0].zip_code);
+    data[0].state = this.cryptography.decrypt(data[0].state);
+    data[0].city = this.cryptography.decrypt(data[0].city);
 
     return data;
   }

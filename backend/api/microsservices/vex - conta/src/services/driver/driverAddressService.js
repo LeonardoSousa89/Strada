@@ -15,10 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const driverAddress_1 = __importDefault(require("../../entities/driver/driverAddress"));
 const driverProjection_1 = require("../../repositories/projections/driverProjection");
+const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 class DriverAddressService extends driverAddress_1.default {
     constructor(zip_code, state, city) {
         super(zip_code, state, city);
         this.driverAddressService = new driverAddress_1.default(this.zip_code, this.state, this.city);
+        this.cryptography = new cryptography_1.default();
     }
     getZipCode(axios, url) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -58,6 +60,13 @@ class DriverAddressService extends driverAddress_1.default {
             const data = yield knex_1.default
                 .select(driverProjection_1.driverAddressProjection)
                 .from("vex_schema.driver_address");
+            if (data.length === 0)
+                return "no data";
+            for (let cipherDataPosition in data) {
+                data[cipherDataPosition].zip_code = this.cryptography.decrypt(data[cipherDataPosition].zip_code);
+                data[cipherDataPosition].state = this.cryptography.decrypt(data[cipherDataPosition].state);
+                data[cipherDataPosition].city = this.cryptography.decrypt(data[cipherDataPosition].city);
+            }
             return data;
         });
     }
@@ -67,6 +76,11 @@ class DriverAddressService extends driverAddress_1.default {
                 .where("driver_address_id", id)
                 .select(driverProjection_1.driverAddressProjection)
                 .from("vex_schema.driver_address");
+            if (data.length === 0)
+                return "driver address not found";
+            data[0].zip_code = this.cryptography.decrypt(data[0].zip_code);
+            data[0].state = this.cryptography.decrypt(data[0].state);
+            data[0].city = this.cryptography.decrypt(data[0].city);
             return data;
         });
     }

@@ -87,7 +87,7 @@ driverController.route("/org/driver/update/:id").put((req, res) => __awaiter(voi
         Driver.password = cryptography.hash(Driver.password);
         const driverService = new driverService_1.default(Driver.first_name, Driver.last_name, Driver.email, Driver.password);
         yield driverService.update(req.params.id);
-        return res.status(201).json({ msg: "driver update" });
+        return res.status(201).json({ msg: "driver updated" });
     }
     catch (e) {
         return res
