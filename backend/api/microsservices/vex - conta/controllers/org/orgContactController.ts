@@ -2,6 +2,7 @@ import express from "express";
 import OrgContactService from "../../services/org/orgContactService";
 import HandleError from "../../interface/error/handleError";
 import RedisOperations from "../../repositories/redis/cache/services/redis.cache.operation";
+import Cryptography from "../../config/security/cryptography";
 
 const orgContactController = express.Router();
 
@@ -9,6 +10,8 @@ const err = new HandleError();
 
 orgContactController.route("/org/contact/save").post(async (req, res) => {
   const OrgContact = { ...req.body };
+
+  const cryptography = new Cryptography();
 
   try {
     err.exceptionFieldNullOrUndefined(
@@ -38,6 +41,11 @@ orgContactController.route("/org/contact/save").post(async (req, res) => {
   }
 
   try {
+
+    OrgContact.telephone= cryptography.encrypt(OrgContact.telephone) 
+    OrgContact.ddd = cryptography.encrypt(OrgContact.ddd)
+    OrgContact.email = cryptography.encrypt(OrgContact.email)
+
     const orgContactService = new OrgContactService(
       OrgContact.telephone,
       OrgContact.ddd,
@@ -58,6 +66,8 @@ orgContactController.route("/org/contact/save").post(async (req, res) => {
 
 orgContactController.route("/org/contact/update/:id").put(async (req, res) => {
   const OrgContact = { ...req.body };
+
+  const cryptography = new Cryptography();
 
   try {
     err.exceptionFieldNullOrUndefined(
@@ -96,6 +106,11 @@ orgContactController.route("/org/contact/update/:id").put(async (req, res) => {
     });
 
   try {
+
+    OrgContact.telephone= cryptography.encrypt(OrgContact.telephone) 
+    OrgContact.ddd = cryptography.encrypt(OrgContact.ddd)
+    OrgContact.email = cryptography.encrypt(OrgContact.email)
+
     const orgContactService = new OrgContactService(
       OrgContact.telephone,
       OrgContact.ddd,
@@ -132,9 +147,9 @@ orgContactController.route("/org/contact/get-all").get(async (req, res) => {
 
     const data = await orgContactService.getAll();
 
-    if (data.length === 0) {
+    if (data === 'no data') {
       return res.status(404).json({
-        error: "no data",
+        error: data,
       });
     }
 
@@ -174,9 +189,9 @@ orgContactController
 
       const data = await orgContactService.getById(OrgContact.id);
 
-      if (data.length === 0) {
+      if (data === 'org contact not found') {
         return res.status(404).json({
-          error: "organization contact not found",
+          error: data,
         });
       }
 

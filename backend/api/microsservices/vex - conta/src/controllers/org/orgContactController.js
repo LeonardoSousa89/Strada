@@ -17,11 +17,13 @@ const express_1 = __importDefault(require("express"));
 const orgContactService_1 = __importDefault(require("../../services/org/orgContactService"));
 const handleError_1 = __importDefault(require("../../interface/error/handleError"));
 const redis_cache_operation_1 = __importDefault(require("../../repositories/redis/cache/services/redis.cache.operation"));
+const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 const orgContactController = express_1.default.Router();
 exports.orgContactController = orgContactController;
 const err = new handleError_1.default();
 orgContactController.route("/org/contact/save").post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgContact = Object.assign({}, req.body);
+    const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(OrgContact.telephone, "telephone is undefined or null");
         err.exceptionFieldNullOrUndefined(OrgContact.ddd, "ddd is undefined or null");
@@ -34,6 +36,9 @@ orgContactController.route("/org/contact/save").post((req, res) => __awaiter(voi
         return res.status(400).json({ error: e });
     }
     try {
+        OrgContact.telephone = cryptography.encrypt(OrgContact.telephone);
+        OrgContact.ddd = cryptography.encrypt(OrgContact.ddd);
+        OrgContact.email = cryptography.encrypt(OrgContact.email);
         const orgContactService = new orgContactService_1.default(OrgContact.telephone, OrgContact.ddd, OrgContact.email);
         yield orgContactService.save();
         return res.status(201).json({
@@ -48,6 +53,7 @@ orgContactController.route("/org/contact/save").post((req, res) => __awaiter(voi
 }));
 orgContactController.route("/org/contact/update/:id").put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgContact = Object.assign({}, req.body);
+    const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(OrgContact.telephone, "telephone is undefined or null");
         err.exceptionFieldNullOrUndefined(OrgContact.ddd, "ddd is undefined or null");
@@ -66,6 +72,9 @@ orgContactController.route("/org/contact/update/:id").put((req, res) => __awaite
             error: "organization contact not found",
         });
     try {
+        OrgContact.telephone = cryptography.encrypt(OrgContact.telephone);
+        OrgContact.ddd = cryptography.encrypt(OrgContact.ddd);
+        OrgContact.email = cryptography.encrypt(OrgContact.email);
         const orgContactService = new orgContactService_1.default(OrgContact.telephone, OrgContact.ddd, OrgContact.email);
         yield orgContactService.update(req.params.id);
         return res.status(201).json({
@@ -90,9 +99,9 @@ orgContactController.route("/org/contact/get-all").get((req, res) => __awaiter(v
             });
         }
         const data = yield orgContactService.getAll();
-        if (data.length === 0) {
+        if (data === 'no data') {
             return res.status(404).json({
-                error: "no data",
+                error: data,
             });
         }
         yield cache.setCache(`orgContact`, JSON.stringify(data), 300);
@@ -121,9 +130,9 @@ orgContactController
             });
         }
         const data = yield orgContactService.getById(OrgContact.id);
-        if (data.length === 0) {
+        if (data === 'org contact not found') {
             return res.status(404).json({
-                error: "organization contact not found",
+                error: data,
             });
         }
         yield cache.setCache(`orgContact_${OrgContact.id}`, JSON.stringify(data), 300);

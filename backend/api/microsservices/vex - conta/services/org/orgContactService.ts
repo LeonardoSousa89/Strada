@@ -1,3 +1,4 @@
+import Cryptography from "../../config/security/cryptography";
 import OrgContact from "../../entities/org/orgContact";
 import { DbOperations } from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
@@ -13,6 +14,8 @@ export default class OrgContactService
   }
 
   orgContact = new OrgContact(this.telephone, this.ddd, this.email);
+
+  cryptography = new Cryptography();
 
   async verifyId(id: string | number) {
     const existsOrNotExistsId = await knex
@@ -41,6 +44,20 @@ export default class OrgContactService
       .select(orgContactProjection)
       .from("vex_schema.org_contact");
 
+    if (data.length === 0) return "no data";
+
+    for (let cipherDataPosition in data) {
+      data[cipherDataPosition].telephone = this.cryptography.decrypt(
+        data[cipherDataPosition].telephone
+      );
+      data[cipherDataPosition].ddd = this.cryptography.decrypt(
+        data[cipherDataPosition].ddd
+      );
+      data[cipherDataPosition].email = this.cryptography.decrypt(
+        data[cipherDataPosition].email
+      );
+    }
+
     return data;
   }
 
@@ -49,10 +66,17 @@ export default class OrgContactService
       .where("org_contact_id", id)
       .select(orgContactProjection)
       .from("vex_schema.org_contact");
+
+    if (data.length === 0) return "org contact not found";
+
+    data[0].telephone = this.cryptography.decrypt(data[0].telephone);
+    data[0].ddd = this.cryptography.decrypt(data[0].ddd);
+    data[0].email = this.cryptography.decrypt(data[0].email);
+
     return data;
   }
 
-  deleteAll(): void {}
+  deleteAll() {}
 
   async deleteById(id?: string | number) {
     await knex

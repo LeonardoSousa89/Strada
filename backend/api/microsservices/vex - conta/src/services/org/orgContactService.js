@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 const orgContact_1 = __importDefault(require("../../entities/org/orgContact"));
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const OrgProjection_1 = require("../../repositories/projections/OrgProjection");
@@ -19,6 +20,7 @@ class OrgContactService extends orgContact_1.default {
     constructor(telephone, ddd, email) {
         super(telephone, ddd, email);
         this.orgContact = new orgContact_1.default(this.telephone, this.ddd, this.email);
+        this.cryptography = new cryptography_1.default();
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -50,6 +52,13 @@ class OrgContactService extends orgContact_1.default {
             const data = yield knex_1.default
                 .select(OrgProjection_1.orgContactProjection)
                 .from("vex_schema.org_contact");
+            if (data.length === 0)
+                return "no data";
+            for (let cipherDataPosition in data) {
+                data[cipherDataPosition].telephone = this.cryptography.decrypt(data[cipherDataPosition].telephone);
+                data[cipherDataPosition].ddd = this.cryptography.decrypt(data[cipherDataPosition].ddd);
+                data[cipherDataPosition].email = this.cryptography.decrypt(data[cipherDataPosition].email);
+            }
             return data;
         });
     }
@@ -59,6 +68,11 @@ class OrgContactService extends orgContact_1.default {
                 .where("org_contact_id", id)
                 .select(OrgProjection_1.orgContactProjection)
                 .from("vex_schema.org_contact");
+            if (data.length === 0)
+                return "org contact not found";
+            data[0].telephone = this.cryptography.decrypt(data[0].telephone);
+            data[0].ddd = this.cryptography.decrypt(data[0].ddd);
+            data[0].email = this.cryptography.decrypt(data[0].email);
             return data;
         });
     }

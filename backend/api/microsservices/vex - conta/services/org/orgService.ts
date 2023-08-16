@@ -121,7 +121,7 @@ export default class OrgService extends Org implements DbOperations {
   }
 
   async deleteAll() {
-    await knex.delete().from("vex_schema.org");
+    
   }
 
   async deleteById(id?: number | string) {

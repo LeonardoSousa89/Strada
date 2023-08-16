@@ -334,27 +334,6 @@ orgController.route("/org/get-by-id/:id").get(async (req, res) => {
   }
 });
 
-orgController.route("/org/delete/all").delete(async (req, res) => {
-  const orgService = new OrgService();
-
-  try {
-    const data = await orgService.getAll();
-
-    if (data === "no data")
-      return res.status(404).json({
-        error: data,
-      });
-
-    await orgService.deleteAll();
-
-    return res.status(204).json();
-  } catch (__) {
-    return res.status(500).json({
-      error: "i am sorry, there is an error with server",
-    });
-  }
-});
-
 orgController.route("/org/delete-by-id/:id").delete(async (req, res) => {
   const Org = { ...req.params };
 
