@@ -41,8 +41,8 @@ const orgService_1 = __importDefault(require("../../services/org/orgService"));
 const handleError_1 = __importDefault(require("../../interface/error/handleError"));
 const axios_1 = __importDefault(require("axios"));
 const dotenv = __importStar(require("dotenv"));
-const bcrypt_1 = require("../../security/cryptography/bcrypt");
 const redis_cache_operation_1 = __importDefault(require("../../repositories/redis/cache/services/redis.cache.operation"));
+const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 dotenv.config();
 const orgController = express_1.default.Router();
 exports.orgController = orgController;
@@ -69,6 +69,7 @@ orgController.route("/org/verify-cnpj").get((req, res) => __awaiter(void 0, void
 }));
 orgController.route("/org/save").post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
+    const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(Org.fantasy_name, "fantasy name is undefined or null");
         err.exceptionFieldNullOrUndefined(Org.corporate_name, "corporate name is undefined or null");
@@ -89,8 +90,7 @@ orgController.route("/org/save").post((req, res) => __awaiter(void 0, void 0, vo
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    const cnpj = Object.assign({}, req.query);
-    const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${cnpj.cnpj}`;
+    const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
     let cnpjExistsOnHttpResquest = "";
     try {
         cnpjExistsOnHttpResquest = yield axios_1.default.get(url);
@@ -111,7 +111,13 @@ orgController.route("/org/save").post((req, res) => __awaiter(void 0, void 0, vo
             error: "cnpj already exists",
         });
     try {
-        Org.password = (0, bcrypt_1.cryptograph)(Org.password);
+        Org.fantasy_name = cryptography.encrypt(Org.fantasy_name);
+        Org.corporate_name = cryptography.encrypt(Org.corporate_name);
+        Org.cnpj = cryptography.encrypt(Org.cnpj);
+        Org.org_status = cryptography.encrypt(Org.org_status);
+        Org.cnae_main_code = cryptography.encrypt(Org.cnae_main_code);
+        Org.open_date = cryptography.encrypt(Org.open_date);
+        Org.password = cryptography.hash(Org.password);
         const orgService = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password);
         yield orgService.save();
         return res.status(201).json({ msg: "organization created" });
@@ -124,6 +130,7 @@ orgController.route("/org/save").post((req, res) => __awaiter(void 0, void 0, vo
 }));
 orgController.route("/org/update/:id").put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
+    const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(Org.fantasy_name, "fantasy name is undefined or null");
         err.exceptionFieldNullOrUndefined(Org.corporate_name, "corporate name is undefined or null");
@@ -151,7 +158,13 @@ orgController.route("/org/update/:id").put((req, res) => __awaiter(void 0, void 
             error: "organization not found",
         });
     try {
-        Org.password = (0, bcrypt_1.cryptograph)(Org.password);
+        Org.fantasy_name = cryptography.encrypt(Org.fantasy_name);
+        Org.corporate_name = cryptography.encrypt(Org.corporate_name);
+        Org.cnpj = cryptography.encrypt(Org.cnpj);
+        Org.org_status = cryptography.encrypt(Org.org_status);
+        Org.cnae_main_code = cryptography.encrypt(Org.cnae_main_code);
+        Org.open_date = cryptography.encrypt(Org.open_date);
+        Org.password = cryptography.hash(Org.password);
         const orgService = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password);
         yield orgService.update(req.params.id);
         return res.status(201).json({
@@ -176,9 +189,9 @@ orgController.route("/org/get-all").get((req, res) => __awaiter(void 0, void 0, 
             });
         }
         const data = yield orgService.getAll();
-        if (data.length === 0) {
+        if (data === "no data") {
             return res.status(404).json({
-                error: "no data",
+                error: data,
             });
         }
         yield cache.setCache(`org`, JSON.stringify(data), 300);
@@ -205,15 +218,32 @@ orgController.route("/org/get-by-id/:id").get((req, res) => __awaiter(void 0, vo
             });
         }
         const data = yield orgService.getById(Org.id);
-        if (data.length === 0) {
+        if (data === "org not found") {
             return res.status(404).json({
-                error: "organization not found",
+                error: data,
             });
         }
         yield cache.setCache(`org_${Org.id}`, JSON.stringify(data), 300);
         return res.status(200).json({
             data: { inCache: "no", data },
         });
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server",
+        });
+    }
+}));
+orgController.route("/org/delete/all").delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const orgService = new orgService_1.default();
+    try {
+        const data = yield orgService.getAll();
+        if (data === 'no data')
+            return res.status(404).json({
+                error: data,
+            });
+        yield orgService.deleteAll();
+        return res.status(204).json();
     }
     catch (__) {
         return res.status(500).json({
@@ -231,7 +261,7 @@ orgController.route("/org/delete-by-id/:id").delete((req, res) => __awaiter(void
                 error: "organization not found",
             });
         yield orgService.deleteById(Org.id);
-        return res.status(204).json({});
+        return res.status(204).json();
     }
     catch (__) {
         return res.status(500).json({

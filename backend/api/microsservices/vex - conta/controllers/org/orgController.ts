@@ -7,6 +7,7 @@ import * as dotenv from "dotenv";
 
 import { cryptograph } from "../../security/cryptography/bcrypt";
 import RedisOperations from "../../repositories/redis/cache/services/redis.cache.operation";
+import Cryptography from "../../config/security/cryptography";
 
 dotenv.config();
 
@@ -39,6 +40,8 @@ orgController.route("/org/verify-cnpj").get(async (req, res) => {
 
 orgController.route("/org/save").post(async (req, res) => {
   const Org = { ...req.body };
+
+  const cryptography = new Cryptography();
 
   try {
     err.exceptionFieldNullOrUndefined(
@@ -98,9 +101,7 @@ orgController.route("/org/save").post(async (req, res) => {
     return res.status(400).json({ error: e });
   }
 
-  const cnpj = { ...req.query };
-
-  const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${cnpj.cnpj}`;
+  const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
 
   let cnpjExistsOnHttpResquest: any = "";
 
@@ -127,7 +128,14 @@ orgController.route("/org/save").post(async (req, res) => {
     });
 
   try {
-    Org.password = cryptograph(Org.password);
+    Org.fantasy_name = cryptography.encrypt(Org.fantasy_name);
+    Org.corporate_name = cryptography.encrypt(Org.corporate_name);
+    Org.cnpj = cryptography.encrypt(Org.cnpj);
+    Org.org_status = cryptography.encrypt(Org.org_status);
+    Org.cnae_main_code = cryptography.encrypt(Org.cnae_main_code);
+    Org.open_date = cryptography.encrypt(Org.open_date);
+
+    Org.password = cryptography.hash(Org.password);
 
     const orgService = new OrgService(
       Org.fantasy_name,
@@ -151,6 +159,8 @@ orgController.route("/org/save").post(async (req, res) => {
 
 orgController.route("/org/update/:id").put(async (req, res) => {
   const Org = { ...req.body };
+
+  const cryptography = new Cryptography();
 
   try {
     err.exceptionFieldNullOrUndefined(
@@ -220,7 +230,14 @@ orgController.route("/org/update/:id").put(async (req, res) => {
     });
 
   try {
-    Org.password = cryptograph(Org.password);
+    Org.fantasy_name = cryptography.encrypt(Org.fantasy_name);
+    Org.corporate_name = cryptography.encrypt(Org.corporate_name);
+    Org.cnpj = cryptography.encrypt(Org.cnpj);
+    Org.org_status = cryptography.encrypt(Org.org_status);
+    Org.cnae_main_code = cryptography.encrypt(Org.cnae_main_code);
+    Org.open_date = cryptography.encrypt(Org.open_date);
+
+    Org.password = cryptography.hash(Org.password);
 
     const orgService = new OrgService(
       Org.fantasy_name,
@@ -262,9 +279,9 @@ orgController.route("/org/get-all").get(async (req, res) => {
 
     const data = await orgService.getAll();
 
-    if (data.length === 0) {
+    if (data === "no data") {
       return res.status(404).json({
-        error: "no data",
+        error: data,
       });
     }
 
@@ -300,9 +317,9 @@ orgController.route("/org/get-by-id/:id").get(async (req, res) => {
 
     const data = await orgService.getById(Org.id);
 
-    if (data.length === 0) {
+    if (data === "org not found") {
       return res.status(404).json({
-        error: "organization not found",
+        error: data,
       });
     }
 
@@ -311,6 +328,27 @@ orgController.route("/org/get-by-id/:id").get(async (req, res) => {
     return res.status(200).json({
       data: { inCache: "no", data },
     });
+  } catch (__) {
+    return res.status(500).json({
+      error: "i am sorry, there is an error with server",
+    });
+  }
+});
+
+orgController.route("/org/delete/all").delete(async (req, res) => {
+  const orgService = new OrgService();
+
+  try {
+    const data = await orgService.getAll();
+
+    if (data === "no data")
+      return res.status(404).json({
+        error: data,
+      });
+
+    await orgService.deleteAll();
+
+    return res.status(204).json();
   } catch (__) {
     return res.status(500).json({
       error: "i am sorry, there is an error with server",
@@ -333,7 +371,7 @@ orgController.route("/org/delete-by-id/:id").delete(async (req, res) => {
 
     await orgService.deleteById(Org.id);
 
-    return res.status(204).json({});
+    return res.status(204).json();
   } catch (__) {
     return res.status(500).json({
       error: "i am sorry, there is an error with server",
