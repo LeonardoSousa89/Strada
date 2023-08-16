@@ -1,3 +1,4 @@
+import Cryptography from "../../config/security/cryptography";
 import OrgAddress from "../../entities/org/orgAddress";
 import { DbOperations } from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
@@ -41,6 +42,8 @@ export default class OrgAddressService
     this.country
   );
 
+  cryptography = new Cryptography();
+
   async verifyId(id: string | number) {
     const existsOrNotExistsId = await knex
       .where("org_address_id", id)
@@ -68,6 +71,35 @@ export default class OrgAddressService
       .select(orgAddressProjection)
       .from("vex_schema.org_address");
 
+    if (data.length === 0) return "no data";
+
+    for (let cipherDataPosition in data) {
+      data[cipherDataPosition].zip_code = this.cryptography.decrypt(
+        data[cipherDataPosition].zip_code
+      );
+      data[cipherDataPosition].street_type = this.cryptography.decrypt(
+        data[cipherDataPosition].street_type
+      );
+      data[cipherDataPosition].public_place = this.cryptography.decrypt(
+        data[cipherDataPosition].public_place
+      );
+      data[cipherDataPosition].org_number = this.cryptography.decrypt(
+        data[cipherDataPosition].org_number
+      );
+      data[cipherDataPosition].complement = this.cryptography.decrypt(
+        data[cipherDataPosition].complement
+      );
+      data[cipherDataPosition].neighborhood = this.cryptography.decrypt(
+        data[cipherDataPosition].neighborhood
+      );
+      data[cipherDataPosition].county = this.cryptography.decrypt(
+        data[cipherDataPosition].county
+      );
+      data[cipherDataPosition].country = this.cryptography.decrypt(
+        data[cipherDataPosition].country
+      );
+    }
+
     return data;
   }
 
@@ -76,6 +108,18 @@ export default class OrgAddressService
       .where("org_address_id", id)
       .select(orgAddressProjection)
       .from("vex_schema.org_address");
+
+    if (data.length === 0) return "organization address not found";
+
+    data[0].zip_code = this.cryptography.decrypt(data[0].zip_code);
+    data[0].street_type = this.cryptography.decrypt(data[0].street_type);
+    data[0].public_place = this.cryptography.decrypt(data[0].public_place);
+    data[0].org_number = this.cryptography.decrypt(data[0].org_number);
+    data[0].complement = this.cryptography.decrypt(data[0].complement);
+    data[0].neighborhood = this.cryptography.decrypt(data[0].neighborhood);
+    data[0].county = this.cryptography.decrypt(data[0].county);
+    data[0].country = this.cryptography.decrypt(data[0].country);
+
     return data;
   }
 

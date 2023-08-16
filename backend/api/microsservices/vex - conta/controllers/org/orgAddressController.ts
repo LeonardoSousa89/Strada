@@ -2,6 +2,7 @@ import express from "express";
 import OrgAddressService from "../../services/org/orgAddressService";
 import HandleError from "../../interface/error/handleError";
 import RedisOperations from "../../repositories/redis/cache/services/redis.cache.operation";
+import Cryptography from "../../config/security/cryptography";
 
 const orgAddressController = express.Router();
 
@@ -9,6 +10,8 @@ const err = new HandleError();
 
 orgAddressController.route("/org/address/save").post(async (req, res) => {
   const OrgAddress = { ...req.body };
+
+  const cryptography = new Cryptography();
 
   try {
     err.exceptionFieldNullOrUndefined(
@@ -73,6 +76,16 @@ orgAddressController.route("/org/address/save").post(async (req, res) => {
   }
 
   try {
+
+    OrgAddress.zip_code = cryptography.encrypt(OrgAddress.zip_code);
+    OrgAddress.street_type = cryptography.encrypt(OrgAddress.street_type);
+    OrgAddress.public_place = cryptography.encrypt(OrgAddress.public_place);
+    OrgAddress.org_number = cryptography.encrypt(OrgAddress.org_number);
+    OrgAddress.complement = cryptography.encrypt(OrgAddress.complement);
+    OrgAddress.neighborhood = cryptography.encrypt(OrgAddress.neighborhood);
+    OrgAddress.county = cryptography.encrypt(OrgAddress.county);
+    OrgAddress.country = cryptography.encrypt(OrgAddress.country);
+
     const orgAddressService = new OrgAddressService(
       OrgAddress.zip_code,
       OrgAddress.street_type,
@@ -98,6 +111,8 @@ orgAddressController.route("/org/address/save").post(async (req, res) => {
 
 orgAddressController.route("/org/address/update/:id").put(async (req, res) => {
   const OrgAddress = { ...req.body };
+
+  const cryptography = new Cryptography();
 
   try {
     err.exceptionFieldNullOrUndefined(
@@ -171,6 +186,16 @@ orgAddressController.route("/org/address/update/:id").put(async (req, res) => {
     });
 
   try {
+
+    OrgAddress.zip_code = cryptography.encrypt(OrgAddress.zip_code);
+    OrgAddress.street_type = cryptography.encrypt(OrgAddress.street_type);
+    OrgAddress.public_place = cryptography.encrypt(OrgAddress.public_place);
+    OrgAddress.org_number = cryptography.encrypt(OrgAddress.org_number);
+    OrgAddress.complement = cryptography.encrypt(OrgAddress.complement);
+    OrgAddress.neighborhood = cryptography.encrypt(OrgAddress.neighborhood);
+    OrgAddress.county = cryptography.encrypt(OrgAddress.county);
+    OrgAddress.country = cryptography.encrypt(OrgAddress.country);
+
     const orgAddressService = new OrgAddressService(
       OrgAddress.zip_code,
       OrgAddress.street_type,
@@ -212,9 +237,9 @@ orgAddressController.route("/org/address/get-all").get(async (req, res) => {
 
     const data = await orgAddressService.getAll();
 
-    if (data.length === 0) {
+    if (data === 'no data') {
       return res.status(404).json({
-        error: "no data",
+        error: data,
       });
     }
 
@@ -254,9 +279,9 @@ orgAddressController
 
       const data = await orgAddressService.getById(OrgAddress.id);
 
-      if (data.length === 0) {
+      if (data === 'organization address not found') {
         return res.status(404).json({
-          error: "organization address not found",
+          error: data,
         });
       }
 

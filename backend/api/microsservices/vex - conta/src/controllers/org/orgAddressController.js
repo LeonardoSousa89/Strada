@@ -17,11 +17,13 @@ const express_1 = __importDefault(require("express"));
 const orgAddressService_1 = __importDefault(require("../../services/org/orgAddressService"));
 const handleError_1 = __importDefault(require("../../interface/error/handleError"));
 const redis_cache_operation_1 = __importDefault(require("../../repositories/redis/cache/services/redis.cache.operation"));
+const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 const orgAddressController = express_1.default.Router();
 exports.orgAddressController = orgAddressController;
 const err = new handleError_1.default();
 orgAddressController.route("/org/address/save").post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgAddress = Object.assign({}, req.body);
+    const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(OrgAddress.zip_code, "zip code is undefined or null");
         err.exceptionFieldNullOrUndefined(OrgAddress.street_type, "street type is undefined or null");
@@ -42,6 +44,14 @@ orgAddressController.route("/org/address/save").post((req, res) => __awaiter(voi
         return res.status(400).json({ error: e });
     }
     try {
+        OrgAddress.zip_code = cryptography.encrypt(OrgAddress.zip_code);
+        OrgAddress.street_type = cryptography.encrypt(OrgAddress.street_type);
+        OrgAddress.public_place = cryptography.encrypt(OrgAddress.public_place);
+        OrgAddress.org_number = cryptography.encrypt(OrgAddress.org_number);
+        OrgAddress.complement = cryptography.encrypt(OrgAddress.complement);
+        OrgAddress.neighborhood = cryptography.encrypt(OrgAddress.neighborhood);
+        OrgAddress.county = cryptography.encrypt(OrgAddress.county);
+        OrgAddress.country = cryptography.encrypt(OrgAddress.country);
         const orgAddressService = new orgAddressService_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country);
         yield orgAddressService.save();
         return res.status(201).json({
@@ -56,6 +66,7 @@ orgAddressController.route("/org/address/save").post((req, res) => __awaiter(voi
 }));
 orgAddressController.route("/org/address/update/:id").put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgAddress = Object.assign({}, req.body);
+    const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(OrgAddress.zip_code, "zip code is undefined or null");
         err.exceptionFieldNullOrUndefined(OrgAddress.street_type, "street type is undefined or null");
@@ -82,6 +93,14 @@ orgAddressController.route("/org/address/update/:id").put((req, res) => __awaite
             error: "organization address not found",
         });
     try {
+        OrgAddress.zip_code = cryptography.encrypt(OrgAddress.zip_code);
+        OrgAddress.street_type = cryptography.encrypt(OrgAddress.street_type);
+        OrgAddress.public_place = cryptography.encrypt(OrgAddress.public_place);
+        OrgAddress.org_number = cryptography.encrypt(OrgAddress.org_number);
+        OrgAddress.complement = cryptography.encrypt(OrgAddress.complement);
+        OrgAddress.neighborhood = cryptography.encrypt(OrgAddress.neighborhood);
+        OrgAddress.county = cryptography.encrypt(OrgAddress.county);
+        OrgAddress.country = cryptography.encrypt(OrgAddress.country);
         const orgAddressService = new orgAddressService_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country);
         yield orgAddressService.update(req.params.id);
         return res.status(201).json({
@@ -106,9 +125,9 @@ orgAddressController.route("/org/address/get-all").get((req, res) => __awaiter(v
             });
         }
         const data = yield orgAddressService.getAll();
-        if (data.length === 0) {
+        if (data === 'no data') {
             return res.status(404).json({
-                error: "no data",
+                error: data,
             });
         }
         yield cache.setCache(`orgAddress`, JSON.stringify(data), 300);
@@ -137,9 +156,9 @@ orgAddressController
             });
         }
         const data = yield orgAddressService.getById(OrgAddress.id);
-        if (data.length === 0) {
+        if (data === 'organization address not found') {
             return res.status(404).json({
-                error: "organization address not found",
+                error: data,
             });
         }
         yield cache.setCache(`orgAddress_${OrgAddress.id}`, JSON.stringify(data), 300);

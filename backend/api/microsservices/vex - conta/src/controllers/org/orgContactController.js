@@ -99,7 +99,7 @@ orgContactController.route("/org/contact/get-all").get((req, res) => __awaiter(v
             });
         }
         const data = yield orgContactService.getAll();
-        if (data === 'no data') {
+        if (data === "no data") {
             return res.status(404).json({
                 error: data,
             });
@@ -130,7 +130,7 @@ orgContactController
             });
         }
         const data = yield orgContactService.getById(OrgContact.id);
-        if (data === 'org contact not found') {
+        if (data === "org contact not found") {
             return res.status(404).json({
                 error: data,
             });

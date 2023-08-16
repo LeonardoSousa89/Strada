@@ -41,10 +41,9 @@ orgContactController.route("/org/contact/save").post(async (req, res) => {
   }
 
   try {
-
-    OrgContact.telephone= cryptography.encrypt(OrgContact.telephone) 
-    OrgContact.ddd = cryptography.encrypt(OrgContact.ddd)
-    OrgContact.email = cryptography.encrypt(OrgContact.email)
+    OrgContact.telephone = cryptography.encrypt(OrgContact.telephone);
+    OrgContact.ddd = cryptography.encrypt(OrgContact.ddd);
+    OrgContact.email = cryptography.encrypt(OrgContact.email);
 
     const orgContactService = new OrgContactService(
       OrgContact.telephone,
@@ -106,10 +105,9 @@ orgContactController.route("/org/contact/update/:id").put(async (req, res) => {
     });
 
   try {
-
-    OrgContact.telephone= cryptography.encrypt(OrgContact.telephone) 
-    OrgContact.ddd = cryptography.encrypt(OrgContact.ddd)
-    OrgContact.email = cryptography.encrypt(OrgContact.email)
+    OrgContact.telephone = cryptography.encrypt(OrgContact.telephone);
+    OrgContact.ddd = cryptography.encrypt(OrgContact.ddd);
+    OrgContact.email = cryptography.encrypt(OrgContact.email);
 
     const orgContactService = new OrgContactService(
       OrgContact.telephone,
@@ -147,7 +145,7 @@ orgContactController.route("/org/contact/get-all").get(async (req, res) => {
 
     const data = await orgContactService.getAll();
 
-    if (data === 'no data') {
+    if (data === "no data") {
       return res.status(404).json({
         error: data,
       });
@@ -189,7 +187,7 @@ orgContactController
 
       const data = await orgContactService.getById(OrgContact.id);
 
-      if (data === 'org contact not found') {
+      if (data === "org contact not found") {
         return res.status(404).json({
           error: data,
         });
