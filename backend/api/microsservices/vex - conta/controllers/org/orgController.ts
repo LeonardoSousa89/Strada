@@ -5,7 +5,6 @@ import axios from "axios";
 
 import * as dotenv from "dotenv";
 
-import { cryptograph } from "../../security/cryptography/bcrypt";
 import RedisOperations from "../../repositories/redis/cache/services/redis.cache.operation";
 import Cryptography from "../../config/security/cryptography";
 
