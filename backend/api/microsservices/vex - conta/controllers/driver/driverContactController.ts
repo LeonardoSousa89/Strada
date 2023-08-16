@@ -3,6 +3,7 @@ import express from "express";
 import HandleError from "../../interface/error/handleError";
 import DriverContactService from "../../services/driver/driverContactService";
 import RedisOperations from "../../repositories/redis/cache/services/redis.cache.operation";
+import Cryptography from "../../config/security/cryptography";
 
 const driverContactController = express.Router();
 
@@ -12,6 +13,8 @@ driverContactController
   .route("/org/driver/contact/save")
   .post(async (req, res) => {
     const DriverContact = { ...req.body };
+
+    const cryptography = new Cryptography();
 
     try {
       err.exceptionFieldNullOrUndefined(
@@ -28,6 +31,8 @@ driverContactController
     }
 
     try {
+      DriverContact.telephone = cryptography.encrypt(DriverContact.telephone);
+
       const driverContactService = new DriverContactService(
         DriverContact.telephone
       );
@@ -46,6 +51,8 @@ driverContactController
   .route("/org/driver/contact/update/:id")
   .put(async (req, res) => {
     const DriverContact = { ...req.body };
+
+    const cryptography = new Cryptography();
 
     try {
       err.exceptionFieldNullOrUndefined(
@@ -70,6 +77,8 @@ driverContactController
       });
 
     try {
+      DriverContact.telephone = cryptography.encrypt(DriverContact.telephone);
+
       const driverContactService = new DriverContactService(
         DriverContact.telephone
       );
@@ -104,9 +113,9 @@ driverContactController
 
       const data = await driverContactService.getAll();
 
-      if (data.length === 0) {
+      if (data === 'no data') {
         return res.status(404).json({
-          error: "no data",
+          error: data,
         });
       }
 
@@ -146,9 +155,9 @@ driverContactController
 
       const data = await driverContactService.getById(DriverContact.id);
 
-      if (data.length === 0) {
+      if (data === 'driver contact not found') {
         return res.status(404).json({
-          error: "driver telephone not found",
+          error: data,
         });
       }
 
@@ -177,9 +186,9 @@ driverContactController
       const driverContactExistsOrNotExists =
         await driverContactService.getAll();
 
-      if (driverContactExistsOrNotExists.length === 0)
+      if (driverContactExistsOrNotExists === 'no data')
         return res.status(404).json({
-          error: "no data",
+          error: driverContactExistsOrNotExists,
         });
 
       await driverContactService.deleteAll();
@@ -204,9 +213,9 @@ driverContactController
         DriverContact.id
       );
 
-      if (driverExistsOrNotExists.length === 0)
+      if (driverExistsOrNotExists === 'driver contact not found')
         return res.status(404).json({
-          error: "driver telephone not found",
+          error: driverExistsOrNotExists,
         });
 
       await driverContactService.deleteById(DriverContact.id);

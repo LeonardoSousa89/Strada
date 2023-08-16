@@ -15,10 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const driverContact_1 = __importDefault(require("../../entities/driver/driverContact"));
 const driverProjection_1 = require("../../repositories/projections/driverProjection");
+const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 class DriverContactService extends driverContact_1.default {
     constructor(telephone) {
         super(telephone);
         this.driverContact = new driverContact_1.default(this.telephone);
+        this.cryptography = new cryptography_1.default();
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -50,6 +52,11 @@ class DriverContactService extends driverContact_1.default {
             const data = yield knex_1.default
                 .select(driverProjection_1.driverContactProjection)
                 .from("vex_schema.driver_contact");
+            if (data.length === 0)
+                return "no data";
+            for (let cipherDataPosition in data) {
+                data[cipherDataPosition].telephone = this.cryptography.decrypt(data[cipherDataPosition].telephone);
+            }
             return data;
         });
     }
@@ -59,6 +66,9 @@ class DriverContactService extends driverContact_1.default {
                 .where("driver_contact_id", id)
                 .select(driverProjection_1.driverContactProjection)
                 .from("vex_schema.driver_contact");
+            if (data.length === 0)
+                return "driver contact not found";
+            data[0].telephone = this.cryptography.decrypt(data[0].telephone);
             return data;
         });
     }

@@ -17,6 +17,7 @@ const express_1 = __importDefault(require("express"));
 const handleError_1 = __importDefault(require("../../interface/error/handleError"));
 const driverContactService_1 = __importDefault(require("../../services/driver/driverContactService"));
 const redis_cache_operation_1 = __importDefault(require("../../repositories/redis/cache/services/redis.cache.operation"));
+const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 const driverContactController = express_1.default.Router();
 exports.driverContactController = driverContactController;
 const err = new handleError_1.default();
@@ -24,6 +25,7 @@ driverContactController
     .route("/org/driver/contact/save")
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverContact = Object.assign({}, req.body);
+    const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(DriverContact.telephone, "telephone is undefined or null");
         err.exceptionFieldIsEmpty(DriverContact.telephone.trim(), "telephone can not be empty");
@@ -32,6 +34,7 @@ driverContactController
         return res.status(400).json({ error: e });
     }
     try {
+        DriverContact.telephone = cryptography.encrypt(DriverContact.telephone);
         const driverContactService = new driverContactService_1.default(DriverContact.telephone);
         yield driverContactService.save();
         return res.status(201).json({ msg: "driver telephone save" });
@@ -46,6 +49,7 @@ driverContactController
     .route("/org/driver/contact/update/:id")
     .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverContact = Object.assign({}, req.body);
+    const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(DriverContact.telephone, "telephone is undefined or null");
         err.exceptionFieldIsEmpty(DriverContact.telephone.trim(), "telephone can not be empty");
@@ -59,6 +63,7 @@ driverContactController
             error: "driver telephone not found",
         });
     try {
+        DriverContact.telephone = cryptography.encrypt(DriverContact.telephone);
         const driverContactService = new driverContactService_1.default(DriverContact.telephone);
         yield driverContactService.update(req.params.id);
         return res.status(201).json({ msg: "driver telephone update" });
@@ -83,9 +88,9 @@ driverContactController
             });
         }
         const data = yield driverContactService.getAll();
-        if (data.length === 0) {
+        if (data === 'no data') {
             return res.status(404).json({
-                error: "no data",
+                error: data,
             });
         }
         yield cache.setCache(`driverContact`, JSON.stringify(data), 300);
@@ -114,9 +119,9 @@ driverContactController
             });
         }
         const data = yield driverContactService.getById(DriverContact.id);
-        if (data.length === 0) {
+        if (data === 'driver contact not found') {
             return res.status(404).json({
-                error: "driver telephone not found",
+                error: data,
             });
         }
         yield cache.setCache(`driverContact_${DriverContact.id}`, JSON.stringify(data), 300);
@@ -136,9 +141,9 @@ driverContactController
     const driverContactService = new driverContactService_1.default();
     try {
         const driverContactExistsOrNotExists = yield driverContactService.getAll();
-        if (driverContactExistsOrNotExists.length === 0)
+        if (driverContactExistsOrNotExists === 'no data')
             return res.status(404).json({
-                error: "no data",
+                error: driverContactExistsOrNotExists,
             });
         yield driverContactService.deleteAll();
         return res.status(204).json({});
@@ -156,9 +161,9 @@ driverContactController
     const driverContactService = new driverContactService_1.default();
     try {
         const driverExistsOrNotExists = yield driverContactService.getById(DriverContact.id);
-        if (driverExistsOrNotExists.length === 0)
+        if (driverExistsOrNotExists === 'driver contact not found')
             return res.status(404).json({
-                error: "driver telephone not found",
+                error: driverExistsOrNotExists,
             });
         yield driverContactService.deleteById(DriverContact.id);
         return res.status(204).json({});
