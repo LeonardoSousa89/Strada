@@ -10,6 +10,7 @@ export default class InformationService
   extends Information
   implements DbOperations
 {
+  //inserir o campo de midia uri
   constructor(
     starting_km?: string,
     final_km?: string,

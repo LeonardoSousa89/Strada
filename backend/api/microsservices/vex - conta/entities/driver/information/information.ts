@@ -4,6 +4,7 @@ export default class Information {
   plate?: string;
   notes?: string;
   date_time_registry?: string;
+  //inserir o campo de midia uri
 
   constructor(
     starting_km?: string,
