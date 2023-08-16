@@ -17,6 +17,7 @@ const express_1 = __importDefault(require("express"));
 const handleError_1 = __importDefault(require("../../interface/error/handleError"));
 const driverDocumentService_1 = __importDefault(require("../../services/driver/driverDocumentService"));
 const redis_cache_operation_1 = __importDefault(require("../../repositories/redis/cache/services/redis.cache.operation"));
+const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 const driverDocumentController = express_1.default.Router();
 exports.driverDocumentController = driverDocumentController;
 const err = new handleError_1.default();
@@ -24,6 +25,7 @@ driverDocumentController
     .route("/org/driver/document/save")
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverDocument = Object.assign({}, req.body);
+    const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(DriverDocument.cnh, "document is undefined or null");
         err.exceptionFieldIsEmpty(DriverDocument.cnh.trim(), "document can not be empty");
@@ -37,6 +39,7 @@ driverDocumentController
             error: "driver document already exists",
         });
     try {
+        DriverDocument.cnh = cryptography.encrypt(DriverDocument.cnh);
         const driverDocumentService = new driverDocumentService_1.default(DriverDocument.cnh);
         yield driverDocumentService.save();
         return res.status(201).json({ msg: "driver document saved" });
@@ -51,6 +54,7 @@ driverDocumentController
     .route("/org/driver/document/update/:id")
     .put((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverDocument = Object.assign({}, req.body);
+    const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(DriverDocument.cnh, "document is undefined or null");
         err.exceptionFieldIsEmpty(DriverDocument.cnh.trim(), "document can not be empty");
@@ -64,6 +68,7 @@ driverDocumentController
             error: "driver document not found",
         });
     try {
+        DriverDocument.cnh = cryptography.encrypt(DriverDocument.cnh);
         const driverDocumentService = new driverDocumentService_1.default(DriverDocument.cnh);
         yield driverDocumentService.update(req.params.id);
         return res.status(201).json({ msg: "driver document updated" });
@@ -88,9 +93,9 @@ driverDocumentController
             });
         }
         const data = yield driverDocumentService.getAll();
-        if (data.length === 0) {
+        if (data === 'no data') {
             return res.status(404).json({
-                error: "no data",
+                error: data,
             });
         }
         yield cache.setCache(`driverDocument`, JSON.stringify(data), 300);
@@ -119,9 +124,9 @@ driverDocumentController
             });
         }
         const data = yield driverDocumentService.getById(DriverDocument.id);
-        if (data.length === 0) {
+        if (data === 'driver document not found') {
             return res.status(404).json({
-                error: "driver document not found",
+                error: data,
             });
         }
         yield cache.setCache(`driverDocument_${DriverDocument.id}`, JSON.stringify(data), 300);
@@ -141,9 +146,9 @@ driverDocumentController
     try {
         const driverDocumentService = new driverDocumentService_1.default();
         const driverDocumentExistsOrNotExists = yield driverDocumentService.getAll();
-        if (driverDocumentExistsOrNotExists.length === 0)
+        if (driverDocumentExistsOrNotExists === 'no data')
             return res.status(404).json({
-                error: "no data",
+                error: driverDocumentExistsOrNotExists,
             });
         yield driverDocumentService.deleteAll();
         return res.status(204).json({});
@@ -161,9 +166,9 @@ driverDocumentController
     const driverDocumentService = new driverDocumentService_1.default();
     try {
         const driverDocumentExistsOrNotExists = yield driverDocumentService.getById(DriverDocument.id);
-        if (driverDocumentExistsOrNotExists.length === 0)
+        if (driverDocumentExistsOrNotExists === 'driver document not found')
             return res.status(404).json({
-                error: "driver document not found",
+                error: driverDocumentExistsOrNotExists,
             });
         yield driverDocumentService.deleteById(DriverDocument.id);
         return res.status(204).json({});

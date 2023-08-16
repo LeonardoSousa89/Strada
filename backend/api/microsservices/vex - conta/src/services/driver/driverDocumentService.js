@@ -15,10 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const driverDocument_1 = __importDefault(require("../../entities/driver/driverDocument"));
 const driverProjection_1 = require("../../repositories/projections/driverProjection");
+const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 class DriverDocumentService extends driverDocument_1.default {
     constructor(cnh) {
         super(cnh);
         this.driverDocument = new driverDocument_1.default(this.cnh);
+        this.cryptography = new cryptography_1.default();
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,14 +36,16 @@ class DriverDocumentService extends driverDocument_1.default {
     }
     verifyDocument(cnh) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExistsCnh = yield knex_1.default
-                .where("cnh", cnh)
-                .from("vex_schema.driver_document")
-                .first();
-            if (existsOrNotExistsCnh)
-                return true;
-            if (!existsOrNotExistsCnh)
+            const data = yield knex_1.default
+                .select(driverProjection_1.driverDocumentProjection)
+                .from("vex_schema.driver_document");
+            for (let cipherDataPosition in data) {
+                data[cipherDataPosition].cnh = this.cryptography.decrypt(data[cipherDataPosition].cnh);
+            }
+            const search = data.find((dataElement) => dataElement.cnh === cnh);
+            if (!search)
                 return false;
+            return true;
         });
     }
     save() {
@@ -62,6 +66,11 @@ class DriverDocumentService extends driverDocument_1.default {
             const data = yield knex_1.default
                 .select(driverProjection_1.driverDocumentProjection)
                 .from("vex_schema.driver_document");
+            if (data.length === 0)
+                return "no data";
+            for (let cipherDataPosition in data) {
+                data[cipherDataPosition].cnh = this.cryptography.decrypt(data[cipherDataPosition].cnh);
+            }
             return data;
         });
     }
@@ -71,6 +80,9 @@ class DriverDocumentService extends driverDocument_1.default {
                 .where("driver_document_id", id)
                 .select(driverProjection_1.driverDocumentProjection)
                 .from("vex_schema.driver_document");
+            if (data.length === 0)
+                return "driver document not found";
+            data[0].cnh = this.cryptography.decrypt(data[0].cnh);
             return data;
         });
     }

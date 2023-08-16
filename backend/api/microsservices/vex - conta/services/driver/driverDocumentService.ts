@@ -3,6 +3,7 @@ import { DbOperations } from "../../interface/operations";
 import DriverDocument from "../../entities/driver/driverDocument";
 
 import { driverDocumentProjection } from "../../repositories/projections/driverProjection";
+import Cryptography from "../../config/security/cryptography";
 
 export default class DriverDocumentService
   extends DriverDocument
@@ -13,6 +14,8 @@ export default class DriverDocumentService
   }
 
   driverDocument = new DriverDocument(this.cnh);
+
+  cryptography = new Cryptography();
 
   async verifyId(id: string) {
     const existsOrNotExistsId = await knex
@@ -26,14 +29,21 @@ export default class DriverDocumentService
   }
 
   async verifyDocument(cnh: string) {
-    const existsOrNotExistsCnh = await knex
-      .where("cnh", cnh)
-      .from("vex_schema.driver_document")
-      .first();
+    const data = await knex
+      .select(driverDocumentProjection)
+      .from("vex_schema.driver_document");
 
-    if (existsOrNotExistsCnh) return true;
+    for (let cipherDataPosition in data) {
+      data[cipherDataPosition].cnh = this.cryptography.decrypt(
+        data[cipherDataPosition].cnh
+      );
+    }
 
-    if (!existsOrNotExistsCnh) return false;
+    const search = data.find((dataElement) => dataElement.cnh === cnh);
+
+    if (!search) return false;
+
+    return true;
   }
 
   async save() {
@@ -52,6 +62,14 @@ export default class DriverDocumentService
       .select(driverDocumentProjection)
       .from("vex_schema.driver_document");
 
+    if (data.length === 0) return "no data";
+
+    for (let cipherDataPosition in data) {
+      data[cipherDataPosition].cnh = this.cryptography.decrypt(
+        data[cipherDataPosition].cnh
+      );
+    }
+
     return data;
   }
 
@@ -60,6 +78,10 @@ export default class DriverDocumentService
       .where("driver_document_id", id)
       .select(driverDocumentProjection)
       .from("vex_schema.driver_document");
+
+    if (data.length === 0) return "driver document not found";
+
+    data[0].cnh = this.cryptography.decrypt(data[0].cnh);
 
     return data;
   }

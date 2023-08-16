@@ -3,16 +3,19 @@ import express from "express";
 import HandleError from "../../interface/error/handleError";
 import DriverDocumentService from "../../services/driver/driverDocumentService";
 import RedisOperations from "../../repositories/redis/cache/services/redis.cache.operation";
+import Cryptography from "../../config/security/cryptography";
 
 const driverDocumentController = express.Router();
 
 const err = new HandleError();
 
-driverDocumentController
-  .route("/org/driver/document/save")
-  .post(async (req, res) => {
-    const DriverDocument = { ...req.body };
 
+driverDocumentController
+.route("/org/driver/document/save")
+.post(async (req, res) => {
+    const DriverDocument = { ...req.body };
+  
+    const cryptography = new Cryptography();
     try {
       err.exceptionFieldNullOrUndefined(
         DriverDocument.cnh,
@@ -36,6 +39,9 @@ driverDocumentController
       });
 
     try {
+
+      DriverDocument.cnh = cryptography.encrypt(DriverDocument.cnh);
+
       const driverDocumentService = new DriverDocumentService(
         DriverDocument.cnh
       );
@@ -54,6 +60,8 @@ driverDocumentController
   .route("/org/driver/document/update/:id")
   .put(async (req, res) => {
     const DriverDocument = { ...req.body };
+
+    const cryptography = new Cryptography();
 
     try {
       err.exceptionFieldNullOrUndefined(
@@ -78,6 +86,9 @@ driverDocumentController
       });
 
     try {
+
+      DriverDocument.cnh = cryptography.encrypt(DriverDocument.cnh);
+
       const driverDocumentService = new DriverDocumentService(
         DriverDocument.cnh
       );
@@ -112,9 +123,9 @@ driverDocumentController
 
       const data = await driverDocumentService.getAll();
 
-      if (data.length === 0) {
+      if (data === 'no data') {
         return res.status(404).json({
-          error: "no data",
+          error: data,
         });
       }
 
@@ -154,9 +165,9 @@ driverDocumentController
 
       const data = await driverDocumentService.getById(DriverDocument.id);
 
-      if (data.length === 0) {
+      if (data === 'driver document not found') {
         return res.status(404).json({
-          error: "driver document not found",
+          error: data,
         });
       }
 
@@ -185,9 +196,9 @@ driverDocumentController
       const driverDocumentExistsOrNotExists =
         await driverDocumentService.getAll();
 
-      if (driverDocumentExistsOrNotExists.length === 0)
+      if (driverDocumentExistsOrNotExists === 'no data')
         return res.status(404).json({
-          error: "no data",
+          error: driverDocumentExistsOrNotExists,
         });
 
       await driverDocumentService.deleteAll();
@@ -211,9 +222,9 @@ driverDocumentController
       const driverDocumentExistsOrNotExists =
         await driverDocumentService.getById(DriverDocument.id);
 
-      if (driverDocumentExistsOrNotExists.length === 0)
+      if (driverDocumentExistsOrNotExists === 'driver document not found')
         return res.status(404).json({
-          error: "driver document not found",
+          error: driverDocumentExistsOrNotExists,
         });
 
       await driverDocumentService.deleteById(DriverDocument.id);
