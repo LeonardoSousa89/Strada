@@ -15,10 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = __importDefault(require("../../../repositories/knex/knex"));
 const information_1 = __importDefault(require("../../../entities/driver/information/information"));
 const informationProjection_1 = require("../../../repositories/projections/informationProjection");
+const cryptography_1 = __importDefault(require("../../../config/security/cryptography"));
 class InformationService extends information_1.default {
     constructor(starting_km, final_km, plate, notes, date_time_registry) {
         super(starting_km, final_km, plate, notes, date_time_registry);
         this.information = new information_1.default(this.starting_km, this.final_km, this.plate, this.notes, this.date_time_registry);
+        this.cryptography = new cryptography_1.default();
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -72,6 +74,14 @@ class InformationService extends information_1.default {
             const data = yield knex_1.default
                 .select(informationProjection_1.informationProjection)
                 .from("vex_schema.information");
+            if (data.length === 0)
+                return "no data";
+            for (let cipherDataPosition in data) {
+                data[cipherDataPosition].starting_km = this.cryptography.decrypt(data[cipherDataPosition].starting_km);
+                data[cipherDataPosition].final_km = this.cryptography.decrypt(data[cipherDataPosition].final_km);
+                data[cipherDataPosition].plate = this.cryptography.decrypt(data[cipherDataPosition].plate);
+                data[cipherDataPosition].notes = this.cryptography.decrypt(data[cipherDataPosition].notes);
+            }
             return data;
         });
     }
@@ -81,6 +91,12 @@ class InformationService extends information_1.default {
                 .where("information_id", id)
                 .select(informationProjection_1.informationProjection)
                 .from("vex_schema.information");
+            if (data.length === 0)
+                return "information not found";
+            data[0].starting_km = this.cryptography.decrypt(data[0].starting_km);
+            data[0].final_km = this.cryptography.decrypt(data[0].final_km);
+            data[0].plate = this.cryptography.decrypt(data[0].plate);
+            data[0].notes = this.cryptography.decrypt(data[0].notes);
             return data;
         });
     }

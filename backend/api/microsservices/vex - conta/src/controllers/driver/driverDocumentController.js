@@ -93,7 +93,7 @@ driverDocumentController
             });
         }
         const data = yield driverDocumentService.getAll();
-        if (data === 'no data') {
+        if (data === "no data") {
             return res.status(404).json({
                 error: data,
             });
@@ -124,7 +124,7 @@ driverDocumentController
             });
         }
         const data = yield driverDocumentService.getById(DriverDocument.id);
-        if (data === 'driver document not found') {
+        if (data === "driver document not found") {
             return res.status(404).json({
                 error: data,
             });
@@ -146,7 +146,7 @@ driverDocumentController
     try {
         const driverDocumentService = new driverDocumentService_1.default();
         const driverDocumentExistsOrNotExists = yield driverDocumentService.getAll();
-        if (driverDocumentExistsOrNotExists === 'no data')
+        if (driverDocumentExistsOrNotExists === "no data")
             return res.status(404).json({
                 error: driverDocumentExistsOrNotExists,
             });
@@ -166,7 +166,7 @@ driverDocumentController
     const driverDocumentService = new driverDocumentService_1.default();
     try {
         const driverDocumentExistsOrNotExists = yield driverDocumentService.getById(DriverDocument.id);
-        if (driverDocumentExistsOrNotExists === 'driver document not found')
+        if (driverDocumentExistsOrNotExists === "driver document not found")
             return res.status(404).json({
                 error: driverDocumentExistsOrNotExists,
             });

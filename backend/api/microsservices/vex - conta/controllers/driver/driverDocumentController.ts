@@ -9,13 +9,13 @@ const driverDocumentController = express.Router();
 
 const err = new HandleError();
 
-
 driverDocumentController
-.route("/org/driver/document/save")
-.post(async (req, res) => {
+  .route("/org/driver/document/save")
+  .post(async (req, res) => {
     const DriverDocument = { ...req.body };
-  
+
     const cryptography = new Cryptography();
+
     try {
       err.exceptionFieldNullOrUndefined(
         DriverDocument.cnh,
@@ -39,7 +39,6 @@ driverDocumentController
       });
 
     try {
-
       DriverDocument.cnh = cryptography.encrypt(DriverDocument.cnh);
 
       const driverDocumentService = new DriverDocumentService(
@@ -86,7 +85,6 @@ driverDocumentController
       });
 
     try {
-
       DriverDocument.cnh = cryptography.encrypt(DriverDocument.cnh);
 
       const driverDocumentService = new DriverDocumentService(
@@ -123,7 +121,7 @@ driverDocumentController
 
       const data = await driverDocumentService.getAll();
 
-      if (data === 'no data') {
+      if (data === "no data") {
         return res.status(404).json({
           error: data,
         });
@@ -165,7 +163,7 @@ driverDocumentController
 
       const data = await driverDocumentService.getById(DriverDocument.id);
 
-      if (data === 'driver document not found') {
+      if (data === "driver document not found") {
         return res.status(404).json({
           error: data,
         });
@@ -196,7 +194,7 @@ driverDocumentController
       const driverDocumentExistsOrNotExists =
         await driverDocumentService.getAll();
 
-      if (driverDocumentExistsOrNotExists === 'no data')
+      if (driverDocumentExistsOrNotExists === "no data")
         return res.status(404).json({
           error: driverDocumentExistsOrNotExists,
         });
@@ -222,7 +220,7 @@ driverDocumentController
       const driverDocumentExistsOrNotExists =
         await driverDocumentService.getById(DriverDocument.id);
 
-      if (driverDocumentExistsOrNotExists === 'driver document not found')
+      if (driverDocumentExistsOrNotExists === "driver document not found")
         return res.status(404).json({
           error: driverDocumentExistsOrNotExists,
         });

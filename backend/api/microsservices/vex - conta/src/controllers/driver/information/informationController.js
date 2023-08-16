@@ -17,6 +17,7 @@ const express_1 = __importDefault(require("express"));
 const handleError_1 = __importDefault(require("../../../interface/error/handleError"));
 const informationService_1 = __importDefault(require("../../../services/driver/information/informationService"));
 const redis_cache_operation_1 = __importDefault(require("../../../repositories/redis/cache/services/redis.cache.operation"));
+const cryptography_1 = __importDefault(require("../../../config/security/cryptography"));
 const informationController = express_1.default.Router();
 exports.informationController = informationController;
 const err = new handleError_1.default();
@@ -24,6 +25,7 @@ informationController
     .route("/org/driver/information/save")
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Information = Object.assign({}, req.body);
+    const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(Information.plate, "plate is undefined or null");
         err.exceptionFieldNullOrUndefined(Information.notes, "notes is undefined or null");
@@ -39,6 +41,10 @@ informationController
             error: "starting km and final km both can not be empty or null",
         });
     try {
+        Information.starting_km = cryptography.encrypt(Information.starting_km);
+        Information.final_km = cryptography.encrypt(Information.final_km);
+        Information.plate = cryptography.encrypt(Information.plate);
+        Information.notes = cryptography.encrypt(Information.notes);
         const date_time_registry = new informationService_1.default().getTime();
         const informationService = new informationService_1.default(Information.starting_km, Information.final_km, Information.plate, Information.notes, date_time_registry);
         yield informationService.save();
@@ -64,9 +70,9 @@ informationController
             });
         }
         const data = yield informationService.getAll();
-        if (data.length === 0) {
+        if (data === "no data") {
             return res.status(404).json({
-                error: "no data",
+                error: data,
             });
         }
         yield cache.setCache(`information`, JSON.stringify(data), 300);
@@ -95,9 +101,9 @@ informationController
             });
         }
         const data = yield informationService.getById(Information.id);
-        if (data.length === 0) {
+        if (data === "information not found") {
             return res.status(404).json({
-                error: "driver information not found",
+                error: data,
             });
         }
         yield cache.setCache(`information_${Information.id}`, JSON.stringify(data), 300);
@@ -117,9 +123,9 @@ informationController
     const informationService = new informationService_1.default();
     try {
         const driverInformationExistsOrNotExists = yield informationService.getAll();
-        if (driverInformationExistsOrNotExists.length === 0)
+        if (driverInformationExistsOrNotExists === "no data")
             return res.status(404).json({
-                error: "no data",
+                error: driverInformationExistsOrNotExists,
             });
         yield informationService.deleteAll();
         return res.status(204).json({});
@@ -137,9 +143,9 @@ informationController
     const informationService = new informationService_1.default();
     try {
         const driverInformationExistsOrNotExists = yield informationService.getById(Information.id);
-        if (driverInformationExistsOrNotExists.length === 0)
+        if (driverInformationExistsOrNotExists === "information not found")
             return res.status(404).json({
-                error: "driver information not found",
+                error: driverInformationExistsOrNotExists,
             });
         yield informationService.deleteById(Information.id);
         return res.status(204).json({});

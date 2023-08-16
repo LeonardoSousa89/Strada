@@ -4,6 +4,7 @@ import Information from "../../../entities/driver/information/information";
 
 import { informationProjection } from "../../../repositories/projections/informationProjection";
 import DriverInformationRelationTableService from "../relations/driverInformationRelationTableService";
+import Cryptography from "../../../config/security/cryptography";
 
 export default class InformationService
   extends Information
@@ -26,6 +27,8 @@ export default class InformationService
     this.notes,
     this.date_time_registry
   );
+
+  cryptography = new Cryptography();
 
   async verifyId(id: string) {
     const existsOrNotExistsId = await knex
@@ -80,6 +83,23 @@ export default class InformationService
       .select(informationProjection)
       .from("vex_schema.information");
 
+    if (data.length === 0) return "no data";
+
+    for (let cipherDataPosition in data) {
+      data[cipherDataPosition].starting_km = this.cryptography.decrypt(
+        data[cipherDataPosition].starting_km
+      );
+      data[cipherDataPosition].final_km = this.cryptography.decrypt(
+        data[cipherDataPosition].final_km
+      );
+      data[cipherDataPosition].plate = this.cryptography.decrypt(
+        data[cipherDataPosition].plate
+      );
+      data[cipherDataPosition].notes = this.cryptography.decrypt(
+        data[cipherDataPosition].notes
+      );
+    }
+
     return data;
   }
 
@@ -88,6 +108,13 @@ export default class InformationService
       .where("information_id", id)
       .select(informationProjection)
       .from("vex_schema.information");
+
+    if (data.length === 0) return "information not found";
+
+    data[0].starting_km = this.cryptography.decrypt(data[0].starting_km);
+    data[0].final_km = this.cryptography.decrypt(data[0].final_km);
+    data[0].plate = this.cryptography.decrypt(data[0].plate);
+    data[0].notes = this.cryptography.decrypt(data[0].notes);
 
     return data;
   }

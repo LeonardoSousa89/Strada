@@ -3,6 +3,7 @@ import express from "express";
 import HandleError from "../../../interface/error/handleError";
 import InformationService from "../../../services/driver/information/informationService";
 import RedisOperations from "../../../repositories/redis/cache/services/redis.cache.operation";
+import Cryptography from "../../../config/security/cryptography";
 
 const informationController = express.Router();
 
@@ -12,6 +13,8 @@ informationController
   .route("/org/driver/information/save")
   .post(async (req, res) => {
     const Information = { ...req.body };
+
+    const cryptography = new Cryptography();
 
     try {
       err.exceptionFieldNullOrUndefined(
@@ -47,6 +50,11 @@ informationController
       });
 
     try {
+      Information.starting_km = cryptography.encrypt(Information.starting_km);
+      Information.final_km = cryptography.encrypt(Information.final_km);
+      Information.plate = cryptography.encrypt(Information.plate);
+      Information.notes = cryptography.encrypt(Information.notes);
+
       const date_time_registry = new InformationService().getTime();
 
       const informationService = new InformationService(
@@ -87,9 +95,9 @@ informationController
 
       const data = await informationService.getAll();
 
-      if (data.length === 0) {
+      if (data === "no data") {
         return res.status(404).json({
-          error: "no data",
+          error: data,
         });
       }
 
@@ -129,9 +137,9 @@ informationController
 
       const data = await informationService.getById(Information.id);
 
-      if (data.length === 0) {
+      if (data === "information not found") {
         return res.status(404).json({
-          error: "driver information not found",
+          error: data,
         });
       }
 
@@ -160,9 +168,9 @@ informationController
       const driverInformationExistsOrNotExists =
         await informationService.getAll();
 
-      if (driverInformationExistsOrNotExists.length === 0)
+      if (driverInformationExistsOrNotExists === "no data")
         return res.status(404).json({
-          error: "no data",
+          error: driverInformationExistsOrNotExists,
         });
 
       await informationService.deleteAll();
@@ -186,9 +194,9 @@ informationController
       const driverInformationExistsOrNotExists =
         await informationService.getById(Information.id);
 
-      if (driverInformationExistsOrNotExists.length === 0)
+      if (driverInformationExistsOrNotExists === "information not found")
         return res.status(404).json({
-          error: "driver information not found",
+          error: driverInformationExistsOrNotExists,
         });
 
       await informationService.deleteById(Information.id);
