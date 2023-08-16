@@ -3,6 +3,7 @@ import { DbOperations } from "../../interface/operations";
 import Driver from "../../entities/driver/driver";
 
 import { driverProjection } from "../../repositories/projections/driverProjection";
+import Cryptography from "../../config/security/cryptography";
 
 export default class DriverService extends Driver implements DbOperations {
   constructor(
@@ -21,6 +22,8 @@ export default class DriverService extends Driver implements DbOperations {
     this.password
   );
 
+  cryptography = new Cryptography();
+
   async verifyId(id: string) {
     const existsOrNotExistsId = await knex
       .where("driver_id", id)
@@ -33,14 +36,19 @@ export default class DriverService extends Driver implements DbOperations {
   }
 
   async verifyEmail(email: string) {
-    const existsOrNotExistsEmail = await knex
-      .where("email", email)
-      .from("vex_schema.driver")
-      .first();
+    const data = await knex.select(driverProjection).from("vex_schema.driver");
 
-    if (existsOrNotExistsEmail) return true;
+    for (let cipherDataPosition in data) {
+      data[cipherDataPosition].email = this.cryptography.decrypt(
+        data[cipherDataPosition].email
+      );
+    }
 
-    if (!existsOrNotExistsEmail) return false;
+    const search = data.find((dataElement) => dataElement.email === email);
+
+    if (!search) return false;
+
+    return true;
   }
 
   async save() {
@@ -57,6 +65,20 @@ export default class DriverService extends Driver implements DbOperations {
   async getAll() {
     const data = await knex.select(driverProjection).from("vex_schema.driver");
 
+    if (data.length === 0) return "no data";
+
+    for (let cipherDataPosition in data) {
+      data[cipherDataPosition].first_name = this.cryptography.decrypt(
+        data[cipherDataPosition].first_name
+      );
+      data[cipherDataPosition].last_name = this.cryptography.decrypt(
+        data[cipherDataPosition].last_name
+      );
+      data[cipherDataPosition].email = this.cryptography.decrypt(
+        data[cipherDataPosition].email
+      );
+    }
+
     return data;
   }
 
@@ -65,6 +87,12 @@ export default class DriverService extends Driver implements DbOperations {
       .where("driver_id", id)
       .select(driverProjection)
       .from("vex_schema.driver");
+
+    if (data.length === 0) return "driver not found";
+
+    data[0].first_name = this.cryptography.decrypt(data[0].first_name);
+    data[0].last_name = this.cryptography.decrypt(data[0].last_name);
+    data[0].email = this.cryptography.decrypt(data[0].email);
 
     return data;
   }

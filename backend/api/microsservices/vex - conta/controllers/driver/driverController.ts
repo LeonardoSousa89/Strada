@@ -4,6 +4,7 @@ import DriverService from "../../services/driver/driverService";
 import HandleError from "../../interface/error/handleError";
 import { cryptograph } from "../../security/cryptography/bcrypt";
 import RedisOperations from "../../repositories/redis/cache/services/redis.cache.operation";
+import Cryptography from "../../config/security/cryptography";
 
 const driverController = express.Router();
 
@@ -11,6 +12,8 @@ const err = new HandleError();
 
 driverController.route("/org/driver/save").post(async (req, res) => {
   const Driver = { ...req.body };
+
+  const cryptography = new Cryptography();
 
   try {
     err.exceptionFieldNullOrUndefined(
@@ -61,10 +64,15 @@ driverController.route("/org/driver/save").post(async (req, res) => {
     return res.status(400).json({
       error: "email already exists",
     });
-
-  Driver.password = cryptograph(Driver.password);
-
+    
   try {
+
+    Driver.first_name = cryptography.encrypt(Driver.first_name);
+    Driver.last_name = cryptography.encrypt(Driver.last_name);
+    Driver.email = cryptography.encrypt(Driver.email);
+
+    Driver.password = cryptography.hash(Driver.password);
+    
     const driverService = new DriverService(
       Driver.first_name,
       Driver.last_name,
@@ -84,6 +92,8 @@ driverController.route("/org/driver/save").post(async (req, res) => {
 
 driverController.route("/org/driver/update/:id").put(async (req, res) => {
   const Driver = { ...req.body };
+
+  const cryptography = new Cryptography();
 
   try {
     err.exceptionFieldNullOrUndefined(
@@ -136,7 +146,12 @@ driverController.route("/org/driver/update/:id").put(async (req, res) => {
     });
 
   try {
-    Driver.password = cryptograph(Driver.password);
+   
+    Driver.first_name = cryptography.encrypt(Driver.first_name);
+    Driver.last_name = cryptography.encrypt(Driver.last_name);
+    Driver.email = cryptography.encrypt(Driver.email);
+
+    Driver.password = cryptography.hash(Driver.password);
 
     const driverService = new DriverService(
       Driver.first_name,
@@ -147,7 +162,7 @@ driverController.route("/org/driver/update/:id").put(async (req, res) => {
 
     await driverService.update(req.params.id);
 
-    return res.status(201).json({ msg: "driver update" });
+    return res.status(201).json({ msg: "driver updated" });
   } catch (e) {
     return res
       .status(500)
@@ -173,9 +188,9 @@ driverController.route("/org/driver/get-all").get(async (req, res) => {
 
     const data = await driverService.getAll();
 
-    if (data.length === 0) {
+    if (data === 'no data') {
       return res.status(404).json({
-        error: "driver not found",
+        error: data,
       });
     }
 
@@ -211,9 +226,9 @@ driverController.route("/org/driver/get-by-id/:id").get(async (req, res) => {
 
     const data = await driverService.getById(Driver.id);
 
-    if (data.length === 0) {
+    if (data === 'driver not found') {
       return res.status(404).json({
-        error: "driver not found",
+        error: data,
       });
     }
 
@@ -235,9 +250,9 @@ driverController.route("/org/driver/delete-all").delete(async (req, res) => {
   try {
     const driverIdExistsOnDb = await driverService.getAll();
 
-    if (driverIdExistsOnDb.length === 0)
+    if (driverIdExistsOnDb === 'no data')
       return res.status(404).json({
-        error: "no data",
+        error: driverIdExistsOnDb,
       });
 
     await driverService.deleteAll();
@@ -260,9 +275,9 @@ driverController
     try {
       const driverIdExistsOnDb = await driverService.getById(Driver.id);
 
-      if (driverIdExistsOnDb.length === 0)
+      if (driverIdExistsOnDb === 'driver not found')
         return res.status(404).json({
-          error: "driver not found",
+          error: driverIdExistsOnDb,
         });
 
       await driverService.deleteById(Driver.id);

@@ -15,10 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const driver_1 = __importDefault(require("../../entities/driver/driver"));
 const driverProjection_1 = require("../../repositories/projections/driverProjection");
+const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 class DriverService extends driver_1.default {
     constructor(first_name, last_name, email, password) {
         super(first_name, last_name, email, password);
         this.driver = new driver_1.default(this.first_name, this.last_name, this.email, this.password);
+        this.cryptography = new cryptography_1.default();
     }
     verifyId(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,14 +36,14 @@ class DriverService extends driver_1.default {
     }
     verifyEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existsOrNotExistsEmail = yield knex_1.default
-                .where("email", email)
-                .from("vex_schema.driver")
-                .first();
-            if (existsOrNotExistsEmail)
-                return true;
-            if (!existsOrNotExistsEmail)
+            const data = yield knex_1.default.select(driverProjection_1.driverProjection).from("vex_schema.driver");
+            for (let cipherDataPosition in data) {
+                data[cipherDataPosition].email = this.cryptography.decrypt(data[cipherDataPosition].email);
+            }
+            const search = data.find((dataElement) => dataElement.email === email);
+            if (!search)
                 return false;
+            return true;
         });
     }
     save() {
@@ -60,6 +62,13 @@ class DriverService extends driver_1.default {
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield knex_1.default.select(driverProjection_1.driverProjection).from("vex_schema.driver");
+            if (data.length === 0)
+                return "no data";
+            for (let cipherDataPosition in data) {
+                data[cipherDataPosition].first_name = this.cryptography.decrypt(data[cipherDataPosition].first_name);
+                data[cipherDataPosition].last_name = this.cryptography.decrypt(data[cipherDataPosition].last_name);
+                data[cipherDataPosition].email = this.cryptography.decrypt(data[cipherDataPosition].email);
+            }
             return data;
         });
     }
@@ -69,6 +78,11 @@ class DriverService extends driver_1.default {
                 .where("driver_id", id)
                 .select(driverProjection_1.driverProjection)
                 .from("vex_schema.driver");
+            if (data.length === 0)
+                return "driver not found";
+            data[0].first_name = this.cryptography.decrypt(data[0].first_name);
+            data[0].last_name = this.cryptography.decrypt(data[0].last_name);
+            data[0].email = this.cryptography.decrypt(data[0].email);
             return data;
         });
     }
