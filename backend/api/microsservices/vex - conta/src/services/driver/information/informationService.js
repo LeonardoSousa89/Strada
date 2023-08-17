@@ -17,6 +17,7 @@ const information_1 = __importDefault(require("../../../entities/driver/informat
 const informationProjection_1 = require("../../../repositories/projections/informationProjection");
 const cryptography_1 = __importDefault(require("../../../config/security/cryptography"));
 class InformationService extends information_1.default {
+    //inserir o campo de midia uri
     constructor(starting_km, final_km, plate, notes, date_time_registry) {
         super(starting_km, final_km, plate, notes, date_time_registry);
         this.information = new information_1.default(this.starting_km, this.final_km, this.plate, this.notes, this.date_time_registry);
