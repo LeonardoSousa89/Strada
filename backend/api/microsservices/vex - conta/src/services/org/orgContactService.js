@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 const orgContact_1 = __importDefault(require("../../entities/org/orgContact"));
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
+const paginate_1 = __importDefault(require("../../repositories/knex/paginate"));
 const OrgProjection_1 = require("../../repositories/projections/OrgProjection");
 class OrgContactService extends orgContact_1.default {
     constructor(telephone, ddd, email) {
@@ -47,11 +48,14 @@ class OrgContactService extends orgContact_1.default {
                 .from("vex_schema.org_contact");
         });
     }
-    getAll(size, page) {
+    getAll(page, size) {
         return __awaiter(this, void 0, void 0, function* () {
+            page = (0, paginate_1.default)(page, size);
             const data = yield knex_1.default
                 .select(OrgProjection_1.orgContactProjection)
-                .from("vex_schema.org_contact");
+                .from("vex_schema.org_contact")
+                .offset(page)
+                .limit(size);
             if (data.length === 0)
                 return "no data";
             for (let cipherDataPosition in data) {

@@ -128,6 +128,8 @@ orgContactController.route("/org/contact/update/:id").put(async (req, res) => {
 });
 
 orgContactController.route("/org/contact/get-all").get(async (req, res) => {
+  const OrgContact = { ...req.query };
+  
   const orgContactService = new OrgContactService();
 
   const cache = new RedisOperations();
@@ -143,7 +145,10 @@ orgContactController.route("/org/contact/get-all").get(async (req, res) => {
       });
     }
 
-    const data = await orgContactService.getAll();
+    const data = await orgContactService.getAll(
+      OrgContact.page,
+      OrgContact.size
+    );
 
     if (data === "no data") {
       return res.status(404).json({

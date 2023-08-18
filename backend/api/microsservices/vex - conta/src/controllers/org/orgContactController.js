@@ -88,6 +88,7 @@ orgContactController.route("/org/contact/update/:id").put((req, res) => __awaite
     }
 }));
 orgContactController.route("/org/contact/get-all").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const OrgContact = Object.assign({}, req.query);
     const orgContactService = new orgContactService_1.default();
     const cache = new redis_cache_operation_1.default();
     try {
@@ -98,7 +99,7 @@ orgContactController.route("/org/contact/get-all").get((req, res) => __awaiter(v
                 data: { inCache: "yes", data },
             });
         }
-        const data = yield orgContactService.getAll();
+        const data = yield orgContactService.getAll(OrgContact.page, OrgContact.size);
         if (data === "no data") {
             return res.status(404).json({
                 error: data,

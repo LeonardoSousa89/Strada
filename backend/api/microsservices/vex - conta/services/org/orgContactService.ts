@@ -2,6 +2,7 @@ import Cryptography from "../../config/security/cryptography";
 import OrgContact from "../../entities/org/orgContact";
 import { DbOperations } from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
+import calculatePage from "../../repositories/knex/paginate";
 
 import { orgContactProjection } from "../../repositories/projections/OrgProjection";
 
@@ -39,10 +40,14 @@ export default class OrgContactService
       .from("vex_schema.org_contact");
   }
 
-  async getAll(size?: any, page?: any) {
+  async getAll(page?: any, size?: any) {
+    page = calculatePage(page, size);
+
     const data = await knex
       .select(orgContactProjection)
-      .from("vex_schema.org_contact");
+      .from("vex_schema.org_contact")
+      .offset(page)
+      .limit(size);
 
     if (data.length === 0) return "no data";
 
