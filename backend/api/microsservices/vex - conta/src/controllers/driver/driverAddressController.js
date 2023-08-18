@@ -135,6 +135,7 @@ driverAddressController
 driverAddressController
     .route("/org/driver/address/get-all")
     .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const DriverAddress = Object.assign({}, req.query);
     const driverAddressService = new driverAddressService_1.default();
     const cache = new redis_cache_operation_1.default();
     try {
@@ -145,8 +146,8 @@ driverAddressController
                 data: { inCache: "yes", data },
             });
         }
-        const data = yield driverAddressService.getAll();
-        if (data === 'no data') {
+        const data = yield driverAddressService.getAll(DriverAddress.page, DriverAddress.size);
+        if (data === "no data") {
             return res.status(404).json({
                 error: data,
             });
@@ -177,7 +178,7 @@ driverAddressController
             });
         }
         const data = yield driverAddressService.getById(DriverAddress.id);
-        if (data === 'driver address not found') {
+        if (data === "driver address not found") {
             return res.status(404).json({
                 error: data,
             });
@@ -199,7 +200,7 @@ driverAddressController
     const driverAddressService = new driverAddressService_1.default();
     try {
         const driverAddressExistsOrNotExists = yield driverAddressService.getAll();
-        if (driverAddressExistsOrNotExists === 'no data')
+        if (driverAddressExistsOrNotExists === "no data")
             return res.status(404).json({
                 error: driverAddressExistsOrNotExists,
             });
@@ -219,7 +220,7 @@ driverAddressController
     const driverAddressService = new driverAddressService_1.default();
     try {
         const driverExistsOrNotExists = yield driverAddressService.getById(DriverAddress.id);
-        if (driverExistsOrNotExists === 'driver address not found')
+        if (driverExistsOrNotExists === "driver address not found")
             return res.status(404).json({
                 error: driverExistsOrNotExists,
             });

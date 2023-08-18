@@ -4,6 +4,7 @@ import DriverAddress from "../../entities/driver/driverAddress";
 
 import { driverAddressProjection } from "../../repositories/projections/driverProjection";
 import Cryptography from "../../config/security/cryptography";
+import calculatePage from "../../repositories/knex/paginate";
 
 export default class DriverAddressService
   extends DriverAddress
@@ -51,10 +52,14 @@ export default class DriverAddressService
       .from("vex_schema.driver_address");
   }
 
-  async getAll() {
+  async getAll(page?: any, size?: any) {
+    page = calculatePage(page, size);
+
     const data = await knex
       .select(driverAddressProjection)
-      .from("vex_schema.driver_address");
+      .from("vex_schema.driver_address")
+      .offset(page)
+      .limit(size);
 
     if (data.length === 0) return "no data";
 

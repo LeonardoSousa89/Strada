@@ -167,6 +167,8 @@ driverAddressController
 driverAddressController
   .route("/org/driver/address/get-all")
   .get(async (req, res) => {
+    const DriverAddress = { ...req.query };
+
     const driverAddressService = new DriverAddressService();
 
     const cache = new RedisOperations();
@@ -182,9 +184,12 @@ driverAddressController
         });
       }
 
-      const data = await driverAddressService.getAll();
+      const data = await driverAddressService.getAll(
+        DriverAddress.page,
+        DriverAddress.size
+      );
 
-      if (data === 'no data') {
+      if (data === "no data") {
         return res.status(404).json({
           error: data,
         });
@@ -226,7 +231,7 @@ driverAddressController
 
       const data = await driverAddressService.getById(DriverAddress.id);
 
-      if (data === 'driver address not found') {
+      if (data === "driver address not found") {
         return res.status(404).json({
           error: data,
         });
@@ -257,7 +262,7 @@ driverAddressController
       const driverAddressExistsOrNotExists =
         await driverAddressService.getAll();
 
-      if (driverAddressExistsOrNotExists === 'no data')
+      if (driverAddressExistsOrNotExists === "no data")
         return res.status(404).json({
           error: driverAddressExistsOrNotExists,
         });
@@ -284,7 +289,7 @@ driverAddressController
         DriverAddress.id
       );
 
-      if (driverExistsOrNotExists === 'driver address not found')
+      if (driverExistsOrNotExists === "driver address not found")
         return res.status(404).json({
           error: driverExistsOrNotExists,
         });
