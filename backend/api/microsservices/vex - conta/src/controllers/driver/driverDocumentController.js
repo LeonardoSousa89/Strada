@@ -82,6 +82,7 @@ driverDocumentController
 driverDocumentController
     .route("/org/driver/document/get-all")
     .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const DriverDocument = Object.assign({}, req.query);
     const driverDocumentService = new driverDocumentService_1.default();
     const cache = new redis_cache_operation_1.default();
     try {
@@ -92,7 +93,7 @@ driverDocumentController
                 data: { inCache: "yes", data },
             });
         }
-        const data = yield driverDocumentService.getAll();
+        const data = yield driverDocumentService.getAll(DriverDocument.page, DriverDocument.size);
         if (data === "no data") {
             return res.status(404).json({
                 error: data,

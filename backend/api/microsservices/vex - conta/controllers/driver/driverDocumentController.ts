@@ -104,6 +104,8 @@ driverDocumentController
 driverDocumentController
   .route("/org/driver/document/get-all")
   .get(async (req, res) => {
+    const DriverDocument = { ...req.query };
+
     const driverDocumentService = new DriverDocumentService();
 
     const cache = new RedisOperations();
@@ -119,7 +121,10 @@ driverDocumentController
         });
       }
 
-      const data = await driverDocumentService.getAll();
+      const data = await driverDocumentService.getAll(
+        DriverDocument.page,
+        DriverDocument.size
+      );
 
       if (data === "no data") {
         return res.status(404).json({

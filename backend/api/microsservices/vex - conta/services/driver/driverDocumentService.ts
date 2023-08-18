@@ -4,6 +4,7 @@ import DriverDocument from "../../entities/driver/driverDocument";
 
 import { driverDocumentProjection } from "../../repositories/projections/driverProjection";
 import Cryptography from "../../config/security/cryptography";
+import calculatePage from "../../repositories/knex/paginate";
 
 export default class DriverDocumentService
   extends DriverDocument
@@ -57,10 +58,14 @@ export default class DriverDocumentService
       .from("vex_schema.driver_document");
   }
 
-  async getAll() {
+  async getAll(page?: any, size?: any) {
+    page = calculatePage(page, size);
+
     const data = await knex
       .select(driverDocumentProjection)
-      .from("vex_schema.driver_document");
+      .from("vex_schema.driver_document")
+      .offset(page)
+      .limit(size);
 
     if (data.length === 0) return "no data";
 
