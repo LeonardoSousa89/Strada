@@ -16,6 +16,7 @@ const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const driver_1 = __importDefault(require("../../entities/driver/driver"));
 const driverProjection_1 = require("../../repositories/projections/driverProjection");
 const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
+const paginate_1 = __importDefault(require("../../repositories/knex/paginate"));
 class DriverService extends driver_1.default {
     constructor(first_name, last_name, email, password) {
         super(first_name, last_name, email, password);
@@ -59,9 +60,14 @@ class DriverService extends driver_1.default {
                 .from("vex_schema.driver");
         });
     }
-    getAll() {
+    getAll(page, size) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select(driverProjection_1.driverProjection).from("vex_schema.driver");
+            page = (0, paginate_1.default)(page, size);
+            const data = yield knex_1.default
+                .select(driverProjection_1.driverProjection)
+                .from("vex_schema.driver")
+                .offset(page)
+                .limit(size);
             if (data.length === 0)
                 return "no data";
             for (let cipherDataPosition in data) {

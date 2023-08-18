@@ -96,6 +96,7 @@ driverController.route("/org/driver/update/:id").put((req, res) => __awaiter(voi
     }
 }));
 driverController.route("/org/driver/get-all").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Driver = Object.assign({}, req.query);
     const driverService = new driverService_1.default();
     const cache = new redis_cache_operation_1.default();
     try {
@@ -106,8 +107,8 @@ driverController.route("/org/driver/get-all").get((req, res) => __awaiter(void 0
                 data: { inCache: "yes", data },
             });
         }
-        const data = yield driverService.getAll();
-        if (data === 'no data') {
+        const data = yield driverService.getAll(Driver.page, Driver.size);
+        if (data === "no data") {
             return res.status(404).json({
                 error: data,
             });
@@ -136,7 +137,7 @@ driverController.route("/org/driver/get-by-id/:id").get((req, res) => __awaiter(
             });
         }
         const data = yield driverService.getById(Driver.id);
-        if (data === 'driver not found') {
+        if (data === "driver not found") {
             return res.status(404).json({
                 error: data,
             });
@@ -156,7 +157,7 @@ driverController.route("/org/driver/delete-all").delete((req, res) => __awaiter(
     const driverService = new driverService_1.default();
     try {
         const driverIdExistsOnDb = yield driverService.getAll();
-        if (driverIdExistsOnDb === 'no data')
+        if (driverIdExistsOnDb === "no data")
             return res.status(404).json({
                 error: driverIdExistsOnDb,
             });
@@ -176,7 +177,7 @@ driverController
     const Driver = Object.assign({}, req.params);
     try {
         const driverIdExistsOnDb = yield driverService.getById(Driver.id);
-        if (driverIdExistsOnDb === 'driver not found')
+        if (driverIdExistsOnDb === "driver not found")
             return res.status(404).json({
                 error: driverIdExistsOnDb,
             });

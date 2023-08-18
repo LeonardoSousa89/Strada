@@ -64,15 +64,14 @@ driverController.route("/org/driver/save").post(async (req, res) => {
     return res.status(400).json({
       error: "email already exists",
     });
-    
-  try {
 
+  try {
     Driver.first_name = cryptography.encrypt(Driver.first_name);
     Driver.last_name = cryptography.encrypt(Driver.last_name);
     Driver.email = cryptography.encrypt(Driver.email);
 
     Driver.password = cryptography.hash(Driver.password);
-    
+
     const driverService = new DriverService(
       Driver.first_name,
       Driver.last_name,
@@ -146,7 +145,6 @@ driverController.route("/org/driver/update/:id").put(async (req, res) => {
     });
 
   try {
-   
     Driver.first_name = cryptography.encrypt(Driver.first_name);
     Driver.last_name = cryptography.encrypt(Driver.last_name);
     Driver.email = cryptography.encrypt(Driver.email);
@@ -171,6 +169,8 @@ driverController.route("/org/driver/update/:id").put(async (req, res) => {
 });
 
 driverController.route("/org/driver/get-all").get(async (req, res) => {
+  const Driver = { ...req.query };
+
   const driverService = new DriverService();
 
   const cache = new RedisOperations();
@@ -186,9 +186,9 @@ driverController.route("/org/driver/get-all").get(async (req, res) => {
       });
     }
 
-    const data = await driverService.getAll();
+    const data = await driverService.getAll(Driver.page, Driver.size);
 
-    if (data === 'no data') {
+    if (data === "no data") {
       return res.status(404).json({
         error: data,
       });
@@ -226,7 +226,7 @@ driverController.route("/org/driver/get-by-id/:id").get(async (req, res) => {
 
     const data = await driverService.getById(Driver.id);
 
-    if (data === 'driver not found') {
+    if (data === "driver not found") {
       return res.status(404).json({
         error: data,
       });
@@ -250,7 +250,7 @@ driverController.route("/org/driver/delete-all").delete(async (req, res) => {
   try {
     const driverIdExistsOnDb = await driverService.getAll();
 
-    if (driverIdExistsOnDb === 'no data')
+    if (driverIdExistsOnDb === "no data")
       return res.status(404).json({
         error: driverIdExistsOnDb,
       });
@@ -275,7 +275,7 @@ driverController
     try {
       const driverIdExistsOnDb = await driverService.getById(Driver.id);
 
-      if (driverIdExistsOnDb === 'driver not found')
+      if (driverIdExistsOnDb === "driver not found")
         return res.status(404).json({
           error: driverIdExistsOnDb,
         });
