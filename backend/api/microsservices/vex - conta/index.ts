@@ -20,7 +20,7 @@ import { driverContactRelationTableController } from "./controllers/driver/relat
 import { driverDocumentRelationTableController } from "./controllers/driver/relations/driverDocumentRelationTableController";
 import { driverInformationRelationTableController } from "./controllers/driver/relations/driverInformationRelationTableController";
 import { orgTestsController } from "./__tests__/functions/server/testsController";
-import { connect } from "./repositories/redis/cache/redis";
+
 import RedisOperations from "./repositories/redis/cache/services/redis.cache.operation";
 
 const app = express();

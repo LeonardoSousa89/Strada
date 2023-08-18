@@ -28,6 +28,8 @@ import {
 } from "../../security/crypto";
 import axios from "axios";
 import OrgService from "../../../services/org/orgService";
+import { getAllInformation } from "../../request/information.paginate.test";
+import { getAllDriver } from "../../request/driver.paginate.test";
 
 dotenv.config();
 
@@ -605,12 +607,14 @@ orgTestsController
     }
   });
 
-  orgTestsController.route("/tests/org/driver/delete/all").delete(async (req, res) => {
+orgTestsController
+  .route("/tests/org/driver/delete/all")
+  .delete(async (req, res) => {
     try {
       const response = await deleteAllCiphedDriver();
-  
+
       if (response === "no data") return res.status(404).json(response);
-  
+
       return res.status(204).json();
     } catch (__) {
       return res.status(500).json({
@@ -618,22 +622,50 @@ orgTestsController
       });
     }
   });
-  
+
+orgTestsController
+  .route("/tests/org/driver/delete/by/id/:id")
+  .delete(async (req, res) => {
+    try {
+      const response = await deleteByIdCiphedDriver(req.params.id);
+
+      if (response === "driver not found")
+        return res.status(404).json(response);
+
+      return res.status(204).json();
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server" + __,
+      });
+    }
+  });
+
+orgTestsController
+  .route("/tests/org/driver/information/pagination/get/all")
+  .get(async (req, res) => {
+    try {
+      const response = await getAllInformation(req.query.page, req.query.size)
+
+      return res.status(200).json(response);
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server" + __,
+      });
+    }
+  });
+
   orgTestsController
-    .route("/tests/org/driver/delete/by/id/:id")
-    .delete(async (req, res) => {
-      try {
-        const response = await deleteByIdCiphedDriver(req.params.id);
-  
-        if (response === "driver not found")
-          return res.status(404).json(response);
-  
-        return res.status(204).json();
-      } catch (__) {
-        return res.status(500).json({
-          error: "i am sorry, there is an error with server" + __,
-        });
-      }
-    });
+  .route("/tests/org/driver/pagination/get/all")
+  .get(async (req, res) => {
+    try {
+      const response = await getAllDriver(req.query.page, req.query.size)
+
+      return res.status(200).json(response);
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server" + __,
+      });
+    }
+  });
 
 export { orgTestsController };

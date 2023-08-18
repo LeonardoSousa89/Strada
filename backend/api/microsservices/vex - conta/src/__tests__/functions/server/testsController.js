@@ -44,6 +44,8 @@ const redis_1 = require("../../cache/redis");
 const orgJoinQueryService_1 = __importDefault(require("../../../services/query/orgJoinQueryService"));
 const crypto_1 = require("../../security/crypto");
 const axios_1 = __importDefault(require("axios"));
+const information_paginate_test_1 = require("../../request/information.paginate.test");
+const driver_paginate_test_1 = require("../../request/driver.paginate.test");
 dotenv.config();
 const orgTestsController = express_1.default.Router();
 exports.orgTestsController = orgTestsController;
@@ -434,7 +436,9 @@ orgTestsController
         });
     }
 }));
-orgTestsController.route("/tests/org/driver/delete/all").delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+orgTestsController
+    .route("/tests/org/driver/delete/all")
+    .delete((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const response = yield (0, crypto_1.deleteAllCiphedDriver)();
         if (response === "no data")
@@ -455,6 +459,32 @@ orgTestsController
         if (response === "driver not found")
             return res.status(404).json(response);
         return res.status(204).json();
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
+        });
+    }
+}));
+orgTestsController
+    .route("/tests/org/driver/information/pagination/get/all")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const response = yield (0, information_paginate_test_1.getAllInformation)(req.query.page, req.query.size);
+        return res.status(200).json(response);
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server" + __,
+        });
+    }
+}));
+orgTestsController
+    .route("/tests/org/driver/pagination/get/all")
+    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const response = yield (0, driver_paginate_test_1.getAllDriver)(req.query.page, req.query.size);
+        return res.status(200).json(response);
     }
     catch (__) {
         return res.status(500).json({

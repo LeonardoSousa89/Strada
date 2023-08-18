@@ -1,5 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.attachPaginate = void 0;
+exports.knexPaginate = void 0;
 const knex_paginate_1 = require("knex-paginate");
-Object.defineProperty(exports, "attachPaginate", { enumerable: true, get: function () { return knex_paginate_1.attachPaginate; } });
+function knexPaginate() {
+    const knex = (0, knex_paginate_1.attachPaginate)();
+}
+exports.knexPaginate = knexPaginate;

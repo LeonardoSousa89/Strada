@@ -1,3 +1,6 @@
 import { attachPaginate } from 'knex-paginate'
 
-export { attachPaginate }
+export function knexPaginate(){
+    const knex = attachPaginate()
+}
+
