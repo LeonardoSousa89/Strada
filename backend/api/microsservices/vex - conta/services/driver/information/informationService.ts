@@ -5,6 +5,7 @@ import Information from "../../../entities/driver/information/information";
 import { informationProjection } from "../../../repositories/projections/informationProjection";
 import DriverInformationRelationTableService from "../relations/driverInformationRelationTableService";
 import Cryptography from "../../../config/security/cryptography";
+import calculatePage from "../../../repositories/knex/paginate";
 
 export default class InformationService
   extends Information
@@ -79,10 +80,14 @@ export default class InformationService
       .from("vex_schema.information");
   }
 
-  async getAll() {
+  async getAll(page?: any, size?: any) {
+    page = calculatePage(page, size);
+
     const data = await knex
       .select(informationProjection)
-      .from("vex_schema.information");
+      .from("vex_schema.information")
+      .offset(page)
+      .limit(size);
 
     if (data.length === 0) return "no data";
 

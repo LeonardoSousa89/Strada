@@ -1,8 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.knexPaginate = void 0;
-const knex_paginate_1 = require("knex-paginate");
-function knexPaginate() {
-    const knex = (0, knex_paginate_1.attachPaginate)();
+function calculatePage(page, size) {
+    page = Number(page);
+    if (page < 0)
+        return page = 0;
+    if (page === 1)
+        return page = 0;
+    if (page > 1)
+        return page = (page * size) - size;
 }
-exports.knexPaginate = knexPaginate;
+exports.default = calculatePage;

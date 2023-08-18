@@ -1,6 +1,9 @@
-import { attachPaginate } from 'knex-paginate'
+export default function calculatePage(page: any, size: any) {
+  page = Number(page);
 
-export function knexPaginate(){
-    const knex = attachPaginate()
+  if (page < 0) return (page = 0);
+
+  if (page === 1) return (page = 0);
+
+  if (page > 1) return (page = page * size - size);
 }
-

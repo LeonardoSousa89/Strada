@@ -78,6 +78,8 @@ informationController
 informationController
   .route("/org/driver/information/get-all")
   .get(async (req, res) => {
+    const Information = { ...req.query };
+
     const informationService = new InformationService();
 
     const cache = new RedisOperations();
@@ -93,7 +95,10 @@ informationController
         });
       }
 
-      const data = await informationService.getAll();
+      const data = await informationService.getAll(
+        Information.page,
+        Information.size
+      );
 
       if (data === "no data") {
         return res.status(404).json({

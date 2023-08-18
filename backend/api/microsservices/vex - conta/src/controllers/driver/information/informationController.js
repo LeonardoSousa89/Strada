@@ -59,6 +59,7 @@ informationController
 informationController
     .route("/org/driver/information/get-all")
     .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Information = Object.assign({}, req.query);
     const informationService = new informationService_1.default();
     const cache = new redis_cache_operation_1.default();
     try {
@@ -69,7 +70,7 @@ informationController
                 data: { inCache: "yes", data },
             });
         }
-        const data = yield informationService.getAll();
+        const data = yield informationService.getAll(Information.page, Information.size);
         if (data === "no data") {
             return res.status(404).json({
                 error: data,

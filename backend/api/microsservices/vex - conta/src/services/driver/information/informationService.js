@@ -16,6 +16,7 @@ const knex_1 = __importDefault(require("../../../repositories/knex/knex"));
 const information_1 = __importDefault(require("../../../entities/driver/information/information"));
 const informationProjection_1 = require("../../../repositories/projections/informationProjection");
 const cryptography_1 = __importDefault(require("../../../config/security/cryptography"));
+const paginate_1 = __importDefault(require("../../../repositories/knex/paginate"));
 class InformationService extends information_1.default {
     //inserir o campo de midia uri
     constructor(starting_km, final_km, plate, notes, date_time_registry) {
@@ -70,11 +71,14 @@ class InformationService extends information_1.default {
                 .from("vex_schema.information");
         });
     }
-    getAll() {
+    getAll(page, size) {
         return __awaiter(this, void 0, void 0, function* () {
+            page = (0, paginate_1.default)(page, size);
             const data = yield knex_1.default
                 .select(informationProjection_1.informationProjection)
-                .from("vex_schema.information");
+                .from("vex_schema.information")
+                .offset(page)
+                .limit(size);
             if (data.length === 0)
                 return "no data";
             for (let cipherDataPosition in data) {

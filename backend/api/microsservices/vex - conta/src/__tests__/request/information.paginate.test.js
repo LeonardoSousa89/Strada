@@ -20,10 +20,6 @@ const paginate_calculate_test_1 = __importDefault(require("./paginate.calculate.
 const cryptography = new cryptography_1.default();
 function getAllInformation(page, size) {
     return __awaiter(this, void 0, void 0, function* () {
-        // page = Number(page)
-        // if(page < 0) page = 0
-        // if(page === 1) page = 0
-        // if(page > 1) page = (page * size) - size
         page = (0, paginate_calculate_test_1.default)(page, size);
         const data = yield knex_1.default
             .select(informationProjection_1.informationProjection)
