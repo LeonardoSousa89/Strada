@@ -16,7 +16,7 @@ const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const driverContact_1 = __importDefault(require("../../entities/driver/driverContact"));
 const driverProjection_1 = require("../../repositories/projections/driverProjection");
 const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
-const paginate_1 = __importDefault(require("../../repositories/knex/paginate"));
+const paginate_1 = __importDefault(require("../../repositories/paginate"));
 class DriverContactService extends driverContact_1.default {
     constructor(telephone) {
         super(telephone);

@@ -2,7 +2,7 @@ import Cryptography from "../../config/security/cryptography";
 import OrgContact from "../../entities/org/orgContact";
 import { DbOperations } from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
-import calculatePage from "../../repositories/knex/paginate";
+import calculatePage from "../../repositories/paginate";
 
 import { orgContactProjection } from "../../repositories/projections/OrgProjection";
 

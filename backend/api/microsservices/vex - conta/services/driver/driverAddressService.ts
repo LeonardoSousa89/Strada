@@ -4,7 +4,7 @@ import DriverAddress from "../../entities/driver/driverAddress";
 
 import { driverAddressProjection } from "../../repositories/projections/driverProjection";
 import Cryptography from "../../config/security/cryptography";
-import calculatePage from "../../repositories/knex/paginate";
+import calculatePage from "../../repositories/paginate";
 
 export default class DriverAddressService
   extends DriverAddress

@@ -16,7 +16,7 @@ const knex_1 = __importDefault(require("../../../repositories/knex/knex"));
 const information_1 = __importDefault(require("../../../entities/driver/information/information"));
 const informationProjection_1 = require("../../../repositories/projections/informationProjection");
 const cryptography_1 = __importDefault(require("../../../config/security/cryptography"));
-const paginate_1 = __importDefault(require("../../../repositories/knex/paginate"));
+const paginate_1 = __importDefault(require("../../../repositories/paginate"));
 class InformationService extends information_1.default {
     //inserir o campo de midia uri
     constructor(starting_km, final_km, plate, notes, date_time_registry) {

@@ -114,6 +114,7 @@ orgAddressController.route("/org/address/update/:id").put((req, res) => __awaite
     }
 }));
 orgAddressController.route("/org/address/get-all").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const OrgAddress = Object.assign({}, req.query);
     const orgAddressService = new orgAddressService_1.default();
     const cache = new redis_cache_operation_1.default();
     try {
@@ -124,7 +125,7 @@ orgAddressController.route("/org/address/get-all").get((req, res) => __awaiter(v
                 data: { inCache: "yes", data },
             });
         }
-        const data = yield orgAddressService.getAll();
+        const data = yield orgAddressService.getAll(OrgAddress.page, OrgAddress.size);
         if (data === 'no data') {
             return res.status(404).json({
                 error: data,

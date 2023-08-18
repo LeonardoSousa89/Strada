@@ -5,7 +5,7 @@ import Information from "../../../entities/driver/information/information";
 import { informationProjection } from "../../../repositories/projections/informationProjection";
 import DriverInformationRelationTableService from "../relations/driverInformationRelationTableService";
 import Cryptography from "../../../config/security/cryptography";
-import calculatePage from "../../../repositories/knex/paginate";
+import calculatePage from "../../../repositories/paginate";
 
 export default class InformationService
   extends Information

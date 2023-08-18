@@ -2,6 +2,7 @@ import Cryptography from "../../config/security/cryptography";
 import OrgAddress from "../../entities/org/orgAddress";
 import { DbOperations } from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
+import calculatePage from "../../repositories/paginate";
 
 import { orgAddressProjection } from "../../repositories/projections/OrgProjection";
 
@@ -66,10 +67,14 @@ export default class OrgAddressService
       .from("vex_schema.org_address");
   }
 
-  async getAll(size?: any, page?: any) {
+  async getAll(page?: any, size?: any) {
+    page = calculatePage(page, size);
+    
     const data = await knex
       .select(orgAddressProjection)
-      .from("vex_schema.org_address");
+      .from("vex_schema.org_address")
+      .offset(page)
+      .limit(size);
 
     if (data.length === 0) return "no data";
 

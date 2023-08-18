@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 const orgAddress_1 = __importDefault(require("../../entities/org/orgAddress"));
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
+const paginate_1 = __importDefault(require("../../repositories/paginate"));
 const OrgProjection_1 = require("../../repositories/projections/OrgProjection");
 class OrgAddressService extends orgAddress_1.default {
     constructor(zip_code, street_type, public_place, org_number, complement, neighborhood, county, country) {
@@ -47,11 +48,14 @@ class OrgAddressService extends orgAddress_1.default {
                 .from("vex_schema.org_address");
         });
     }
-    getAll(size, page) {
+    getAll(page, size) {
         return __awaiter(this, void 0, void 0, function* () {
+            page = (0, paginate_1.default)(page, size);
             const data = yield knex_1.default
                 .select(OrgProjection_1.orgAddressProjection)
-                .from("vex_schema.org_address");
+                .from("vex_schema.org_address")
+                .offset(page)
+                .limit(size);
             if (data.length === 0)
                 return "no data";
             for (let cipherDataPosition in data) {

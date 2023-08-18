@@ -220,6 +220,8 @@ orgAddressController.route("/org/address/update/:id").put(async (req, res) => {
 });
 
 orgAddressController.route("/org/address/get-all").get(async (req, res) => {
+  const OrgAddress = { ...req.query };
+
   const orgAddressService = new OrgAddressService();
 
   const cache = new RedisOperations();
@@ -235,7 +237,10 @@ orgAddressController.route("/org/address/get-all").get(async (req, res) => {
       });
     }
 
-    const data = await orgAddressService.getAll();
+    const data = await orgAddressService.getAll(
+      OrgAddress.page,
+      OrgAddress.size
+    );
 
     if (data === 'no data') {
       return res.status(404).json({

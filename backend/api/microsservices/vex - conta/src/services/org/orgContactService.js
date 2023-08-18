@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 const orgContact_1 = __importDefault(require("../../entities/org/orgContact"));
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
-const paginate_1 = __importDefault(require("../../repositories/knex/paginate"));
+const paginate_1 = __importDefault(require("../../repositories/paginate"));
 const OrgProjection_1 = require("../../repositories/projections/OrgProjection");
 class OrgContactService extends orgContact_1.default {
     constructor(telephone, ddd, email) {

@@ -4,7 +4,7 @@ import DriverContact from "../../entities/driver/driverContact";
 
 import { driverContactProjection } from "../../repositories/projections/driverProjection";
 import Cryptography from "../../config/security/cryptography";
-import calculatePage from "../../repositories/knex/paginate";
+import calculatePage from "../../repositories/paginate";
 
 export default class DriverContactService
   extends DriverContact

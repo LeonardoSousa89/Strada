@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 const org_1 = __importDefault(require("../../entities/org/org"));
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
-const paginate_1 = __importDefault(require("../../repositories/knex/paginate"));
+const paginate_1 = __importDefault(require("../../repositories/paginate"));
 const OrgProjection_1 = require("../../repositories/projections/OrgProjection");
 class OrgService extends org_1.default {
     constructor(fantasy_name, corporate_name, cnpj, org_status, cnae_main_code, open_date, password) {

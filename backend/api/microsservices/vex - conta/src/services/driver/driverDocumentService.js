@@ -16,7 +16,7 @@ const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const driverDocument_1 = __importDefault(require("../../entities/driver/driverDocument"));
 const driverProjection_1 = require("../../repositories/projections/driverProjection");
 const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
-const paginate_1 = __importDefault(require("../../repositories/knex/paginate"));
+const paginate_1 = __importDefault(require("../../repositories/paginate"));
 class DriverDocumentService extends driverDocument_1.default {
     constructor(cnh) {
         super(cnh);

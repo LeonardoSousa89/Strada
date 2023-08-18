@@ -4,7 +4,7 @@ import Driver from "../../entities/driver/driver";
 
 import { driverProjection } from "../../repositories/projections/driverProjection";
 import Cryptography from "../../config/security/cryptography";
-import calculatePage from "../../repositories/knex/paginate";
+import calculatePage from "../../repositories/paginate";
 
 export default class DriverService extends Driver implements DbOperations {
   constructor(
