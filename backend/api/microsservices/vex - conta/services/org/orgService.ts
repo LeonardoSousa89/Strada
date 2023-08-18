@@ -2,6 +2,7 @@ import Cryptography from "../../config/security/cryptography";
 import Org from "../../entities/org/org";
 import { DbOperations } from "../../interface/operations";
 import knex from "../../repositories/knex/knex";
+import calculatePage from "../../repositories/knex/paginate";
 
 import { orgProjection } from "../../repositories/projections/OrgProjection";
 
@@ -73,8 +74,14 @@ export default class OrgService extends Org implements DbOperations {
     await knex.where("org_id", id).update(this.org).from("vex_schema.org");
   }
 
-  async getAll() {
-    const data = await knex.select(orgProjection).from("vex_schema.org");
+  async getAll(page?: any, size?: any) {
+    page = calculatePage(page, size);
+
+    const data = await knex
+      .select(orgProjection)
+      .from("vex_schema.org")
+      .offset(page)
+      .limit(size);
 
     if (data.length === 0) return "no data";
 
@@ -120,9 +127,7 @@ export default class OrgService extends Org implements DbOperations {
     return data;
   }
 
-  async deleteAll() {
-    
-  }
+  async deleteAll() {}
 
   async deleteById(id?: number | string) {
     await knex.where("org_id", id).delete().from("vex_schema.org");

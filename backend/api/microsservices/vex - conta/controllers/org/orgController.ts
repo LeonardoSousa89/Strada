@@ -261,6 +261,8 @@ orgController.route("/org/update/:id").put(async (req, res) => {
 });
 
 orgController.route("/org/get-all").get(async (req, res) => {
+  const Org = { ...req.query };
+
   const orgService = new OrgService();
 
   const cache = new RedisOperations();
@@ -276,7 +278,10 @@ orgController.route("/org/get-all").get(async (req, res) => {
       });
     }
 
-    const data = await orgService.getAll();
+    const data = await orgService.getAll(
+      Org.page,
+      Org.size
+    );
 
     if (data === "no data") {
       return res.status(404).json({

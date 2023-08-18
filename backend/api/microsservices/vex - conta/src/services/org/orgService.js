@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
 const org_1 = __importDefault(require("../../entities/org/org"));
 const knex_1 = __importDefault(require("../../repositories/knex/knex"));
+const paginate_1 = __importDefault(require("../../repositories/knex/paginate"));
 const OrgProjection_1 = require("../../repositories/projections/OrgProjection");
 class OrgService extends org_1.default {
     constructor(fantasy_name, corporate_name, cnpj, org_status, cnae_main_code, open_date, password) {
@@ -56,9 +57,14 @@ class OrgService extends org_1.default {
             yield knex_1.default.where("org_id", id).update(this.org).from("vex_schema.org");
         });
     }
-    getAll() {
+    getAll(page, size) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield knex_1.default.select(OrgProjection_1.orgProjection).from("vex_schema.org");
+            page = (0, paginate_1.default)(page, size);
+            const data = yield knex_1.default
+                .select(OrgProjection_1.orgProjection)
+                .from("vex_schema.org")
+                .offset(page)
+                .limit(size);
             if (data.length === 0)
                 return "no data";
             for (let cipherDataPosition in data) {
@@ -90,8 +96,7 @@ class OrgService extends org_1.default {
         });
     }
     deleteAll() {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
+        return __awaiter(this, void 0, void 0, function* () { });
     }
     deleteById(id) {
         return __awaiter(this, void 0, void 0, function* () {

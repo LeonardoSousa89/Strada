@@ -178,6 +178,7 @@ orgController.route("/org/update/:id").put((req, res) => __awaiter(void 0, void 
     }
 }));
 orgController.route("/org/get-all").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Org = Object.assign({}, req.query);
     const orgService = new orgService_1.default();
     const cache = new redis_cache_operation_1.default();
     try {
@@ -188,7 +189,7 @@ orgController.route("/org/get-all").get((req, res) => __awaiter(void 0, void 0, 
                 data: { inCache: "yes", data },
             });
         }
-        const data = yield orgService.getAll();
+        const data = yield orgService.getAll(Org.page, Org.size);
         if (data === "no data") {
             return res.status(404).json({
                 error: data,
