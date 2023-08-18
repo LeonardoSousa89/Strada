@@ -16,6 +16,7 @@ const knex_1 = __importDefault(require("../../repositories/knex/knex"));
 const driverContact_1 = __importDefault(require("../../entities/driver/driverContact"));
 const driverProjection_1 = require("../../repositories/projections/driverProjection");
 const cryptography_1 = __importDefault(require("../../config/security/cryptography"));
+const paginate_1 = __importDefault(require("../../repositories/knex/paginate"));
 class DriverContactService extends driverContact_1.default {
     constructor(telephone) {
         super(telephone);
@@ -47,11 +48,14 @@ class DriverContactService extends driverContact_1.default {
                 .from("vex_schema.driver_contact");
         });
     }
-    getAll() {
+    getAll(page, size) {
         return __awaiter(this, void 0, void 0, function* () {
+            page = (0, paginate_1.default)(page, size);
             const data = yield knex_1.default
                 .select(driverProjection_1.driverContactProjection)
-                .from("vex_schema.driver_contact");
+                .from("vex_schema.driver_contact")
+                .offset(page)
+                .limit(size);
             if (data.length === 0)
                 return "no data";
             for (let cipherDataPosition in data) {

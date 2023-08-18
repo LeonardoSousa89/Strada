@@ -96,6 +96,8 @@ driverContactController
 driverContactController
   .route("/org/driver/contact/get-all")
   .get(async (req, res) => {
+    const DriverContact = { ...req.query };
+
     const driverContactService = new DriverContactService();
 
     const cache = new RedisOperations();
@@ -111,7 +113,10 @@ driverContactController
         });
       }
 
-      const data = await driverContactService.getAll();
+      const data = await driverContactService.getAll(
+        DriverContact.page,
+        DriverContact.size
+      );
 
       if (data === 'no data') {
         return res.status(404).json({

@@ -4,6 +4,7 @@ import DriverContact from "../../entities/driver/driverContact";
 
 import { driverContactProjection } from "../../repositories/projections/driverProjection";
 import Cryptography from "../../config/security/cryptography";
+import calculatePage from "../../repositories/knex/paginate";
 
 export default class DriverContactService
   extends DriverContact
@@ -39,10 +40,14 @@ export default class DriverContactService
       .from("vex_schema.driver_contact");
   }
 
-  async getAll() {
+  async getAll(page?: any, size?: any) {
+    page = calculatePage(page, size);
+
     const data = await knex
       .select(driverContactProjection)
-      .from("vex_schema.driver_contact");
+      .from("vex_schema.driver_contact")
+      .offset(page)
+      .limit(size);
 
     if (data.length === 0) return "no data";
 

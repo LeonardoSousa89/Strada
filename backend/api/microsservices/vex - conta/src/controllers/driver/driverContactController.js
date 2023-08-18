@@ -77,6 +77,7 @@ driverContactController
 driverContactController
     .route("/org/driver/contact/get-all")
     .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const DriverContact = Object.assign({}, req.query);
     const driverContactService = new driverContactService_1.default();
     const cache = new redis_cache_operation_1.default();
     try {
@@ -87,7 +88,7 @@ driverContactController
                 data: { inCache: "yes", data },
             });
         }
-        const data = yield driverContactService.getAll();
+        const data = yield driverContactService.getAll(DriverContact.page, DriverContact.size);
         if (data === 'no data') {
             return res.status(404).json({
                 error: data,
