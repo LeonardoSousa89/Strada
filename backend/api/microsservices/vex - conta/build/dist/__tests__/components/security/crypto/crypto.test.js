@@ -28,7 +28,7 @@ describe("expect cypher data args", function () {
         const data = {
             first_name: "Alberto",
             last_name: "Botelho",
-            email: "botelho9@outlook.com",
+            email: "botelho2@outlook.com",
             password: "logistica2023",
         };
         expect((0, crypto_1.cipherDriverDataAndSave)(data)).not.toBeNull();

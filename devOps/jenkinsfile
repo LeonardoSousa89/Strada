@@ -18,10 +18,12 @@
         
         stage('commit') {
             steps {
-               bat 'cd C:/Users/User/Desktop/dev/Vex && git add . && git commit -m "@v1.2.8 - testando a esteira de pipeline do jenkins" && git push'
+               bat 'cd C:/Users/User/Desktop/dev/Vex && git add . && git commit -m "@v1.2.9 - alteração no arquivo .sql" && git push'
+            //    bat 'cd C:\Users\User\Desktop\dev\Vex\devOps\.github\git.bat'
             }
         }
 
     }
        
-}   
+}
+ 

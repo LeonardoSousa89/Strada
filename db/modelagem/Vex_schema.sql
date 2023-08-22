@@ -282,3 +282,6 @@ DELETE FROM vex_schema.driver_contact_relation_table;
 DELETE FROM vex_schema.driver_information_relation_table;
 
 DELETE FROM vex_schema.information;
+
+delete from vex_schema.org where org_id > 176;
+delete from vex_schema.driver where driver_id > 89;
