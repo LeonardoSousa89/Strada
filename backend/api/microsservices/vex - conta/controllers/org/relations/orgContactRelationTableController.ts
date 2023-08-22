@@ -99,4 +99,77 @@ orgContactRelationTableController
     }
   });
 
+orgContactRelationTableController
+  .route("/org/contact/relation-table/get/by/id/:id")
+  .get(async (req, res) => {
+    const Org = { ...req.params };
+
+    const orgContactRelationTableService = new OrgContactRelationTableService();
+
+    try {
+      const data = await orgContactRelationTableService.getById(Org.id);
+
+      if (data.length === 0)
+        return res.status(404).json({
+          error: "no data relationship founded by id sended",
+        });
+
+      return res.status(200).json(data);
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
+
+orgContactRelationTableController
+  .route("/org/contact/relation-table/delete/all")
+  .delete(async (req, res) => {
+    const orgContactRelationTableService = new OrgContactRelationTableService();
+
+    try {
+      const orgContactRelationExistsOrNotExists =
+        await orgContactRelationTableService.getAll();
+
+      if (orgContactRelationExistsOrNotExists.length === 0)
+        return res.status(404).json({
+          error: "no data relationship",
+        });
+
+      await orgContactRelationTableService.deleteAll();
+
+      return res.status(204).json();
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
+
+orgContactRelationTableController
+  .route("/org/contact/relation-table/delete/by/id/:id")
+  .delete(async (req, res) => {
+    const Driver = { ...req.params };
+
+    const orgContactRelationTableService = new OrgContactRelationTableService();
+
+    try {
+      const orgContactRelationExistsOrNotExists =
+        await orgContactRelationTableService.verifyId(Number(Driver.id));
+
+      if (orgContactRelationExistsOrNotExists === false)
+        return res.status(404).json({
+          error: "no data relationship founded by id sended",
+        });
+
+      await orgContactRelationTableService.deleteById(Driver.id);
+
+      return res.status(204).json();
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
+
 export { orgContactRelationTableController };

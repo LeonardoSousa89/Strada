@@ -17,6 +17,17 @@ export default class OrgDriverRelationTableService
     this.org_relation_id
   );
 
+  async verifyId(id: number) {
+    const existsOrNotExistsId = await knex
+      .where("org_driver_relation_table_id", id)
+      .from("vex_schema.org_driver_relation_table")
+      .first();
+
+    if (existsOrNotExistsId) return true;
+
+    if (!existsOrNotExistsId) return false;
+  }
+
   async verifyRelationshipExists(driver_relation_id: number) {
     const existsOrNotExistsId = await knex
       .where("driver_relation_id", driver_relation_id)
@@ -44,9 +55,23 @@ export default class OrgDriverRelationTableService
     return data;
   }
 
-  async getById() {}
+  async getById(id?: string | number) {
+    const data = await knex
+      .where("org_driver_relation_table_id", id)
+      .select(joinOrgAndDriverRelationProjection)
+      .from("vex_schema.org_driver_relation_table");
 
-  async deleteAll() {}
+    return data;
+  }
 
-  async deleteById() {}
+  async deleteAll() {
+    await knex.delete().from("vex_schema.org_driver_relation_table");
+  }
+
+  async deleteById(id?: string | number) {
+    await knex
+      .where("org_driver_relation_table_id", id)
+      .delete()
+      .from("vex_schema.org_driver_relation_table");
+  }
 }

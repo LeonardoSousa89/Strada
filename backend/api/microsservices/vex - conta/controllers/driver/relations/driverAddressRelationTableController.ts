@@ -122,4 +122,77 @@ driverAddressRelationTableController
     }
   });
 
+driverAddressRelationTableController
+  .route("/org/driver/address/relation-table/get/by/id/:id")
+  .get(async (req, res) => {
+    const Driver = { ...req.params };
+
+    const driverAndAddressRelation = new DriverAddressRelationTableService();
+
+    try {
+      const data = await driverAndAddressRelation.getById(Driver.id);
+
+      if (data.length === 0)
+        return res.status(404).json({
+          error: "no data relationship founded by id sended",
+        });
+
+      return res.status(200).json(data);
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
+
+driverAddressRelationTableController
+  .route("/org/driver/address/relation-table/delete/all")
+  .delete(async (req, res) => {
+    const driverAndAddressRelation = new DriverAddressRelationTableService();
+
+    try {
+      const driverAddressRelationExistsOrNotExists =
+        await driverAndAddressRelation.getAll();
+
+      if (driverAddressRelationExistsOrNotExists.length === 0)
+        return res.status(404).json({
+          error: "no data relationship",
+        });
+
+      await driverAndAddressRelation.deleteAll();
+
+      return res.status(204).json();
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
+
+driverAddressRelationTableController
+  .route("/org/driver/address/relation-table/delete/by/id/:id")
+  .delete(async (req, res) => {
+    const Driver = { ...req.params };
+
+    const driverAndAddressRelation = new DriverAddressRelationTableService();
+
+    try {
+      const driverAddressRelationExistsOrNotExists =
+        await driverAndAddressRelation.verifyId(Number(Driver.id));
+
+      if (driverAddressRelationExistsOrNotExists === false)
+        return res.status(404).json({
+          error: "no data relationship founded by id sended",
+        });
+
+      await driverAndAddressRelation.deleteById(Driver.id);
+
+      return res.status(204).json();
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
+
 export { driverAddressRelationTableController };

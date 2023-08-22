@@ -99,4 +99,79 @@ orgAddressRelationTableController
     }
   });
 
+orgAddressRelationTableController
+  .route("/org/address/relation-table/get/by/id/:id")
+  .get(async (req, res) => {
+    const Org = { ...req.params };
+
+    const orgAddressRelationTableService = new OrgAddressRelationTableService();
+
+    try {
+      const data = await orgAddressRelationTableService.getById(Org.id);
+
+      if (data.length === 0)
+        return res.status(404).json({
+          error: "no data relationship founded by id sended",
+        });
+
+      return res.status(200).json(data);
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
+
+orgAddressRelationTableController
+  .route("/org/address/relation-table/delete/all")
+  .delete(async (req, res) => {
+    const orgAddressRelationTableService = new OrgAddressRelationTableService();
+
+    try {
+      const orgAddressRelationExistsOrNotExists =
+        await orgAddressRelationTableService.getAll();
+
+      if (orgAddressRelationExistsOrNotExists.length === 0)
+        return res.status(404).json({
+          error: "no data relationship",
+        });
+
+      await orgAddressRelationTableService.deleteAll();
+
+      return res.status(204).json();
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
+
+orgAddressRelationTableController
+  .route("/org/address/relation-table/delete/by/id/:id")
+  .delete(async (req, res) => {
+    const Driver = { ...req.params };
+
+    const orgAddressRelationTableService = new OrgAddressRelationTableService();
+
+    try {
+      const orgAddressRelationExistsOrNotExists =
+        await orgAddressRelationTableService.verifyId(
+          Number(Driver.id)
+        );
+
+      if (orgAddressRelationExistsOrNotExists === false)
+        return res.status(404).json({
+          error: "no data relationship founded by id sended",
+        });
+
+      await orgAddressRelationTableService.deleteById(Driver.id);
+
+      return res.status(204).json();
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
+
 export { orgAddressRelationTableController };

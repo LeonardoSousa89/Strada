@@ -17,6 +17,17 @@ export default class OrgAddressRelationTableService
     this.org_relation_id
   );
 
+  async verifyId(id: number) {
+    const existsOrNotExistsId = await knex
+      .where("org_address_relation_table_id", id)
+      .from("vex_schema.org_address_relation_table")
+      .first();
+
+    if (existsOrNotExistsId) return true;
+
+    if (!existsOrNotExistsId) return false;
+  }
+
   async verifyRelationshipExists(org_address_relation_id: number) {
     const existsOrNotExistsId = await knex
       .where("org_address_relation_id", org_address_relation_id)
@@ -44,9 +55,23 @@ export default class OrgAddressRelationTableService
     return data;
   }
 
-  getById(id?: string | number) {}
+  async getById(id?: string | number) {
+    const data = await knex
+      .where("org_address_relation_table_id", id)
+      .select(joinOrgAndAddressRelationProjection)
+      .from("vex_schema.org_address_relation_table");
 
-  deleteAll(): void {}
+    return data;
+  }
 
-  deleteById(id?: string | number): void {}
+  async deleteAll() {
+    await knex.delete().from("vex_schema.org_address_relation_table");
+  }
+
+  async deleteById(id?: string | number) {
+    await knex
+      .where("org_address_relation_table_id", id)
+      .delete()
+      .from("vex_schema.org_address_relation_table");
+  }
 }

@@ -22,6 +22,17 @@ export default class DriverInformationRelationTableService
     this.org_relation_id
   );
 
+  async verifyId(id: number) {
+    const existsOrNotExistsId = await knex
+      .where("driver_information_relation_table_id", id)
+      .from("vex_schema.driver_information_relation_table")
+      .first();
+
+    if (existsOrNotExistsId) return true;
+
+    if (!existsOrNotExistsId) return false;
+  }
+
   async verifyRelationshipExists(information_relation_id: number) {
     const existsOrNotExistsId = await knex
       .where("information_relation_id", information_relation_id)
@@ -39,7 +50,7 @@ export default class DriverInformationRelationTableService
       .from("vex_schema.driver_information_relation_table");
   }
 
-  update(id?: string | number): void {}
+  update(id?: string | number) {}
 
   async getAll(size?: any, page?: any) {
     const data = await knex
@@ -49,9 +60,23 @@ export default class DriverInformationRelationTableService
     return data;
   }
 
-  getById(id?: string | number) {}
+  async getById(id?: string | number) {
+    const data = await knex
+      .where("driver_information_relation_table_id", id)
+      .select(joinDriverAndInformationRelationProjection)
+      .from("vex_schema.driver_information_relation_table");
 
-  deleteAll(): void {}
+    return data;
+  }
 
-  deleteById(id?: string | number): void {}
+  async deleteAll() {
+    await knex.delete().from("vex_schema.driver_information_relation_table");
+  }
+
+  async deleteById(id?: string | number) {
+    await knex
+      .where("driver_information_relation_table_id", id)
+      .delete()
+      .from("vex_schema.driver_information_relation_table");
+  }
 }

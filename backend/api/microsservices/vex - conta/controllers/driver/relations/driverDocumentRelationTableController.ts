@@ -122,4 +122,77 @@ driverDocumentRelationTableController
     }
   });
 
+driverDocumentRelationTableController
+  .route("/org/driver/document/relation-table/get/by/id/:id")
+  .get(async (req, res) => {
+    const Driver = { ...req.params };
+
+    const driverAndDocumentRelation = new DriverDocumentRelationTableService();
+
+    try {
+      const data = await driverAndDocumentRelation.getById(Driver.id);
+
+      if (data.length === 0)
+        return res.status(404).json({
+          error: "no data relationship founded by id sended",
+        });
+
+      return res.status(200).json(data);
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
+
+driverDocumentRelationTableController
+  .route("/org/driver/document/relation-table/delete/all")
+  .delete(async (req, res) => {
+    const driverAndDocumentRelation = new DriverDocumentRelationTableService();
+
+    try {
+      const driverDocumentRelationExistsOrNotExists =
+        await driverAndDocumentRelation.getAll();
+
+      if (driverDocumentRelationExistsOrNotExists.length === 0)
+        return res.status(404).json({
+          error: "no data relationship",
+        });
+
+      await driverAndDocumentRelation.deleteAll();
+
+      return res.status(204).json();
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
+
+driverDocumentRelationTableController
+  .route("/org/driver/document/relation-table/delete/by/id/:id")
+  .delete(async (req, res) => {
+    const Driver = { ...req.params };
+
+    const driverAndDocumentRelation = new DriverDocumentRelationTableService();
+
+    try {
+      const driverDocumentRelationExistsOrNotExists =
+        await driverAndDocumentRelation.verifyId(Number(Driver.id));
+
+      if (driverDocumentRelationExistsOrNotExists === false)
+        return res.status(404).json({
+          error: "no data relationship founded by id sended",
+        });
+
+      await driverAndDocumentRelation.deleteById(Driver.id);
+
+      return res.status(204).json();
+    } catch (__) {
+      return res.status(500).json({
+        error: "i am sorry, there is an error with server",
+      });
+    }
+  });
+
 export { driverDocumentRelationTableController };

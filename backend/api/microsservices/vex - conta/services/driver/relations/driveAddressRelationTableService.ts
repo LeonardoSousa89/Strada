@@ -22,6 +22,17 @@ export default class DriverAddressRelationTableService
     this.org_relation_id
   );
 
+  async verifyId(id: number) {
+    const existsOrNotExistsId = await knex
+      .where("driver_address_relation_table_id", id)
+      .from("vex_schema.driver_address_relation_table")
+      .first();
+
+    if (existsOrNotExistsId) return true;
+
+    if (!existsOrNotExistsId) return false;
+  }
+
   async verifyRelationshipExists(driver_address_relation_id: number) {
     const existsOrNotExistsId = await knex
       .where("driver_address_relation_id", driver_address_relation_id)
@@ -49,9 +60,23 @@ export default class DriverAddressRelationTableService
     return data;
   }
 
-  getById(id?: string | number) {}
+  async getById(id?: string | number) {
+    const data = await knex
+      .where("driver_address_relation_table_id", id)
+      .select(joinDriverAndAddressRelationProjection)
+      .from("vex_schema.driver_address_relation_table");
 
-  deleteAll(): void {}
+    return data;
+  }
 
-  deleteById(id?: string | number): void {}
+  async deleteAll() {
+    await knex.delete().from("vex_schema.driver_address_relation_table");
+  }
+
+  async deleteById(id?: string | number) {
+    await knex
+      .where("driver_address_relation_table_id", id)
+      .delete()
+      .from("vex_schema.driver_address_relation_table");
+  }
 }

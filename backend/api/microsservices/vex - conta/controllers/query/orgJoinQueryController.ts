@@ -31,7 +31,7 @@ OrgJoinQueryController.route("/org/join/data").get(async (req, res) => {
 
     const data = await orgJoinQueryService.getById(Number(Org.org_id));
 
-    if (data.data.organization.length === 0) {
+    if (data.data.organization.organization.length === 0) {
       return res.status(404).json({
         error: "organization not found",
       });

@@ -1,0 +1,28 @@
+ pipeline {
+    agent any 
+
+   
+    stages {
+        // development
+        stage('build') {
+            steps {
+               bat 'cd C:/Users/User/Desktop/dev/Vex/backend/api/microsservices/vex - conta && npm run tsc'
+            }
+        }
+        
+        stage('tests') {
+            steps {
+               bat 'cd C:/Users/User/Desktop/dev/Vex/backend/api/microsservices/vex - conta && npm test'
+            }
+        }
+        
+        stage('commit') {
+            steps {
+               bat 'start C:\Users\User\Desktop\dev\Vex\devOps\.github\git.bat'
+            }
+        }
+
+    }
+       
+}
+ 

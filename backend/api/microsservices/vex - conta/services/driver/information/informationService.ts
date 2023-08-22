@@ -53,22 +53,6 @@ export default class InformationService
     if (starting_km === "" && final_km === null) return false;
   }
 
-  getTime() {
-    const southAmericaTimeZone = new Date();
-
-    const date = new Intl.DateTimeFormat("pt-BR", {
-      timeZone: "America/Sao_Paulo",
-      dateStyle: "long",
-    }).format(southAmericaTimeZone);
-
-    const time = new Intl.DateTimeFormat("pt-BR", {
-      timeZone: "America/Sao_Paulo",
-      timeStyle: "short",
-    }).format(southAmericaTimeZone);
-
-    return `${date}, ${time}`;
-  }
-
   async save() {
     await knex.insert(this.information).from("vex_schema.information");
   }
@@ -104,6 +88,9 @@ export default class InformationService
       data[cipherDataPosition].notes = this.cryptography.decrypt(
         data[cipherDataPosition].notes
       );
+      data[cipherDataPosition].date_time_registry = this.cryptography.decrypt(
+        data[cipherDataPosition].date_time_registry
+      );
     }
 
     return data;
@@ -121,6 +108,7 @@ export default class InformationService
     data[0].final_km = this.cryptography.decrypt(data[0].final_km);
     data[0].plate = this.cryptography.decrypt(data[0].plate);
     data[0].notes = this.cryptography.decrypt(data[0].notes);
+    data[0].date_time_registry = this.cryptography.decrypt(data[0].date_time_registry);
 
     return data;
   }

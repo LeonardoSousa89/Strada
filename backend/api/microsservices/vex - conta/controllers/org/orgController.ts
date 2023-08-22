@@ -7,6 +7,7 @@ import * as dotenv from "dotenv";
 
 import RedisOperations from "../../repositories/redis/cache/services/redis.cache.operation";
 import Cryptography from "../../config/security/cryptography";
+import Time from "../../config/tools/time";
 
 dotenv.config();
 
@@ -68,6 +69,14 @@ orgController.route("/org/save").post(async (req, res) => {
       Org.password,
       "password is undefined or null"
     );
+    err.exceptionFieldNullOrUndefined(
+      Org.cnae_main_description,
+      "cnae main description is undefined or null"
+    );
+    err.exceptionFieldNullOrUndefined(
+      Org.sector,
+      "sector is undefined or null"
+    );
 
     err.exceptionFieldIsEmpty(
       Org.fantasy_name.trim(),
@@ -95,6 +104,15 @@ orgController.route("/org/save").post(async (req, res) => {
     err.exceptionFieldValueLessToType(
       Org.password.trim(),
       "password must be greather than 4"
+    );
+
+    err.exceptionFieldIsEmpty(
+      Org.cnae_main_description.trim(),
+      "cnae main description can not be empty"
+    );
+    err.exceptionFieldIsEmpty(
+      Org.sector.trim(),
+      "sector can not be empty"
     );
   } catch (e) {
     return res.status(400).json({ error: e });
@@ -135,6 +153,13 @@ orgController.route("/org/save").post(async (req, res) => {
     Org.open_date = cryptography.encrypt(Org.open_date);
 
     Org.password = cryptography.hash(Org.password);
+    
+    Org.cnae_main_description = cryptography.encrypt(Org.cnae_main_description);
+    Org.sector = cryptography.encrypt(Org.sector);
+
+    const moment = new Time().getTime()
+    
+    Org.created_at = cryptography.encrypt(moment)
 
     const orgService = new OrgService(
       Org.fantasy_name,
@@ -143,7 +168,10 @@ orgController.route("/org/save").post(async (req, res) => {
       Org.org_status,
       Org.cnae_main_code,
       Org.open_date,
-      Org.password
+      Org.password,
+      Org.cnae_main_description,
+      Org.sector,
+      Org.created_at
     );
 
     await orgService.save();
@@ -187,6 +215,14 @@ orgController.route("/org/update/:id").put(async (req, res) => {
       Org.password,
       "password is undefined or null"
     );
+    err.exceptionFieldNullOrUndefined(
+      Org.cnae_main_description,
+      "cnae main description is undefined or null"
+    );
+    err.exceptionFieldNullOrUndefined(
+      Org.sector,
+      "sector is undefined or null"
+    );
 
     err.exceptionFieldIsEmpty(
       Org.fantasy_name.trim(),
@@ -209,11 +245,21 @@ orgController.route("/org/update/:id").put(async (req, res) => {
       Org.open_date.trim(),
       "open date can not be empty"
     );
-    err.exceptionFieldIsEmpty(Org.password.trim(), "password can not be empty");
-
+    err.exceptionFieldIsEmpty(
+      Org.password.trim(), 
+      "password can not be empty"
+    );
     err.exceptionFieldValueLessToType(
       Org.password.trim(),
       "password must be greather than 4"
+    );
+    err.exceptionFieldIsEmpty(
+      Org.cnae_main_description.trim(),
+      "cnae main description can not be empty"
+    );
+    err.exceptionFieldIsEmpty(
+      Org.sector.trim(),
+      "sector can not be empty"
     );
   } catch (e) {
     return res.status(400).json({ error: e });
@@ -238,6 +284,9 @@ orgController.route("/org/update/:id").put(async (req, res) => {
 
     Org.password = cryptography.hash(Org.password);
 
+    Org.cnae_main_description = cryptography.encrypt(Org.cnae_main_description);
+    Org.sector = cryptography.encrypt(Org.sector);
+
     const orgService = new OrgService(
       Org.fantasy_name,
       Org.corporate_name,
@@ -245,7 +294,9 @@ orgController.route("/org/update/:id").put(async (req, res) => {
       Org.org_status,
       Org.cnae_main_code,
       Org.open_date,
-      Org.password
+      Org.password,
+      Org.cnae_main_description,
+      Org.sector
     );
 
     await orgService.update(req.params.id);

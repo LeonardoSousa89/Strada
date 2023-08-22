@@ -6,6 +6,9 @@ export default class Org {
   cnae_main_code?: string;
   open_date?: string;
   password?: string;
+  cnae_main_description?: string;
+  sector?: string;
+  created_at?: string;
 
   public constructor(
     fantasy_name?: string,
@@ -14,7 +17,11 @@ export default class Org {
     org_status?: string,
     cnae_main_code?: string,
     open_date?: string,
-    password?: string
+    password?: string,
+    cnae_main_description?: string,
+    sector?: string,
+    created_at?: string
+
   ) {
     this.fantasy_name = fantasy_name;
     this.corporate_name = corporate_name;
@@ -23,5 +30,8 @@ export default class Org {
     this.cnae_main_code = cnae_main_code;
     this.open_date = open_date;
     this.password = password;
+    this.cnae_main_description = cnae_main_description;
+    this.sector = sector;
+    this.created_at = created_at;
   }
 }

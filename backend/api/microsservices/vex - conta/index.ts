@@ -3,6 +3,8 @@ var port = [8765, 80, 8080, 8181];
 import morgan from "morgan";
 import express from "express";
 
+import { orgTestsController } from "./mock/server/testsController";
+
 import { orgController } from "./controllers/org/orgController";
 import { OrgJoinQueryController } from "./controllers/query/orgJoinQueryController";
 import { orgAddressController } from "./controllers/org/orgAddressController";
@@ -19,7 +21,8 @@ import { driverAddressRelationTableController } from "./controllers/driver/relat
 import { driverContactRelationTableController } from "./controllers/driver/relations/driverContactRelationTableController";
 import { driverDocumentRelationTableController } from "./controllers/driver/relations/driverDocumentRelationTableController";
 import { driverInformationRelationTableController } from "./controllers/driver/relations/driverInformationRelationTableController";
-import { orgTestsController } from "./__tests__/functions/server/testsController";
+import { orgIpDataProviderController } from "./controllers/org/orgIpDataProviderController";
+import { orgAndOrgIpDataProviderRelationTableController } from "./controllers/org/relations/orgAndOrgIpDataProviderRelationTableController";
 
 import RedisOperations from "./repositories/redis/cache/services/redis.cache.operation";
 
@@ -35,8 +38,10 @@ app.use("/", [
   OrgJoinQueryController,
   orgAddressController,
   orgContactController,
+  orgIpDataProviderController,
   orgAddressRelationTableController,
   orgContactRelationTableController,
+  orgAndOrgIpDataProviderRelationTableController,
   orgDriverRelationTableController,
   driverController,
   driverAddressController,

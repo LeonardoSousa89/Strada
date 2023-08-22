@@ -4,6 +4,7 @@ import HandleError from "../../../interface/error/handleError";
 import InformationService from "../../../services/driver/information/informationService";
 import RedisOperations from "../../../repositories/redis/cache/services/redis.cache.operation";
 import Cryptography from "../../../config/security/cryptography";
+import Time from "../../../config/tools/time";
 
 const informationController = express.Router();
 
@@ -55,7 +56,9 @@ informationController
       Information.plate = cryptography.encrypt(Information.plate);
       Information.notes = cryptography.encrypt(Information.notes);
 
-      const date_time_registry = new InformationService().getTime();
+      let date_time_registry = new Time().getTime();
+
+      date_time_registry = cryptography.encrypt(date_time_registry);
 
       const informationService = new InformationService(
         Information.starting_km,

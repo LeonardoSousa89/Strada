@@ -14,7 +14,10 @@ export default class OrgService extends Org implements DbOperations {
     org_status?: string,
     cnae_main_code?: string,
     open_date?: string,
-    password?: string
+    password?: string,
+    cnae_main_description?: string,
+    sector?: string,
+    created_at?: string
   ) {
     super(
       fantasy_name,
@@ -23,7 +26,10 @@ export default class OrgService extends Org implements DbOperations {
       org_status,
       cnae_main_code,
       open_date,
-      password
+      password,
+      cnae_main_description,
+      sector,
+      created_at
     );
   }
 
@@ -34,7 +40,10 @@ export default class OrgService extends Org implements DbOperations {
     this.org_status,
     this.cnae_main_code,
     this.open_date,
-    this.password
+    this.password,
+    this.cnae_main_description,
+    this.sector,
+    this.created_at
   );
 
   cryptography = new Cryptography();
@@ -104,6 +113,15 @@ export default class OrgService extends Org implements DbOperations {
       data[cipherDataPosition].open_date = this.cryptography.decrypt(
         data[cipherDataPosition].open_date
       );
+      data[cipherDataPosition].cnae_main_description = this.cryptography.decrypt(
+        data[cipherDataPosition].cnae_main_description
+      );
+      data[cipherDataPosition].sector = this.cryptography.decrypt(
+        data[cipherDataPosition].sector
+      );
+      data[cipherDataPosition].account_created_at = this.cryptography.decrypt(
+        data[cipherDataPosition].account_created_at
+      );
     }
 
     return data;
@@ -123,6 +141,9 @@ export default class OrgService extends Org implements DbOperations {
     data[0].org_status = this.cryptography.decrypt(data[0].org_status);
     data[0].cnae_main_code = this.cryptography.decrypt(data[0].cnae_main_code);
     data[0].open_date = this.cryptography.decrypt(data[0].open_date);
+    data[0].cnae_main_description = this.cryptography.decrypt(data[0].cnae_main_description);
+    data[0].sector = this.cryptography.decrypt(data[0].sector);
+    data[0].account_created_at = this.cryptography.decrypt(data[0].account_created_at);
 
     return data;
   }

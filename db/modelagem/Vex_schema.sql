@@ -41,6 +41,20 @@ CREATE TABLE IF NOT EXISTS vex_schema.org_contact (
     email VARCHAR(250)
 );
 
+CREATE TABLE IF NOT EXISTS vex_schema.org_ip_data_provider (
+    org_ip_data_provider_id SERIAL PRIMARY KEY,
+    ip VARCHAR(250),
+    hostname VARCHAR(250),
+    city VARCHAR(250),
+    region VARCHAR(250),
+    country VARCHAR(250),
+    loc VARCHAR(250),
+    org VARCHAR(250),
+    postal VARCHAR(250),
+    timezone VARCHAR(250),
+    readme VARCHAR(250)
+);
+
 CREATE TABLE IF NOT EXISTS vex_schema.org_address_relation_table (
     org_address_relation_id INT,
     org_relation_id INT,
@@ -52,6 +66,13 @@ CREATE TABLE IF NOT EXISTS vex_schema.org_contact_relation_table (
     org_contact_relation_id INT,
     org_relation_id INT,
     FOREIGN KEY(org_contact_relation_id) REFERENCES vex_schema.org_contact (org_contact_id),
+    FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
+);
+
+CREATE TABLE IF NOT EXISTS vex_schema.org_ip_data_provider_relation_table (
+    org_ip_data_provider_relation_id INT,
+    org_relation_id INT,
+    FOREIGN KEY(org_ip_data_provider_relation_id) REFERENCES vex_schema.org_ip_data_provider (org_ip_data_provider_id),
     FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
 );
 
@@ -134,6 +155,30 @@ CREATE TABLE IF NOT EXISTS vex_schema.driver_information_relation_table (
     FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
 ); 
 
+/* a fazer */
+CREATE TABLE IF NOT EXISTS vex_schema.role (
+    role_id SERIAL PRIMARY KEY,
+    role VARCHAR(250)
+);
+
+CREATE TABLE IF NOT EXISTS vex_schema.org_role_relation_table (
+    org_role_relation_table_id SERIAL,		
+    role_relation_id INT,
+    org_relation_id INT,
+    FOREIGN KEY(role_relation_id) REFERENCES vex_schema.role (role_id),
+    FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
+); 
+
+CREATE TABLE IF NOT EXISTS vex_schema.driver_role_relation_table (
+    driver_role_relation_table_id SERIAL,
+    driver_relation_id INT,
+    role_relation_id INT,
+    org_relation_id INT,
+    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id),
+    FOREIGN KEY(role_relation_id) REFERENCES vex_schema.role (role_id),
+    FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
+); 
+/* a fazer */
 
 ALTER TABLE vex_schema.information ADD COLUMN date_time_registry VARCHAR(250);
 
@@ -146,10 +191,21 @@ ALTER TABLE vex_schema.driver_document_relation_table    ADD COLUMN driver_docum
 ALTER TABLE vex_schema.driver_contact_relation_table     ADD COLUMN driver_contact_relation_table_id SERIAL;
 ALTER TABLE vex_schema.driver_information_relation_table ADD COLUMN driver_information_relation_table_id SERIAL;
 
+ALTER TABLE vex_schema.org_ip_data_provider_relation_table ADD COLUMN org_ip_data_provider_relation_table_id SERIAL;
+
+ALTER TABLE vex_schema.org ADD COLUMN public_ip_client_data VARCHAR(250);
+ALTER TABLE vex_schema.org ADD COLUMN cnae_main_description VARCHAR(250);
+ALTER TABLE vex_schema.org ADD COLUMN sector VARCHAR(250);
+
+ALTER TABLE vex_schema.org DROP COLUMN create_at;
+
+ALTER TABLE vex_schema.org ADD COLUMN created_at VARCHAR(250);
+ALTER TABLE vex_schema.org DROP COLUMN public_ip_client_data;
 
 DROP TABLE vex_schema.org;
 DROP TABLE vex_schema.org_address;
 DROP TABLE vex_schema.org_contact;
+DROP TABLE vex_schema.org_ip_data_provider;
 DROP TABLE vex_schema.org_address_relation_table;
 DROP TABLE vex_schema.org_contact_relation_table;
 DROP TABLE vex_schema.org_driver_relation_table;
@@ -165,12 +221,13 @@ DROP TABLE vex_schema.driver_information_relation_table;
 
 DROP TABLE vex_schema.information;
 
-
 SELECT * FROM vex_schema.org;
 SELECT * FROM vex_schema.org_address;
 SELECT * FROM vex_schema.org_contact;
+SELECT * FROM vex_schema.org_ip_data_provider;
 SELECT * FROM vex_schema.org_address_relation_table;
 SELECT * FROM vex_schema.org_contact_relation_table;
+SELECT * FROM vex_schema.org_ip_data_provider_relation_table;
 SELECT * FROM vex_schema.org_driver_relation_table;
 
 SELECT * FROM vex_schema.driver;
@@ -210,6 +267,7 @@ WHERE org.org_id = 37;
 DELETE FROM vex_schema.org;
 DELETE FROM vex_schema.org_address;
 DELETE FROM vex_schema.org_contact;
+DELETE FROM vex_schema.org_ip_data_provider;
 DELETE FROM vex_schema.org_address_relation_table;
 DELETE FROM vex_schema.org_contact_relation_table;
 DELETE FROM vex_schema.org_driver_relation_table;

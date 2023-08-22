@@ -4,6 +4,7 @@ import {
   orgProjection,
   orgAddressProjection,
   orgContactProjection,
+  orgIpDataProviderProjection,
 } from "../../repositories/projections/OrgProjection";
 
 import { driverProjection } from "../../repositories/projections/driverProjection";
@@ -35,27 +36,40 @@ export default class OrgJoinQuery implements DbOperations {
       .from("vex_schema.org")
       .where("org.org_id", org_id);
 
-    if(organization.length !== 0){
-
+    if (organization.length !== 0) {
       for (let cipherDataPosition in organization) {
-        organization[cipherDataPosition].fantasy_name = this.cryptography.decrypt(
-          organization[cipherDataPosition].fantasy_name
-        );
-        organization[cipherDataPosition].corporate_name = this.cryptography.decrypt(
-          organization[cipherDataPosition].corporate_name
-        );
+        organization[cipherDataPosition].fantasy_name =
+          this.cryptography.decrypt(
+            organization[cipherDataPosition].fantasy_name
+          );
+        organization[cipherDataPosition].corporate_name =
+          this.cryptography.decrypt(
+            organization[cipherDataPosition].corporate_name
+          );
         organization[cipherDataPosition].cnpj = this.cryptography.decrypt(
           organization[cipherDataPosition].cnpj
         );
         organization[cipherDataPosition].org_status = this.cryptography.decrypt(
           organization[cipherDataPosition].org_status
         );
-        organization[cipherDataPosition].cnae_main_code = this.cryptography.decrypt(
-          organization[cipherDataPosition].cnae_main_code
-        );
+        organization[cipherDataPosition].cnae_main_code =
+          this.cryptography.decrypt(
+            organization[cipherDataPosition].cnae_main_code
+          );
         organization[cipherDataPosition].open_date = this.cryptography.decrypt(
           organization[cipherDataPosition].open_date
         );
+        organization[cipherDataPosition].cnae_main_description =
+          this.cryptography.decrypt(
+            organization[cipherDataPosition].cnae_main_description
+          );
+        organization[cipherDataPosition].sector = this.cryptography.decrypt(
+          organization[cipherDataPosition].sector
+        );
+        organization[cipherDataPosition].account_created_at =
+          this.cryptography.decrypt(
+            organization[cipherDataPosition].account_created_at
+          );
       }
     }
 
@@ -73,27 +87,32 @@ export default class OrgJoinQuery implements DbOperations {
         "org_address.org_address_id"
       )
       .where("org.org_id", org_id);
-    
-    if(orgAndAddress.length !== 0) {
+
+    if (orgAndAddress.length !== 0) {
       for (let cipherDataPosition in orgAndAddress) {
         orgAndAddress[cipherDataPosition].zip_code = this.cryptography.decrypt(
           orgAndAddress[cipherDataPosition].zip_code
         );
-        orgAndAddress[cipherDataPosition].street_type = this.cryptography.decrypt(
-          orgAndAddress[cipherDataPosition].street_type
-        );
-        orgAndAddress[cipherDataPosition].public_place = this.cryptography.decrypt(
-          orgAndAddress[cipherDataPosition].public_place
-        );
-        orgAndAddress[cipherDataPosition].org_number = this.cryptography.decrypt(
-          orgAndAddress[cipherDataPosition].org_number
-        );
-        orgAndAddress[cipherDataPosition].complement = this.cryptography.decrypt(
-          orgAndAddress[cipherDataPosition].complement
-        );
-        orgAndAddress[cipherDataPosition].neighborhood = this.cryptography.decrypt(
-          orgAndAddress[cipherDataPosition].neighborhood
-        );
+        orgAndAddress[cipherDataPosition].street_type =
+          this.cryptography.decrypt(
+            orgAndAddress[cipherDataPosition].street_type
+          );
+        orgAndAddress[cipherDataPosition].public_place =
+          this.cryptography.decrypt(
+            orgAndAddress[cipherDataPosition].public_place
+          );
+        orgAndAddress[cipherDataPosition].org_number =
+          this.cryptography.decrypt(
+            orgAndAddress[cipherDataPosition].org_number
+          );
+        orgAndAddress[cipherDataPosition].complement =
+          this.cryptography.decrypt(
+            orgAndAddress[cipherDataPosition].complement
+          );
+        orgAndAddress[cipherDataPosition].neighborhood =
+          this.cryptography.decrypt(
+            orgAndAddress[cipherDataPosition].neighborhood
+          );
         orgAndAddress[cipherDataPosition].county = this.cryptography.decrypt(
           orgAndAddress[cipherDataPosition].county
         );
@@ -117,9 +136,8 @@ export default class OrgJoinQuery implements DbOperations {
         "org_contact.org_contact_id"
       )
       .where("org.org_id", org_id);
-    
-    if(orgAndContact.length !== 0){
 
+    if (orgAndContact.length !== 0) {
       for (let cipherDataPosition in orgAndContact) {
         orgAndContact[cipherDataPosition].telephone = this.cryptography.decrypt(
           orgAndContact[cipherDataPosition].telephone
@@ -131,7 +149,61 @@ export default class OrgJoinQuery implements DbOperations {
           orgAndContact[cipherDataPosition].email
         );
       }
-    }    
+    }
+
+    const orgAndOrgIpData = await knex
+      .select(orgIpDataProviderProjection)
+      .from("vex_schema.org_ip_data_provider_relation_table")
+      .innerJoin(
+        "vex_schema.org",
+        "org_ip_data_provider_relation_table.org_relation_id",
+        "org.org_id"
+      )
+      .innerJoin(
+        "vex_schema.org_ip_data_provider",
+        "org_ip_data_provider_relation_table.org_ip_data_provider_relation_id",
+        "org_ip_data_provider.org_ip_data_provider_id"
+      )
+      .where("org.org_id", org_id);
+
+    if (orgAndOrgIpData.length !== 0) {
+      for (let cipherDataPosition in orgAndOrgIpData) {
+        orgAndOrgIpData[cipherDataPosition].public_client_ip =
+          this.cryptography.decrypt(
+            orgAndOrgIpData[cipherDataPosition].public_client_ip
+          );
+        orgAndOrgIpData[cipherDataPosition].hostname =
+          this.cryptography.decrypt(
+            orgAndOrgIpData[cipherDataPosition].hostname
+          );
+        orgAndOrgIpData[cipherDataPosition].city = this.cryptography.decrypt(
+          orgAndOrgIpData[cipherDataPosition].city
+        );
+        orgAndOrgIpData[cipherDataPosition].region = this.cryptography.decrypt(
+          orgAndOrgIpData[cipherDataPosition].region
+        );
+        orgAndOrgIpData[cipherDataPosition].country = this.cryptography.decrypt(
+          orgAndOrgIpData[cipherDataPosition].country
+        );
+        orgAndOrgIpData[cipherDataPosition].loc = this.cryptography.decrypt(
+          orgAndOrgIpData[cipherDataPosition].loc
+        );
+        orgAndOrgIpData[cipherDataPosition].provider =
+          this.cryptography.decrypt(
+            orgAndOrgIpData[cipherDataPosition].provider
+          );
+        orgAndOrgIpData[cipherDataPosition].postal = this.cryptography.decrypt(
+          orgAndOrgIpData[cipherDataPosition].postal
+        );
+        orgAndOrgIpData[cipherDataPosition].timezone =
+          this.cryptography.decrypt(
+            orgAndOrgIpData[cipherDataPosition].timezone
+          );
+        orgAndOrgIpData[cipherDataPosition].readme = this.cryptography.decrypt(
+          orgAndOrgIpData[cipherDataPosition].readme
+        );
+      }
+    }
 
     const employees = await knex
       .select(driverProjection)
@@ -148,8 +220,7 @@ export default class OrgJoinQuery implements DbOperations {
       )
       .where("org.org_id", org_id);
 
-    if(employees.length !== 0){
-
+    if (employees.length !== 0) {
       for (let cipherDataPosition in employees) {
         employees[cipherDataPosition].first_name = this.cryptography.decrypt(
           employees[cipherDataPosition].first_name
@@ -161,7 +232,7 @@ export default class OrgJoinQuery implements DbOperations {
           employees[cipherDataPosition].email
         );
       }
-    }  
+    }
 
     const orgAndDriverAndAddress = await knex
       .select(joinDriverAndAddressProjection)
@@ -183,18 +254,20 @@ export default class OrgJoinQuery implements DbOperations {
       )
       .where("org.org_id", org_id);
 
-    if(orgAndDriverAndAddress.length !== 0){
-
+    if (orgAndDriverAndAddress.length !== 0) {
       for (let cipherDataPosition in orgAndDriverAndAddress) {
-        orgAndDriverAndAddress[cipherDataPosition].zip_code = this.cryptography.decrypt(
-          orgAndDriverAndAddress[cipherDataPosition].zip_code
-        );
-        orgAndDriverAndAddress[cipherDataPosition].state = this.cryptography.decrypt(
-          orgAndDriverAndAddress[cipherDataPosition].state
-        );
-        orgAndDriverAndAddress[cipherDataPosition].city = this.cryptography.decrypt(
-          orgAndDriverAndAddress[cipherDataPosition].city
-        );
+        orgAndDriverAndAddress[cipherDataPosition].zip_code =
+          this.cryptography.decrypt(
+            orgAndDriverAndAddress[cipherDataPosition].zip_code
+          );
+        orgAndDriverAndAddress[cipherDataPosition].state =
+          this.cryptography.decrypt(
+            orgAndDriverAndAddress[cipherDataPosition].state
+          );
+        orgAndDriverAndAddress[cipherDataPosition].city =
+          this.cryptography.decrypt(
+            orgAndDriverAndAddress[cipherDataPosition].city
+          );
       }
     }
 
@@ -217,15 +290,15 @@ export default class OrgJoinQuery implements DbOperations {
         "org.org_id"
       )
       .where("org.org_id", org_id);
-     
-    if(orgAndDriverAndContact.length !== 0){
 
+    if (orgAndDriverAndContact.length !== 0) {
       for (let cipherDataPosition in orgAndDriverAndContact) {
-        orgAndDriverAndContact[cipherDataPosition].telephone = this.cryptography.decrypt(
-          orgAndDriverAndContact[cipherDataPosition].telephone
-        );
+        orgAndDriverAndContact[cipherDataPosition].telephone =
+          this.cryptography.decrypt(
+            orgAndDriverAndContact[cipherDataPosition].telephone
+          );
       }
-    }  
+    }
 
     const orgAndDriverAndDocument = await knex
       .select(joinDriverAndDocumentProjection)
@@ -247,14 +320,14 @@ export default class OrgJoinQuery implements DbOperations {
       )
       .where("org.org_id", org_id);
 
-    if(orgAndDriverAndDocument.length !== 0){
-
+    if (orgAndDriverAndDocument.length !== 0) {
       for (let cipherDataPosition in orgAndDriverAndDocument) {
-        orgAndDriverAndDocument[cipherDataPosition].cnh = this.cryptography.decrypt(
-          orgAndDriverAndDocument[cipherDataPosition].cnh
-        );
+        orgAndDriverAndDocument[cipherDataPosition].cnh =
+          this.cryptography.decrypt(
+            orgAndDriverAndDocument[cipherDataPosition].cnh
+          );
       }
-    }    
+    }
 
     const orgAndDriverAndInformation = await knex
       .select(joinDriverAndInformationProjection)
@@ -276,37 +349,46 @@ export default class OrgJoinQuery implements DbOperations {
       )
       .where("org.org_id", org_id);
 
-    if(orgAndDriverAndInformation.length !== 0){
-
+    if (orgAndDriverAndInformation.length !== 0) {
       for (let cipherDataPosition in orgAndDriverAndInformation) {
-        orgAndDriverAndInformation[cipherDataPosition].starting_km = this.cryptography.decrypt(
-          orgAndDriverAndInformation[cipherDataPosition].starting_km
-        );
-        orgAndDriverAndInformation[cipherDataPosition].final_km = this.cryptography.decrypt(
-          orgAndDriverAndInformation[cipherDataPosition].final_km
-        );
-        orgAndDriverAndInformation[cipherDataPosition].plate = this.cryptography.decrypt(
-          orgAndDriverAndInformation[cipherDataPosition].plate
-        );
-        orgAndDriverAndInformation[cipherDataPosition].notes = this.cryptography.decrypt(
-          orgAndDriverAndInformation[cipherDataPosition].notes
-        );
+        orgAndDriverAndInformation[cipherDataPosition].starting_km =
+          this.cryptography.decrypt(
+            orgAndDriverAndInformation[cipherDataPosition].starting_km
+          );
+        orgAndDriverAndInformation[cipherDataPosition].final_km =
+          this.cryptography.decrypt(
+            orgAndDriverAndInformation[cipherDataPosition].final_km
+          );
+        orgAndDriverAndInformation[cipherDataPosition].plate =
+          this.cryptography.decrypt(
+            orgAndDriverAndInformation[cipherDataPosition].plate
+          );
+        orgAndDriverAndInformation[cipherDataPosition].notes =
+          this.cryptography.decrypt(
+            orgAndDriverAndInformation[cipherDataPosition].notes
+          );
+        orgAndDriverAndInformation[cipherDataPosition].date_time_registry =
+          this.cryptography.decrypt(
+            orgAndDriverAndInformation[cipherDataPosition].date_time_registry
+          );
       }
-  
-    }    
+    }
 
     return {
       data: {
-        organization,
-        address: orgAndAddress,
-        contact: orgAndContact,
-        drivers: {
-          employees,
-          address: orgAndDriverAndAddress,
-          contact: orgAndDriverAndContact,
-          document: orgAndDriverAndDocument,
-          information: orgAndDriverAndInformation,
-        },
+        organization: {
+          organization,
+          address: orgAndAddress,
+          contact: orgAndContact,
+          host: orgAndOrgIpData,
+          drivers: {
+            employees,
+            address: orgAndDriverAndAddress,
+            contact: orgAndDriverAndContact,
+            document: orgAndDriverAndDocument,
+            information: orgAndDriverAndInformation,
+          },
+        }
       },
     };
   }
