@@ -36,7 +36,7 @@ describe("expect cypher data args", function () {
     const data = {
       first_name: "Alberto",
       last_name: "Botelho",
-      email: "botelho8@outlook.com",
+      email: "botelho9@outlook.com",
       password: "logistica2023",
     };
 

@@ -1,1 +1,1 @@
-Echo "hello github"
+Echo ".github"
