@@ -902,7 +902,7 @@ orgTestsController
 
       const data = await orgIpDataProviderService.getById(OrgIpDataProvider.id);
 
-      if (data === "org not found") {
+      if (data === "organization data machine not found") {
         return res.status(404).json({
           error: data,
         });
@@ -950,5 +950,10 @@ orgTestsController
       });
     }
   });
+
+orgTestsController.route('/tests/bugs/correction').get(async(req, res)=>{
+
+  res.send('on console ...')
+}) 
 
 export { orgTestsController };

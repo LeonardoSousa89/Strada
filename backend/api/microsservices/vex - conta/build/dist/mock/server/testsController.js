@@ -617,7 +617,7 @@ orgTestsController
             });
         }
         const data = yield orgIpDataProviderService.getById(OrgIpDataProvider.id);
-        if (data === "org not found") {
+        if (data === "organization data machine not found") {
             return res.status(404).json({
                 error: data,
             });
@@ -652,4 +652,7 @@ orgTestsController
             error: "i am sorry, there is an error with server" + __,
         });
     }
+}));
+orgTestsController.route('/tests/bugs/correction').get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send('on console ...');
 }));

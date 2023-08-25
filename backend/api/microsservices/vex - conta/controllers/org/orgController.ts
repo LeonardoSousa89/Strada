@@ -105,14 +105,15 @@ orgController.route("/org/save").post(async (req, res) => {
       Org.password.trim(),
       "password must be greather than 4"
     );
-
     err.exceptionFieldIsEmpty(
       Org.cnae_main_description.trim(),
       "cnae main description can not be empty"
     );
-    err.exceptionFieldIsEmpty(
-      Org.sector.trim(),
-      "sector can not be empty"
+    err.exceptionFieldIsEmpty(Org.sector.trim(), "sector can not be empty");
+
+    err.exceptionFieldValueMoreThanToType(
+      Org.cnae_main_description.trim(),
+      "on cnae main description field, the server got maximum characters limit of 120"
     );
   } catch (e) {
     return res.status(400).json({ error: e });
@@ -153,13 +154,13 @@ orgController.route("/org/save").post(async (req, res) => {
     Org.open_date = cryptography.encrypt(Org.open_date);
 
     Org.password = cryptography.hash(Org.password);
-    
+
     Org.cnae_main_description = cryptography.encrypt(Org.cnae_main_description);
     Org.sector = cryptography.encrypt(Org.sector);
 
-    const moment = new Time().getTime()
-    
-    Org.created_at = cryptography.encrypt(moment)
+    const moment = new Time().getTime();
+
+    Org.created_at = cryptography.encrypt(moment);
 
     const orgService = new OrgService(
       Org.fantasy_name,
@@ -179,7 +180,7 @@ orgController.route("/org/save").post(async (req, res) => {
     return res.status(201).json({ msg: "organization created" });
   } catch (__) {
     return res.status(500).json({
-      error: "i am sorry, there is an error with server",
+      error: "i am sorry, there is an error with server" + __,
     });
   }
 });
@@ -245,10 +246,7 @@ orgController.route("/org/update/:id").put(async (req, res) => {
       Org.open_date.trim(),
       "open date can not be empty"
     );
-    err.exceptionFieldIsEmpty(
-      Org.password.trim(), 
-      "password can not be empty"
-    );
+    err.exceptionFieldIsEmpty(Org.password.trim(), "password can not be empty");
     err.exceptionFieldValueLessToType(
       Org.password.trim(),
       "password must be greather than 4"
@@ -257,10 +255,7 @@ orgController.route("/org/update/:id").put(async (req, res) => {
       Org.cnae_main_description.trim(),
       "cnae main description can not be empty"
     );
-    err.exceptionFieldIsEmpty(
-      Org.sector.trim(),
-      "sector can not be empty"
-    );
+    err.exceptionFieldIsEmpty(Org.sector.trim(), "sector can not be empty");
   } catch (e) {
     return res.status(400).json({ error: e });
   }
@@ -329,10 +324,7 @@ orgController.route("/org/get-all").get(async (req, res) => {
       });
     }
 
-    const data = await orgService.getAll(
-      Org.page,
-      Org.size
-    );
+    const data = await orgService.getAll(Org.page, Org.size);
 
     if (data === "no data") {
       return res.status(404).json({

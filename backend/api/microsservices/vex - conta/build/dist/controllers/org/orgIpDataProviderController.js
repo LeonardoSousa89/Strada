@@ -89,7 +89,7 @@ orgIpDataProviderController
         OrgMachineAndDataProvider.readme = cryptography.encrypt(OrgMachineAndDataProvider.readme);
         new OrgIpDataProviderService_1.default(OrgMachineAndDataProvider.ip, OrgMachineAndDataProvider.hostname, OrgMachineAndDataProvider.city, OrgMachineAndDataProvider.region, OrgMachineAndDataProvider.country, OrgMachineAndDataProvider.loc, OrgMachineAndDataProvider.org, OrgMachineAndDataProvider.postal, OrgMachineAndDataProvider.timezone, OrgMachineAndDataProvider.readme).save();
         return res.status(201).json({
-            data: "organization data machine and provider saved",
+            msg: "organization data machine and provider saved",
         });
     }
     catch (__) {
@@ -144,7 +144,7 @@ orgIpDataProviderController
             });
         }
         const data = yield orgIpDataProviderService.getById(OrgIpDataProvider.id);
-        if (data === "org not found") {
+        if (data === "organization data machine not found") {
             return res.status(404).json({
                 error: data,
             });
@@ -169,7 +169,7 @@ orgIpDataProviderController
         const verifyId = yield orgIpDataProviderService.verifyId(OrgIpDataProvider.id);
         if (verifyId === false)
             return res.status(404).json({
-                error: "organization not found",
+                error: "organization data machine not found",
             });
         yield orgIpDataProviderService.deleteById(OrgIpDataProvider.id);
         return res.status(204).json();

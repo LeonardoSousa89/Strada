@@ -58,14 +58,24 @@ const server = async () => {
   
   await new RedisOperations().connection();
 
-  const serve = app.listen(port[0]);
+  let serve:any
 
-  console.table({
-    port_range: port,
-    port_in_use: port[0],
-    network: serve.address(),
-    maxListeners: serve.getMaxListeners(),
-  });
+  if(process.env.NODE_ENV !== 'test'){
+
+    serve = app.listen(port[0]);
+  }
+
+  // desabilitar a tabela de rede durante os testes[gera bugs]
+  
+  // console.table({
+  //   port_range: port,
+  //   port_in_use: port[3],
+  //   network: serve.address(),
+  //   maxListeners: serve.getMaxListeners(),
+  // });
 };
 
 server();
+
+//para uso em testes
+export { app }

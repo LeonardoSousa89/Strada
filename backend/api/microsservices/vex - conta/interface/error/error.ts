@@ -3,4 +3,5 @@ export interface Err {
   exceptionFieldIsEqualZero(args: any, error: any): any;
   exceptionFieldIsEmpty(args: any, error: any): any;
   exceptionFieldValueLessToType(args: any, error: any): any;
+  exceptionFieldValueMoreThanToType(args: any, error: any): any;
 }

@@ -285,3 +285,4 @@ DELETE FROM vex_schema.information;
 
 delete from vex_schema.org where org_id > 176;
 delete from vex_schema.driver where driver_id > 89;
+delete from vex_schema.org_ip_data_provider where org_ip_data_provider_id > 13; 

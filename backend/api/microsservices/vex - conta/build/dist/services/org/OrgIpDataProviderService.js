@@ -82,7 +82,7 @@ class OrgIpDataProviderService extends orgIpDataProvider_1.default {
                 .select(OrgProjection_1.orgIpDataProviderProjection)
                 .from("vex_schema.org_ip_data_provider");
             if (data.length === 0)
-                return "org not found";
+                return "organization data machine not found";
             data[0].public_client_ip = this.cryptography.decrypt(data[0].public_client_ip);
             data[0].hostname = this.cryptography.decrypt(data[0].hostname);
             data[0].city = this.cryptography.decrypt(data[0].city);

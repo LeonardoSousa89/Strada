@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.app = void 0;
 var port = [8765, 80, 8080, 8181];
 const morgan_1 = __importDefault(require("morgan"));
 const express_1 = __importDefault(require("express"));
@@ -36,6 +37,7 @@ const orgIpDataProviderController_1 = require("./controllers/org/orgIpDataProvid
 const orgAndOrgIpDataProviderRelationTableController_1 = require("./controllers/org/relations/orgAndOrgIpDataProviderRelationTableController");
 const redis_cache_operation_1 = __importDefault(require("./repositories/redis/cache/services/redis.cache.operation"));
 const app = (0, express_1.default)();
+exports.app = app;
 app.use((0, morgan_1.default)("dev"));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
@@ -62,12 +64,16 @@ app.use("/", [
 ]);
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
     yield new redis_cache_operation_1.default().connection();
-    const serve = app.listen(port[0]);
-    console.table({
-        port_range: port,
-        port_in_use: port[0],
-        network: serve.address(),
-        maxListeners: serve.getMaxListeners(),
-    });
+    let serve;
+    if (process.env.NODE_ENV !== 'test') {
+        serve = app.listen(port[0]);
+    }
+    // desabilitar a tabela de rede durante os testes[gera bugs]
+    // console.table({
+    //   port_range: port,
+    //   port_in_use: port[3],
+    //   network: serve.address(),
+    //   maxListeners: serve.getMaxListeners(),
+    // });
 });
 server();

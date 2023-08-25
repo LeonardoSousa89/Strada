@@ -91,6 +91,7 @@ orgController.route("/org/save").post((req, res) => __awaiter(void 0, void 0, vo
         err.exceptionFieldValueLessToType(Org.password.trim(), "password must be greather than 4");
         err.exceptionFieldIsEmpty(Org.cnae_main_description.trim(), "cnae main description can not be empty");
         err.exceptionFieldIsEmpty(Org.sector.trim(), "sector can not be empty");
+        err.exceptionFieldValueMoreThanToType(Org.cnae_main_description.trim(), "on cnae main description field, the server got maximum characters limit of 120");
     }
     catch (e) {
         return res.status(400).json({ error: e });
@@ -133,7 +134,7 @@ orgController.route("/org/save").post((req, res) => __awaiter(void 0, void 0, vo
     }
     catch (__) {
         return res.status(500).json({
-            error: "i am sorry, there is an error with server",
+            error: "i am sorry, there is an error with server" + __,
         });
     }
 }));

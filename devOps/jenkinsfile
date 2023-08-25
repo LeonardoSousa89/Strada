@@ -3,23 +3,34 @@
 
    
     stages {
-        // development
-        stage('build') {
+        stage('development stage') {
             steps {
-               bat 'cd C:/Users/User/Desktop/dev/Vex/backend/api/microsservices/vex - conta && npm run tsc'
+               bat 'Echo "development stage"'
             }
         }
-        
+
         stage('tests') {
             steps {
                bat 'cd C:/Users/User/Desktop/dev/Vex/backend/api/microsservices/vex - conta && npm test'
             }
         }
         
+        stage('build') {
+            steps {
+               bat 'cd C:/Users/User/Desktop/dev/Vex/backend/api/microsservices/vex - conta && npm run tsc'
+            }
+        }
+        
         stage('commit') {
             steps {
-               bat 'cd C:/Users/User/Desktop/dev/Vex && git add . && git commit -m "@v1.2.9 - alteração no arquivo .sql" && git push'
+               bat 'cd C:/Users/User/Desktop/dev/Vex && git add . && git commit -m "@v1.2.10 - criação da pasta mock e atualização de pastas e arquivos de teste, cobertura das operações atuais por testes'
             //    bat 'cd C:\Users\User\Desktop\dev\Vex\devOps\.github\git.bat'
+            }
+        }
+
+        stage('production stage') {
+            steps {
+               bat 'Echo "production stage"'
             }
         }
 

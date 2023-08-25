@@ -18,5 +18,10 @@ class HandleError {
         if (args.length < 4)
             throw error;
     }
+    //aqui por observações em testes, este valor está equivalendo[valor relativo] a varchar(250) no banco [verificar por quê]
+    exceptionFieldValueMoreThanToType(args, error) {
+        if (args.length > 120)
+            throw error;
+    }
 }
 exports.default = HandleError;

@@ -138,7 +138,7 @@ orgIpDataProviderController
       ).save();
 
       return res.status(201).json({
-        data: "organization data machine and provider saved",
+        msg: "organization data machine and provider saved",
       });
     } catch (__) {
       return res.status(500).json({
@@ -216,7 +216,7 @@ orgIpDataProviderController
 
       const data = await orgIpDataProviderService.getById(OrgIpDataProvider.id);
 
-      if (data === "org not found") {
+      if (data === "organization data machine not found") {
         return res.status(404).json({
           error: data,
         });
@@ -252,7 +252,7 @@ orgIpDataProviderController
 
       if (verifyId === false)
         return res.status(404).json({
-          error: "organization not found",
+          error: "organization data machine not found",
         });
 
       await orgIpDataProviderService.deleteById(OrgIpDataProvider.id);
