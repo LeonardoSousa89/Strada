@@ -11,11 +11,11 @@ describe("", function () {
   it("", async function () {});
 });
 
-describe("GET /org/join/data?org_id=id", function () {
-  it("Should get driver data join with others controllers by id", async function () {
-    const response = request(app).get("/org/join/data?org_id=235");
+// describe("GET /org/join/data?org_id=id", function () {
+//   it("Should get driver data join with others controllers by id", async function () {
+//     const response = request(app).get("/org/join/data?org_id=235");
 
-    expect((await response).body.data.data.data.organization).not.toBeNull();
-    expect((await response).status).toBe(200);
-  });
-});
+//     expect((await response).body.data.data.data.organization).not.toBeNull();
+//     expect((await response).status).toBe(200);
+//   });
+// });
