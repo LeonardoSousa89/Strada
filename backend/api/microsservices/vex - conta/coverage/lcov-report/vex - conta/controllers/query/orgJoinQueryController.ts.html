@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.56% </span>
+                <span class="strong">26.08% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>16/23</span>
+                <span class='fraction'>6/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/3</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.18% </span>
+                <span class="strong">27.27% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>15/22</span>
+                <span class='fraction'>6/22</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -126,26 +126,26 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -181,27 +181,27 @@ import RedisOperations from "../../repositories/redis/cache/services/redis.cache
 &nbsp;
 const OrgJoinQueryController = express.Router();
 &nbsp;
-OrgJoinQueryController.route("/org/join/data").get(async (req, res) =&gt; {
-  const Org = { ...req.query };
+OrgJoinQueryController.route("/org/join/data").get(<span class="fstat-no" title="function not covered" >async (r</span>eq, res) =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > {</span></span>
+  const Org<span class="cstat-no" title="statement not covered" > = { ...req.query };</span>
 &nbsp;
-  const orgJoinQueryService = new OrgJoinQueryService();
+  const orgJoinQueryService = <span class="cstat-no" title="statement not covered" >new OrgJoinQueryService();</span>
 &nbsp;
-  const cache = new RedisOperations();
+  const cache = <span class="cstat-no" title="statement not covered" >new RedisOperations();</span>
 &nbsp;
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (!Org.org_id)
+<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (!Org.org_id)</span>
 <span class="cstat-no" title="statement not covered" >    return res.status(400).json({</span>
       error: "query params required",
     });
 &nbsp;
-  try {
-    const orgJoinQueryFromCache = await cache.getCache(
+<span class="cstat-no" title="statement not covered" >  try {</span>
+    const orgJoinQueryFromCache = <span class="cstat-no" title="statement not covered" >await cache.getCache(</span>
       `OrgJoinQuery_${Org.org_id}`
     );
 &nbsp;
-    if (orgJoinQueryFromCache) {
-      const data = JSON.parse(orgJoinQueryFromCache);
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (orgJoinQueryFromCache) {</span>
+      const data = <span class="cstat-no" title="statement not covered" >JSON.parse(orgJoinQueryFromCache);</span>
 &nbsp;
-      return res.status(200).json({
+<span class="cstat-no" title="statement not covered" >      return res.status(200).json({</span>
         data: { inCache: "yes", data },
       });
     }
@@ -238,7 +238,7 @@ export { OrgJoinQueryController };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-25T01:58:57.705Z
+                at 2023-08-29T03:39:27.158Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

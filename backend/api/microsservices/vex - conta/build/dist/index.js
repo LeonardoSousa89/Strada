@@ -29,6 +29,7 @@ const driverAddressController_1 = require("./controllers/driver/driverAddressCon
 const driverContactController_1 = require("./controllers/driver/driverContactController");
 const driverDocumentController_1 = require("./controllers/driver/driverDocumentController");
 const informationController_1 = require("./controllers/driver/information/informationController");
+const midiaController_1 = require("./controllers/driver/information/midiaController");
 const driverAddressRelationTableController_1 = require("./controllers/driver/relations/driverAddressRelationTableController");
 const driverContactRelationTableController_1 = require("./controllers/driver/relations/driverContactRelationTableController");
 const driverDocumentRelationTableController_1 = require("./controllers/driver/relations/driverDocumentRelationTableController");
@@ -57,10 +58,11 @@ app.use("/", [
     driverContactController_1.driverContactController,
     driverDocumentController_1.driverDocumentController,
     informationController_1.informationController,
+    midiaController_1.midiaController,
     driverAddressRelationTableController_1.driverAddressRelationTableController,
     driverContactRelationTableController_1.driverContactRelationTableController,
     driverDocumentRelationTableController_1.driverDocumentRelationTableController,
-    driverInformationRelationTableController_1.driverInformationRelationTableController,
+    driverInformationRelationTableController_1.driverInformationRelationTableController
 ]);
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
     yield new redis_cache_operation_1.default().connection();

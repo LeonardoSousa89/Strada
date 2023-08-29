@@ -180,6 +180,8 @@ CREATE TABLE IF NOT EXISTS vex_schema.driver_role_relation_table (
 ); 
 /* a fazer */
 
+INSERT INTO vex_schema.midia_uri VALUES(1,'https://firebasestorage.googleapis.com/v0/b/checklist-246ae.appspot.com/o/testes%2Fpneu_careca.jpg?alt=media&token=6b5abd31-c2f6-42b2-8642-8286bb459d32');
+
 ALTER TABLE vex_schema.information ADD COLUMN date_time_registry VARCHAR(250);
 
 ALTER TABLE vex_schema.org_address_relation_table ADD COLUMN org_address_relation_table_id SERIAL;
@@ -202,6 +204,7 @@ ALTER TABLE vex_schema.org DROP COLUMN create_at;
 ALTER TABLE vex_schema.org ADD COLUMN created_at VARCHAR(250);
 ALTER TABLE vex_schema.org DROP COLUMN public_ip_client_data;
 
+
 DROP TABLE vex_schema.org;
 DROP TABLE vex_schema.org_address;
 DROP TABLE vex_schema.org_contact;
@@ -220,6 +223,9 @@ DROP TABLE vex_schema.driver_contact_relation_table;
 DROP TABLE vex_schema.driver_information_relation_table;
 
 DROP TABLE vex_schema.information;
+
+DROP TABLE vex_schema.midia_uri;
+DROP TABLE vex_schema.information_midia_uri_relation_table;
 
 SELECT * FROM vex_schema.org;
 SELECT * FROM vex_schema.org_address;
@@ -240,6 +246,9 @@ SELECT * FROM vex_schema.driver_contact_relation_table;
 SELECT * FROM vex_schema.driver_information_relation_table;
 
 SELECT * FROM vex_schema.information;
+
+SELECT * FROM vex_schema.midia_uri;
+SELECT * FROM vex_schema.information_midia_uri_relation_table;
 
 SELECT  org.org_id, 
         org.fantasy_name, 
@@ -283,6 +292,30 @@ DELETE FROM vex_schema.driver_information_relation_table;
 
 DELETE FROM vex_schema.information;
 
+DELETE FROM vex_schema.midia_uri;
+DELETE FROM vex_schema.information_midia_uri_relation_table;
+
 delete from vex_schema.org where org_id > 176;
 delete from vex_schema.driver where driver_id > 89;
 delete from vex_schema.org_ip_data_provider where org_ip_data_provider_id > 13; 
+
+CREATE TABLE IF NOT EXISTS vex_schema.midia_uri (
+    midia_uri_id SERIAL PRIMARY KEY,
+    uri VARCHAR(1000)
+);
+
+CREATE TABLE IF NOT EXISTS vex_schema.information_midia_uri_relation_table (
+    midia_uri_relation_table_id SERIAL,
+    information_relation_id SERIAL,
+    driver_relation_id INT,
+    org_relation_id INT,
+    FOREIGN KEY(information_relation_id) REFERENCES vex_schema.information (information_id),
+    FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id),
+    FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
+); 
+
+DROP TABLE vex_schema.midia_uri; 
+DROP TABLE vex_schema.information_midia_uri_relation_table; 
+
+SELECT * FROM vex_schema.midia_uri; 
+SELECT * FROM vex_schema.information_midia_uri_relation_table; 

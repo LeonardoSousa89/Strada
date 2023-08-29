@@ -17,6 +17,7 @@ import { driverAddressController } from "./controllers/driver/driverAddressContr
 import { driverContactController } from "./controllers/driver/driverContactController";
 import { driverDocumentController } from "./controllers/driver/driverDocumentController";
 import { informationController } from "./controllers/driver/information/informationController";
+import { midiaController } from "./controllers/driver/information/midiaController";
 import { driverAddressRelationTableController } from "./controllers/driver/relations/driverAddressRelationTableController";
 import { driverContactRelationTableController } from "./controllers/driver/relations/driverContactRelationTableController";
 import { driverDocumentRelationTableController } from "./controllers/driver/relations/driverDocumentRelationTableController";
@@ -48,10 +49,11 @@ app.use("/", [
   driverContactController,
   driverDocumentController,
   informationController,
+  midiaController,
   driverAddressRelationTableController,
   driverContactRelationTableController,
   driverDocumentRelationTableController,
-  driverInformationRelationTableController,
+  driverInformationRelationTableController
 ]);
 
 const server = async () => {
