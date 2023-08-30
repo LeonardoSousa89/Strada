@@ -47,7 +47,7 @@ OrgJoinQueryController.route("/org/join/data").get((req, res) => __awaiter(void 
     }
     catch (__) {
         return res.status(500).json({
-            error: "i am sorry, there is an error with server",
+            error: "i am sorry, there is an error with server" + __,
         });
     }
 }));

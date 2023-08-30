@@ -185,6 +185,14 @@ class OrgJoinQuery {
                         this.cryptography.decrypt(orgAndDriverAndInformation[cipherDataPosition].date_time_registry);
                 }
             }
+            const uri = yield knex_1.default
+                .select(joinProjection_1.joindInformationAndMidiaProjection)
+                .from("vex_schema.information_midia_uri_relation_table")
+                .innerJoin("vex_schema.midia_uri", "information_midia_uri_relation_table.midia_uri_relation_id ", "midia_uri.uri")
+                .innerJoin("vex_schema.information", "information_midia_uri_relation_table.information_relation_id", "information.information_id")
+                .innerJoin("vex_schema.driver", "information_midia_uri_relation_table.driver_relation_id", "driver.driver_id")
+                .innerJoin("vex_schema.org", "information_midia_uri_relation_table.org_relation_id", "org.org_id")
+                .where("org.org_id", org_id);
             return {
                 data: {
                     organization: {
@@ -197,9 +205,14 @@ class OrgJoinQuery {
                             address: orgAndDriverAndAddress,
                             contact: orgAndDriverAndContact,
                             document: orgAndDriverAndDocument,
-                            information: orgAndDriverAndInformation,
+                            information: {
+                                orgAndDriverAndInformation,
+                                midia: {
+                                    uri,
+                                },
+                            },
                         },
-                    }
+                    },
                 },
             };
         });
