@@ -76,3 +76,19 @@ InformationMidiaUriRelationTableController.route("/org/driver/information/midia/
         });
     }
 }));
+InformationMidiaUriRelationTableController.route("/org/driver/information/midia/uri/relation-table/get-all").get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const InformationAndMidiaRelation = new informationMidiaUriRelationTableService_1.default();
+    try {
+        const data = yield InformationAndMidiaRelation.getAll();
+        if (data.length === 0)
+            return res.status(404).json({
+                error: "no data relationship",
+            });
+        return res.status(200).json(data);
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error with server",
+        });
+    }
+}));

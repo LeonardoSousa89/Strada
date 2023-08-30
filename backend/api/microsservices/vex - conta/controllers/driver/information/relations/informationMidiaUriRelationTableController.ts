@@ -121,29 +121,29 @@ InformationMidiaUriRelationTableController.route(
   }
 });
 
+InformationMidiaUriRelationTableController.route(
+  "/org/driver/information/midia/uri/relation-table/get-all"
+).get(async (req, res) => {
+  const InformationAndMidiaRelation =
+    new InformationMidiaUriRelationTableService();
+
+  try {
+    const data = await InformationAndMidiaRelation.getAll();
+
+    if (data.length === 0)
+      return res.status(404).json({
+        error: "no data relationship",
+      });
+
+    return res.status(200).json(data);
+  } catch (__) {
+    return res.status(500).json({
+      error: "i am sorry, there is an error with server",
+    });
+  }
+});
+
 // pendente de testes
-// InformationMidiaUriRelationTableController.route(
-//   "/org/driver/information/midia/uri/relation-table/get-all"
-// ).get(async (req, res) => {
-//   const InformationAndMidiaRelation =
-//     new InformationMidiaUriRelationTableService();
-
-//   try {
-//     const data = await InformationAndMidiaRelation.getAll();
-
-//     if (data.length === 0)
-//       return res.status(404).json({
-//         error: "no data relationship",
-//       });
-
-//     return res.status(200).json(data);
-//   } catch (__) {
-//     return res.status(500).json({
-//       error: "i am sorry, there is an error with server",
-//     });
-//   }
-// });
-
 // InformationMidiaUriRelationTableController.route(
 //   "/org/driver/information/midia/uri/relation-table/get/by/id/:id"
 // ).get(async (req, res) => {
