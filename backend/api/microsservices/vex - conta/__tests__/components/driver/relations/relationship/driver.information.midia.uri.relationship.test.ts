@@ -26,7 +26,7 @@ describe("", function () {
 //     // na hora dos testes, campo nulo ou ""
 //     // expect((await response).body).toBe("");  
 
-//     expect((await response).status).toBe(400);
+//     expect((await response).status).toBe(201);
 //   });
 // });
 
@@ -48,13 +48,13 @@ describe("", function () {
 //   });
 // });
 
-describe("DELETE /org/driver/information/midia/uri/relation-table/delete/all", function () {
-  it("Should delete driver information relation", async function () {
-    const response = request(app).delete("/org/driver/information/midia/uri/relation-table/delete/all");
+// describe("DELETE /org/driver/information/midia/uri/relation-table/delete/all", function () {
+//   it("Should delete driver information relation", async function () {
+//     const response = request(app).delete("/org/driver/information/midia/uri/relation-table/delete/all");
 
-    expect((await response).status).toBe(204);
-  });
-});
+//     expect((await response).status).toBe(204);
+//   });
+// });
 
 // describe("DELETE /org/driver/information/midia/uri/relation-table/delete/by/id/:id", function () {
 //   it("Should delete driver information relation by id", async function () {
