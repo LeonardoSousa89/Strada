@@ -193,31 +193,31 @@ InformationMidiaUriRelationTableController.route(
 //   }
 // });
 
-// InformationMidiaUriRelationTableController.route(
-//   "/org/driver/information/midia/uri/relation-table/delete/by/id/:id"
-// ).delete(async (req, res) => {
-//   const Driver = { ...req.params };
+InformationMidiaUriRelationTableController.route(
+  "/org/driver/information/midia/uri/relation-table/delete/by/id/:id"
+).delete(async (req, res) => {
+  const Driver = { ...req.params };
 
-//   const InformationAndMidiaRelation =
-//     new InformationMidiaUriRelationTableService();
+  const InformationAndMidiaRelation =
+    new InformationMidiaUriRelationTableService();
 
-//   try {
-//     const driverInfomationRelationExistsOrNotExists =
-//       await InformationAndMidiaRelation.verifyId(Number(Driver.id));
+  try {
+    const driverInfomationRelationExistsOrNotExists =
+      await InformationAndMidiaRelation.verifyId(Number(Driver.id));
 
-//     if (driverInfomationRelationExistsOrNotExists === false)
-//       return res.status(404).json({
-//         error: "no data relationship founded by id sended",
-//       });
+    if (driverInfomationRelationExistsOrNotExists === false)
+      return res.status(404).json({
+        error: "no data relationship founded by id sended",
+      });
 
-//     await InformationAndMidiaRelation.deleteById(Driver.id);
+    await InformationAndMidiaRelation.deleteById(Driver.id);
 
-//     return res.status(204).json();
-//   } catch (__) {
-//     return res.status(500).json({
-//       error: "i am sorry, there is an error with server",
-//     });
-//   }
-// });
+    return res.status(204).json();
+  } catch (__) {
+    return res.status(500).json({
+      error: "i am sorry, there is an error with server",
+    });
+  }
+});
 
 export { InformationMidiaUriRelationTableController };

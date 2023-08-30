@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1693420533172" clover="3.2.0">
-  <project timestamp="1693420533172" name="All files">
-    <metrics statements="3163" coveredstatements="627" conditionals="288" coveredconditionals="0" methods="526" coveredmethods="14" elements="3977" coveredelements="641" complexity="0" loc="3163" ncloc="3163" packages="39" files="84" classes="84"/>
+<coverage generated="1693420772429" clover="3.2.0">
+  <project timestamp="1693420772430" name="All files">
+    <metrics statements="3174" coveredstatements="630" conditionals="289" coveredconditionals="1" methods="528" coveredmethods="15" elements="3991" coveredelements="646" complexity="0" loc="3174" ncloc="3174" packages="39" files="84" classes="84"/>
     <package name="vex - conta">
       <metrics statements="36" coveredstatements="35" conditionals="1" coveredconditionals="0" methods="2" coveredmethods="2"/>
       <file name="index.ts" path="C:\Users\User\Desktop\dev\Vex\backend\api\microsservices\vex - conta\index.ts">
@@ -668,9 +668,9 @@
       </file>
     </package>
     <package name="vex - conta.controllers.driver.information.relations">
-      <metrics statements="62" coveredstatements="20" conditionals="7" coveredconditionals="0" methods="6" coveredmethods="2"/>
+      <metrics statements="73" coveredstatements="22" conditionals="8" coveredconditionals="0" methods="8" coveredmethods="2"/>
       <file name="informationMidiaUriRelationTableController.ts" path="C:\Users\User\Desktop\dev\Vex\backend\api\microsservices\vex - conta\controllers\driver\information\relations\informationMidiaUriRelationTableController.ts">
-        <metrics statements="62" coveredstatements="20" conditionals="7" coveredconditionals="0" methods="6" coveredmethods="2"/>
+        <metrics statements="73" coveredstatements="22" conditionals="8" coveredconditionals="0" methods="8" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -723,15 +723,26 @@
         <line num="138" count="0" type="stmt"/>
         <line num="140" count="0" type="stmt"/>
         <line num="146" count="1" type="stmt"/>
-        <line num="148" count="1" type="stmt"/>
-        <line num="149" count="1" type="stmt"/>
-        <line num="152" count="1" type="stmt"/>
-        <line num="154" count="1" type="stmt"/>
-        <line num="155" count="1" type="stmt"/>
-        <line num="157" count="1" type="cond" truecount="0" falsecount="1"/>
+        <line num="148" count="0" type="stmt"/>
+        <line num="149" count="0" type="stmt"/>
+        <line num="152" count="0" type="stmt"/>
+        <line num="154" count="0" type="stmt"/>
+        <line num="155" count="0" type="stmt"/>
+        <line num="157" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="158" count="0" type="stmt"/>
-        <line num="162" count="1" type="stmt"/>
+        <line num="162" count="0" type="stmt"/>
         <line num="164" count="0" type="stmt"/>
+        <line num="196" count="1" type="stmt"/>
+        <line num="198" count="1" type="stmt"/>
+        <line num="199" count="1" type="stmt"/>
+        <line num="202" count="1" type="stmt"/>
+        <line num="204" count="1" type="stmt"/>
+        <line num="206" count="1" type="stmt"/>
+        <line num="208" count="1" type="cond" truecount="0" falsecount="1"/>
+        <line num="209" count="0" type="stmt"/>
+        <line num="213" count="1" type="stmt"/>
+        <line num="215" count="1" type="stmt"/>
+        <line num="217" count="0" type="stmt"/>
         <line num="223" count="1" type="stmt"/>
       </file>
     </package>
@@ -3065,17 +3076,17 @@
       </file>
     </package>
     <package name="vex - conta.services.driver.information.relations">
-      <metrics statements="19" coveredstatements="8" conditionals="4" coveredconditionals="0" methods="9" coveredmethods="2"/>
+      <metrics statements="19" coveredstatements="9" conditionals="4" coveredconditionals="1" methods="9" coveredmethods="3"/>
       <file name="informationMidiaUriRelationTableService.ts" path="C:\Users\User\Desktop\dev\Vex\backend\api\microsservices\vex - conta\services\driver\information\relations\informationMidiaUriRelationTableService.ts">
-        <metrics statements="19" coveredstatements="8" conditionals="4" coveredconditionals="0" methods="9" coveredmethods="2"/>
+        <metrics statements="19" coveredstatements="9" conditionals="4" coveredconditionals="1" methods="9" coveredmethods="3"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="5" count="1" type="stmt"/>
         <line num="7" count="1" type="stmt"/>
         <line num="17" count="1" type="stmt"/>
         <line num="25" count="1" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="38" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="38" count="1" type="cond" truecount="1" falsecount="0"/>
         <line num="40" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="44" count="0" type="stmt"/>
         <line num="49" count="0" type="cond" truecount="0" falsecount="1"/>
@@ -3083,10 +3094,10 @@
         <line num="55" count="0" type="stmt"/>
         <line num="63" count="0" type="stmt"/>
         <line num="67" count="0" type="stmt"/>
-        <line num="71" count="1" type="stmt"/>
-        <line num="76" count="1" type="stmt"/>
+        <line num="71" count="0" type="stmt"/>
+        <line num="76" count="0" type="stmt"/>
         <line num="80" count="0" type="stmt"/>
-        <line num="84" count="0" type="stmt"/>
+        <line num="84" count="1" type="stmt"/>
       </file>
     </package>
     <package name="vex - conta.services.driver.relations">
