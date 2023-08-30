@@ -48,18 +48,18 @@ describe("", function () {
 //   });
 // });
 
-// describe("DELETE /org/driver/information/relation-table/delete/all", function () {
-//   it("Should delete driver information relation by id", async function () {
-//     const response = request(app).delete("/org/driver/information/relation-table/delete/all");
-
-//     expect((await response).status).toBe(204);
-//   });
-// });
-
-describe("DELETE /org/driver/information/midia/uri/relation-table/delete/by/id/:id", function () {
-  it("Should delete driver information relation by id", async function () {
-    const response = request(app).delete("/org/driver/information/midia/uri/relation-table/delete/by/id/2");
+describe("DELETE /org/driver/information/midia/uri/relation-table/delete/all", function () {
+  it("Should delete driver information relation", async function () {
+    const response = request(app).delete("/org/driver/information/midia/uri/relation-table/delete/all");
 
     expect((await response).status).toBe(204);
   });
 });
+
+// describe("DELETE /org/driver/information/midia/uri/relation-table/delete/by/id/:id", function () {
+//   it("Should delete driver information relation by id", async function () {
+//     const response = request(app).delete("/org/driver/information/midia/uri/relation-table/delete/by/id/2");
+
+//     expect((await response).status).toBe(204);
+//   });
+// });
