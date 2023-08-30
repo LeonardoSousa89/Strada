@@ -23,7 +23,7 @@
         
         stage('commit') {
             steps {
-               bat 'cd C:/Users/User/Desktop/dev/Vex && git add . && git commit -m "@v1.2.11 - criação e inserção de dados da midia no postgres, criação do component entity, service e controller de midia e testes de operações'
+               bat 'cd C:/Users/User/Desktop/dev/Vex && git add . && git commit -m "@v1.2.12 - criação e inserção de dados da relação de midia com information, criação do component entity, service e controller de midia relation e testes de operações(método save)'
             //    bat 'cd C:\Users\User\Desktop\dev\Vex\devOps\.github\git.bat'
             }
         }

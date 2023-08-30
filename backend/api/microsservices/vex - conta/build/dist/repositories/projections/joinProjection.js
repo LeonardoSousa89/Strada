@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.joinDriverAndInformationProjection = exports.joinDriverAndDocumentProjection = exports.joinDriverAndContactProjection = exports.joinDriverAndAddressProjection = exports.joinDriverAndInformationRelationProjection = exports.joinDriverAndDocumentRelationProjection = exports.joinDriverAndContactRelationProjection = exports.joinDriverAndAddressRelationProjection = exports.joinOrgAndOrgIpDataProviderRelationProjection = exports.joinOrgAndDriverRelationProjection = exports.joinOrgAndContactRelationProjection = exports.joinOrgAndAddressRelationProjection = void 0;
+exports.joinInformationAndMidiaUriRelationProjection = exports.joinDriverAndInformationProjection = exports.joinDriverAndDocumentProjection = exports.joinDriverAndContactProjection = exports.joinDriverAndAddressProjection = exports.joinDriverAndInformationRelationProjection = exports.joinDriverAndDocumentRelationProjection = exports.joinDriverAndContactRelationProjection = exports.joinDriverAndAddressRelationProjection = exports.joinOrgAndOrgIpDataProviderRelationProjection = exports.joinOrgAndDriverRelationProjection = exports.joinOrgAndContactRelationProjection = exports.joinOrgAndAddressRelationProjection = void 0;
 const joinOrgAndAddressRelationProjection = [
     'org_address_relation_table.org_address_relation_table_id',
     'org_address_relation_table.org_address_relation_id',
@@ -83,3 +83,11 @@ const joinDriverAndInformationProjection = [
     'driver.driver_id'
 ];
 exports.joinDriverAndInformationProjection = joinDriverAndInformationProjection;
+const joinInformationAndMidiaUriRelationProjection = [
+    'information_midia_uri_relation_table.midia_uri_relation_table_id',
+    'information_midia_uri_relation_table.midia_uri_relation_id',
+    'information_midia_uri_relation_table.information_relation_id',
+    'information_midia_uri_relation_table.driver_relation_id',
+    'information_midia_uri_relation_table.org_relation_id'
+];
+exports.joinInformationAndMidiaUriRelationProjection = joinInformationAndMidiaUriRelationProjection;

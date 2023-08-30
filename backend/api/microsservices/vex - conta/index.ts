@@ -24,6 +24,7 @@ import { driverDocumentRelationTableController } from "./controllers/driver/rela
 import { driverInformationRelationTableController } from "./controllers/driver/relations/driverInformationRelationTableController";
 import { orgIpDataProviderController } from "./controllers/org/orgIpDataProviderController";
 import { orgAndOrgIpDataProviderRelationTableController } from "./controllers/org/relations/orgAndOrgIpDataProviderRelationTableController";
+import { InformationMidiaUriRelationTableController } from "./controllers/driver/information/relations/informationMidiaUriRelationTableController";
 
 import RedisOperations from "./repositories/redis/cache/services/redis.cache.operation";
 
@@ -53,7 +54,8 @@ app.use("/", [
   driverAddressRelationTableController,
   driverContactRelationTableController,
   driverDocumentRelationTableController,
-  driverInformationRelationTableController
+  driverInformationRelationTableController,
+  InformationMidiaUriRelationTableController
 ]);
 
 const server = async () => {

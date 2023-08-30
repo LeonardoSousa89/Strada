@@ -84,6 +84,15 @@ const joinDriverAndInformationProjection: Array<string> = [
     'driver.driver_id'
 ]
 
+const joinInformationAndMidiaUriRelationProjection: Array<string> = [
+
+    'information_midia_uri_relation_table.midia_uri_relation_table_id',
+    'information_midia_uri_relation_table.midia_uri_relation_id',
+    'information_midia_uri_relation_table.information_relation_id',
+    'information_midia_uri_relation_table.driver_relation_id',
+    'information_midia_uri_relation_table.org_relation_id'
+]
+
 export { joinOrgAndAddressRelationProjection,
          joinOrgAndContactRelationProjection,
          joinOrgAndDriverRelationProjection,
@@ -95,4 +104,5 @@ export { joinOrgAndAddressRelationProjection,
          joinDriverAndAddressProjection,
          joinDriverAndContactProjection,
          joinDriverAndDocumentProjection,
-         joinDriverAndInformationProjection } 
+         joinDriverAndInformationProjection,
+         joinInformationAndMidiaUriRelationProjection } 

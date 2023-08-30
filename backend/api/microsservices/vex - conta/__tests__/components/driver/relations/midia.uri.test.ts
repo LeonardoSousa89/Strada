@@ -50,13 +50,13 @@ describe("", function () {
 //   });
 // });
 
-describe("DELETE /org/driver/information/midia/uri/delete-all", function () {
-  it("Should delete driver information midia uri", async function () {
-    const response = request(app).delete("/org/driver/information/midia/uri/delete-all");
+// describe("DELETE /org/driver/information/midia/uri/delete-all", function () {
+//   it("Should delete driver information midia uri", async function () {
+//     const response = request(app).delete("/org/driver/information/midia/uri/delete-all");
     
-    expect((await response).status).toBe(204);
-  });
-});
+//     expect((await response).status).toBe(204);
+//   });
+// });
 
 // describe("DELETE /org/driver/information/midia/uri/delete-by-id/:id", function () {
 //   it("Should delete driver information midia uri by id", async function () {

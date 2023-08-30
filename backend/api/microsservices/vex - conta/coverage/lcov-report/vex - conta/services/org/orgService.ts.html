@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.11% </span>
+                <span class="strong">22.22% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/54</span>
+                <span class='fraction'>12/54</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>1/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">18.18% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>2/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.5% </span>
+                <span class="strong">22.91% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/48</span>
+                <span class='fraction'>11/48</span>
             </div>
         
             
@@ -240,7 +240,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -254,7 +254,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -267,31 +267,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -384,7 +384,7 @@ import calculatePage from "../../repositories/paginate";
 import { orgProjection } from "../../repositories/projections/OrgProjection";
 &nbsp;
 export default class OrgService extends Org implements DbOperations {
-<span class="fstat-no" title="function not covered" >  constructor(</span>
+  constructor(
     fantasy_name?: string,
     corporate_name?: string,
     cnpj?: string,
@@ -396,7 +396,7 @@ export default class OrgService extends Org implements DbOperations {
     sector?: string,
     created_at?: string
   ) {
-<span class="cstat-no" title="statement not covered" >    super(</span>
+    super(
       fantasy_name,
       corporate_name,
       cnpj,
@@ -410,7 +410,7 @@ export default class OrgService extends Org implements DbOperations {
     );
   }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  org = new Org(</span>
+  org = new Org(
     this.fantasy_name,
     this.corporate_name,
     this.cnpj,
@@ -423,7 +423,7 @@ export default class OrgService extends Org implements DbOperations {
     this.created_at
   );
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  cryptography = new Cryptography();</span>
+  cryptography = new Cryptography();
 &nbsp;
   async <span class="fstat-no" title="function not covered" >verifyCnpj(</span>cnpj: string) {
     const data = <span class="cstat-no" title="statement not covered" >await knex.select(orgProjection).from("vex_schema.org");</span>
@@ -441,13 +441,13 @@ export default class OrgService extends Org implements DbOperations {
 <span class="cstat-no" title="statement not covered" >    return true;</span>
   }
 &nbsp;
-  async <span class="fstat-no" title="function not covered" >verifyId(</span>id: string | number) {
-    const existsOrNotExistsId = <span class="cstat-no" title="statement not covered" >await knex</span>
+  async verifyId(id: string | number) {
+    const existsOrNotExistsId = await knex
       .where("org_id", id)
       .from("vex_schema.org")
       .first();
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (existsOrNotExistsId) <span class="cstat-no" title="statement not covered" >return true;</span></span>
+    if (existsOrNotExistsId) return true;
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (!existsOrNotExistsId) <span class="cstat-no" title="statement not covered" >return false;</span></span>
   }
@@ -538,7 +538,7 @@ export default class OrgService extends Org implements DbOperations {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-29T03:39:27.158Z
+                at 2023-08-30T18:04:57.533Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

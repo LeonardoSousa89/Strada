@@ -306,9 +306,11 @@ CREATE TABLE IF NOT EXISTS vex_schema.midia_uri (
 
 CREATE TABLE IF NOT EXISTS vex_schema.information_midia_uri_relation_table (
     midia_uri_relation_table_id SERIAL,
-    information_relation_id SERIAL,
+    midia_uri_relation_id INT,
+    information_relation_id INT,
     driver_relation_id INT,
     org_relation_id INT,
+    FOREIGN KEY(midia_uri_relation_id) REFERENCES vex_schema.midia_uri (midia_uri_id),
     FOREIGN KEY(information_relation_id) REFERENCES vex_schema.information (information_id),
     FOREIGN KEY(driver_relation_id) REFERENCES vex_schema.driver (driver_id),
     FOREIGN KEY(org_relation_id) REFERENCES vex_schema.org (org_id)
