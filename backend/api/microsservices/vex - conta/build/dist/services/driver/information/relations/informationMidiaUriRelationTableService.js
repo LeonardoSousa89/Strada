@@ -32,10 +32,10 @@ class InformationMidiaUriRelationTableService extends informationMidiaUriRelatio
                 return false;
         });
     }
-    verifyRelationshipExists(information_relation_id) {
+    verifyRelationshipExists(midia_uri_relation_id) {
         return __awaiter(this, void 0, void 0, function* () {
             const existsOrNotExistsId = yield knex_1.default
-                .where("information_relation_id", information_relation_id)
+                .where("midia_uri_relation_id", midia_uri_relation_id)
                 .from("vex_schema.information_midia_uri_relation_table")
                 .first();
             if (existsOrNotExistsId)

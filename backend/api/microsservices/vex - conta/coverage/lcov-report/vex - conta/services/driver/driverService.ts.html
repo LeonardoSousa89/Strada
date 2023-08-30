@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14.28% </span>
+                <span class="strong">28.57% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/42</span>
+                <span class='fraction'>12/42</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>1/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>2/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">30.55% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/36</span>
+                <span class='fraction'>11/36</span>
             </div>
         
             
@@ -192,25 +192,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -300,31 +300,31 @@ import Cryptography from "../../config/security/cryptography";
 import calculatePage from "../../repositories/paginate";
 &nbsp;
 export default class DriverService extends Driver implements DbOperations {
-<span class="fstat-no" title="function not covered" >  constructor(</span>
+  constructor(
     first_name?: string,
     last_name?: string,
     email?: string,
     password?: string
   ) {
-<span class="cstat-no" title="statement not covered" >    super(first_name, last_name, email, password);</span>
+    super(first_name, last_name, email, password);
   }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  driver = new Driver(</span>
+  driver = new Driver(
     this.first_name,
     this.last_name,
     this.email,
     this.password
   );
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  cryptography = new Cryptography();</span>
+  cryptography = new Cryptography();
 &nbsp;
-  async <span class="fstat-no" title="function not covered" >verifyId(</span>id: string) {
-    const existsOrNotExistsId = <span class="cstat-no" title="statement not covered" >await knex</span>
+  async verifyId(id: string) {
+    const existsOrNotExistsId = await knex
       .where("driver_id", id)
       .from("vex_schema.driver")
       .first();
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (existsOrNotExistsId) <span class="cstat-no" title="statement not covered" >return true;</span></span>
+    if (existsOrNotExistsId) return true;
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (!existsOrNotExistsId) <span class="cstat-no" title="statement not covered" >return false;</span></span>
   }
@@ -412,7 +412,7 @@ export default class DriverService extends Driver implements DbOperations {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-30T18:17:10.816Z
+                at 2023-08-30T18:27:41.300Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

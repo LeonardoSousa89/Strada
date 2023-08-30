@@ -40,9 +40,9 @@ export default class InformationMidiaUriRelationTableService
     if (!existsOrNotExistsId) return false;
   }
 
-  async verifyRelationshipExists(information_relation_id: number) {
+  async verifyRelationshipExists(midia_uri_relation_id: number) {
     const existsOrNotExistsId = await knex
-      .where("information_relation_id", information_relation_id)
+      .where("midia_uri_relation_id", midia_uri_relation_id)
       .from("vex_schema.information_midia_uri_relation_table")
       .first();
 
