@@ -380,8 +380,8 @@ export default class OrgJoinQuery implements DbOperations {
       .from("vex_schema.information_midia_uri_relation_table")
       .innerJoin(
         "vex_schema.midia_uri",
-        "information_midia_uri_relation_table.midia_uri_relation_id ",
-        "midia_uri.uri"
+        "information_midia_uri_relation_table.midia_uri_relation_id",
+        "midia_uri.midia_uri_id"
       )
       .innerJoin(
         "vex_schema.information",

@@ -188,7 +188,7 @@ class OrgJoinQuery {
             const uri = yield knex_1.default
                 .select(joinProjection_1.joindInformationAndMidiaProjection)
                 .from("vex_schema.information_midia_uri_relation_table")
-                .innerJoin("vex_schema.midia_uri", "information_midia_uri_relation_table.midia_uri_relation_id ", "midia_uri.uri")
+                .innerJoin("vex_schema.midia_uri", "information_midia_uri_relation_table.midia_uri_relation_id", "midia_uri.midia_uri_id")
                 .innerJoin("vex_schema.information", "information_midia_uri_relation_table.information_relation_id", "information.information_id")
                 .innerJoin("vex_schema.driver", "information_midia_uri_relation_table.driver_relation_id", "driver.driver_id")
                 .innerJoin("vex_schema.org", "information_midia_uri_relation_table.org_relation_id", "org.org_id")

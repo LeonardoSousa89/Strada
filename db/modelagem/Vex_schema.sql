@@ -321,3 +321,20 @@ DROP TABLE vex_schema.information_midia_uri_relation_table;
 
 SELECT * FROM vex_schema.midia_uri; 
 SELECT * FROM vex_schema.information_midia_uri_relation_table; 
+
+/*query para teste de projeção de midia uri*/
+SELECT midia_uri.midia_uri_id,
+	   midia_uri.uri,
+	   information.information_id,
+	   driver.driver_id,
+	   org.org_id
+FROM vex_schema.information_midia_uri_relation_table
+inner join vex_schema.midia_uri midia_uri
+on midia_uri.midia_uri_id = information_midia_uri_relation_table.midia_uri_relation_id 
+inner join vex_schema.information information
+on information.information_id = information_midia_uri_relation_table.information_relation_id
+inner join vex_schema.driver driver
+on driver.driver_id = information_midia_uri_relation_table.driver_relation_id	
+inner join vex_schema.org org
+on org.org_id = information_midia_uri_relation_table.org_relation_id
+where org.org_id = 235;
