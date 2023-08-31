@@ -375,7 +375,7 @@ export default class OrgJoinQuery implements DbOperations {
       }
     }
 
-    const uri = await knex
+    const midia = await knex
       .select(joindInformationAndMidiaProjection)
       .from("vex_schema.information_midia_uri_relation_table")
       .innerJoin(
@@ -414,9 +414,7 @@ export default class OrgJoinQuery implements DbOperations {
             document: orgAndDriverAndDocument,
             information: {
               orgAndDriverAndInformation,
-              midia: {
-                uri,
-              },
+              midia
             },
           },
         },

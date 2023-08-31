@@ -185,7 +185,7 @@ class OrgJoinQuery {
                         this.cryptography.decrypt(orgAndDriverAndInformation[cipherDataPosition].date_time_registry);
                 }
             }
-            const uri = yield knex_1.default
+            const midia = yield knex_1.default
                 .select(joinProjection_1.joindInformationAndMidiaProjection)
                 .from("vex_schema.information_midia_uri_relation_table")
                 .innerJoin("vex_schema.midia_uri", "information_midia_uri_relation_table.midia_uri_relation_id", "midia_uri.midia_uri_id")
@@ -207,9 +207,7 @@ class OrgJoinQuery {
                             document: orgAndDriverAndDocument,
                             information: {
                                 orgAndDriverAndInformation,
-                                midia: {
-                                    uri,
-                                },
+                                midia
                             },
                         },
                     },
