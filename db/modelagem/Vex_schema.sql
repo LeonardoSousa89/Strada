@@ -338,3 +338,5 @@ on driver.driver_id = information_midia_uri_relation_table.driver_relation_id
 inner join vex_schema.org org
 on org.org_id = information_midia_uri_relation_table.org_relation_id
 where org.org_id = 235;
+
+delete from vex_schema.information where information_id > 456636;
