@@ -8,8 +8,27 @@ import {
 } from "react-native";
 
 import { TextInput, Button } from "@react-native-material/core";
+import { changeScreen } from "../../../controllers/navigate/navigate";
+import { signIn } from "../../../controllers/auth/login";
+import { privacyPolicy, termsOfUse } from "../../../controllers/termsAndPolicies/termsAndPolicies";
 
-export default function Login() {
+export default (props: any) => {
+  function changeDirectory() {
+    changeScreen(props, "signup");
+  }
+
+  function login() {
+    signIn(props, "welcome-organization");
+  }
+
+  function terms() {
+    termsOfUse();
+  }
+
+  function policies() {
+    privacyPolicy();
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -34,17 +53,26 @@ export default function Login() {
             style={styles.input}
           />
 
-          <Button style={styles.btn} title="login" color="#162226" />
+          <Button
+            style={styles.btn}
+            title="login"
+            color="#162226"
+            onPress={() => login()}
+          />
         </View>
         <View style={styles.footer}>
-          <Text style={styles.getAccount}>não possui uma conta? cadastre-se</Text>
-          <Text style={styles.term}>termos de uso</Text>
-          <Text style={styles.policies}>política de privacidade</Text>
+          <Text style={styles.getAccount} onPress={() => changeDirectory()}>
+            não possui uma conta? cadastre-se
+          </Text>
+          <Text style={styles.term} onPress={() => terms()}>
+            termos de uso
+          </Text>
+          <Text style={styles.policies} onPress={() => policies()}>política de privacidade</Text>
         </View>
       </View>
     </ScrollView>
   );
-}
+};
 
 const { width, height } = Dimensions.get("window");
 
@@ -73,6 +101,7 @@ if (height > 800) {
       fontSize: 15,
       color: "#162226",
       marginTop: 10,
+      fontWeight: "bold",
     },
     policies: {
       fontSize: 20,
@@ -125,6 +154,7 @@ if (height > 800) {
       fontSize: 15,
       color: "#162226",
       marginTop: 10,
+      fontWeight: "bold",
     },
     policies: {
       fontSize: 20,
