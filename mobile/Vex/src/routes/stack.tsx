@@ -6,7 +6,9 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import { StyleSheet, View } from "react-native";
 
-import Welcome from "../modules/checklist/screen/welcome/welcome";
+import Welcome from "../modules/checklist/screens/welcome/welcome";
+import Register from "../modules/checklist/screens/auth/register/signUp";
+import Login from "../modules/checklist/screens/auth/login/login";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +21,8 @@ export default function Route() {
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="welcome" component={Welcome} />
+          <Stack.Screen name="signup" component={Register} />
+          <Stack.Screen name="login" component={Login} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>
@@ -26,6 +30,6 @@ export default function Route() {
 }
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
+    flex: 1,
   },
 });
