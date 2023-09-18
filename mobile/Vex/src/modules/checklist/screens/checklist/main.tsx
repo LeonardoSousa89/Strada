@@ -9,6 +9,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { signOut } from "../../controllers/auth/logout";
+import { changeScreen } from "../../controllers/navigate/navigate";
 
 export default (props: any) => {
   const [orgName, setOrgName]: Array<any> = useState();
@@ -21,6 +22,10 @@ export default (props: any) => {
 
   function logOut() {
     signOut(props, "login");
+  }
+
+  function changeDirectory() {
+    changeScreen(props, "services_list");
   }
 
   return (
@@ -45,7 +50,7 @@ export default (props: any) => {
       </View>
 
       <View style={styles.main}>
-        <Pressable onPress={test}>
+        <Pressable onPress={changeDirectory}>
           <Image
             source={require("../../../../assets/screens/menu/services.png")}
           />
