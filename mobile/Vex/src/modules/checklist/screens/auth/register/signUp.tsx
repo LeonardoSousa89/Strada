@@ -90,7 +90,7 @@ const { width, height } = Dimensions.get("window");
 
 let styles: any = 0;
 
-if (height > 769) {
+if (height > 720) {
   styles = StyleSheet.create({
     container: {
       height: height,
