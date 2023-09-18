@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, SafeAreaView } from "react-native";
 import { alterScreen } from "../../controllers/animationController/animation";
 
 export default(props: any) => {
@@ -7,7 +7,7 @@ export default(props: any) => {
   useEffect(() => alterScreen(props),[])
   
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.field_right}>
         <Image
           style={styles.image}
@@ -21,7 +21,7 @@ export default(props: any) => {
           source={require("../../../../assets/screens/animation/animation_logo.png")}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

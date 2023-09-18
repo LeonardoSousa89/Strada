@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@react-native-material/core";
-import { StyleSheet, View, Image, Text, Dimensions } from "react-native";
+import { StyleSheet, View, Image, Text, Dimensions, SafeAreaView } from "react-native";
+import { changeScreen } from "../../controllers/navigate/navigate";
 
 export default (props: any) => {
   const [org, setOrg]: Array<any> = useState();
 
   useEffect(() => setOrg("nome da organização"), []);
 
+  function next(){
+    changeScreen(props, "main-menu")
+  }
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.icon}>
         <Image
           source={require("../../../../assets/global/circular_logo.png")}
@@ -26,10 +31,10 @@ export default (props: any) => {
           title="prosseguir"
           tintColor="#9BAEBF"
           color="#2B3640"
-          // onPress={() => login()}
+          onPress={() => next()}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -5,6 +5,7 @@ import {
   Text,
   ScrollView,
   Dimensions,
+  SafeAreaView,
 } from "react-native";
 
 import { TextInput, Button } from "@react-native-material/core";
@@ -31,7 +32,7 @@ export default (props: any) => {
 
   return (
     <ScrollView>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Image
             style={styles.image}
@@ -69,7 +70,7 @@ export default (props: any) => {
           </Text>
           <Text style={styles.policies} onPress={() => policies()}>política de privacidade</Text>
         </View>
-      </View>
+      </SafeAreaView>
     </ScrollView>
   );
 };
@@ -78,7 +79,7 @@ const { width, height } = Dimensions.get("window");
 
 let styles: any = 0;
 
-if (height > 800) {
+if (height > 769) {
   styles = StyleSheet.create({
     container: {
       height: height,

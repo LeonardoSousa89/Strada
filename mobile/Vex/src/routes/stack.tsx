@@ -10,6 +10,7 @@ import Welcome from "../modules/checklist/screens/welcome/welcome";
 import Register from "../modules/checklist/screens/auth/register/signUp";
 import Login from "../modules/checklist/screens/auth/login/login";
 import WelcomeOrganization from "../modules/checklist/screens/welcome/welcomeOrganization";
+import Main from "../modules/checklist/screens/checklist/main";
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ export default function Route() {
           <Stack.Screen name="signup" component={Register} />
           <Stack.Screen name="login" component={Login} />
           <Stack.Screen name="welcome-organization" component={WelcomeOrganization} />
+          <Stack.Screen name="main-menu" component={Main} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>
