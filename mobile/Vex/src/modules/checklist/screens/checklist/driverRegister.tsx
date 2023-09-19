@@ -18,6 +18,16 @@ export default (props: any) => {
     <ScrollView>
       <SafeAreaView style={styles.container}>
         <View style={styles.subcontainer}>
+          <View style={styles.driver_photo}>
+            <Pressable
+              onPress={()=>console.warn("user photo pressed")}
+            >
+              <Image
+                source={require("../../../../assets/screens/menu/user_photo.png")}
+              />
+            </Pressable>
+          </View>
+
           <TextInput
             variant="outlined"
             label="cnh"
@@ -99,15 +109,19 @@ let styles: any = 0;
 if (height > 720) {
   styles = StyleSheet.create({
     container: {
-      height: height,
+      height: height + 100,
       backgroundColor: "#fff",
       justifyContent: "center",
       alignItems: "center",
     },
     subcontainer: {
-      marginTop: 50,
       height,
       width: "70%",
+    },
+    driver_photo:{
+      justifyContent: "center",
+      alignItems: "center",
+      marginBottom: 20,
     },
     input: {
       margin: 5,
@@ -120,15 +134,20 @@ if (height > 720) {
 } else {
   styles = StyleSheet.create({
     container: {
-      height: height + 200,
+      height: height + 400,
       backgroundColor: "#fff",
       justifyContent: "center",
       alignItems: "center",
     },
     subcontainer: {
-      marginTop: -100,
+      marginTop: -300,
       height,
       width: "70%",
+    },
+    driver_photo:{
+      justifyContent: "center",
+      alignItems: "center",
+      marginBottom: 20,
     },
     input: {
       margin: 5,
