@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     padding: 40,
     width,
     borderWidth:0.4,
-    marginTop: 5,
+    marginTop: 2,
     borderColor: '#162226',
     justifyContent: "center",
     alignItems: "center",
@@ -45,6 +45,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: '#162226',
     fontSize: 20,
-    textDecorationLine: "underline",
+    // textDecorationLine: "underline",
   }
 });

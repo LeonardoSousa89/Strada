@@ -11,8 +11,12 @@ import Register from "../modules/checklist/screens/auth/register/signUp";
 import Login from "../modules/checklist/screens/auth/login/login";
 import WelcomeOrganization from "../modules/checklist/screens/welcome/welcomeOrganization";
 import Main from "../modules/checklist/screens/checklist/main";
-import servicesList from "../modules/checklist/screens/checklist/servicesList";
-import driverOrNote from "../modules/checklist/screens/checklist/driverOrNote";
+import ServicesList from "../modules/checklist/screens/checklist/servicesList";
+import ChecklistOperations from "../modules/checklist/screens/checklist/checklistOperations";
+import checklistDriverOperationalServices from "../modules/checklist/screens/checklist/checklistDriverOperationalServices";
+import checklistOperationalServices from "../modules/checklist/screens/checklist/checklistOperationalServices";
+import driverRegister from "../modules/checklist/screens/checklist/driverRegister";
+import driverEdit from "../modules/checklist/screens/checklist/driverEdit";
 
 const Stack = createNativeStackNavigator();
 
@@ -34,13 +38,45 @@ export default function Route() {
           <Stack.Screen name="main-menu" component={Main} />
           <Stack.Screen
             name="services_list"
-            component={servicesList}
+            component={ServicesList}
             options={{ headerShown: true, headerTitle: "serviços" }}
           />
           <Stack.Screen
-            name="checklist"
-            component={driverOrNote}
-            options={{ headerShown: true, headerTitle: "checklist" }}
+            name="checklist-operations"
+            component={ChecklistOperations}
+            options={{ headerShown: true, headerTitle: "operações" }}
+          />
+          <Stack.Screen
+            name="checklist-driver-operational-services"
+            component={checklistDriverOperationalServices}
+            options={{
+              headerShown: true,
+              headerTitle: "serviços do motorista",
+            }}
+          />
+          <Stack.Screen
+            name="checklist-operational-services"
+            component={checklistOperationalServices}
+            options={{
+              headerShown: true,
+              headerTitle: "serviços do checklist",
+            }}
+          />
+          <Stack.Screen
+            name="driver-register"
+            component={driverRegister}
+            options={{
+              headerShown: true,
+              headerTitle: "cadastro do motorista",
+            }}
+          />
+          <Stack.Screen
+            name="driver-edit"
+            component={driverEdit}
+            options={{
+              headerShown: true,
+              headerTitle: "alterar dados do motorista",
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>
