@@ -11,8 +11,12 @@ import {
   FlatList,
 } from "react-native";
 
-{/* https://reactnavigation.org/docs/bottom-tab-navigator */}
-{/* this file will be bottom tabs navigation(second route)*/}
+{
+  /* https://reactnavigation.org/docs/bottom-tab-navigator */
+}
+{
+  /* this file will be bottom tabs navigation(second route)*/
+}
 export default (props: any) => {
   return (
     <SafeAreaView style={styles.container}>
