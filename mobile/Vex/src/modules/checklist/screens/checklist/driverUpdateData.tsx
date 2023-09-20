@@ -98,6 +98,7 @@ export default (props: any) => {
             style={styles.delete}
             title="deletar"
             color="#FB9F9A"
+            tintColor="#fff"
             onPress={() => console.warn("deletar")}
           />
         </View>
@@ -156,7 +157,7 @@ if (height > 720) {
       marginBottom: 20,
     },
     input: {
-      margin: 5,
+      marginTop: 10,
     },
     update: {
       marginTop: 20,

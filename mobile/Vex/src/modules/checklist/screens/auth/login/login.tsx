@@ -42,7 +42,7 @@ export default (props: any) => {
         <View style={styles.main}>
           <TextInput
             variant="outlined"
-            label="cnpj"
+            label="cnpj ou email"
             color="#162226"
             style={styles.input}
           />
