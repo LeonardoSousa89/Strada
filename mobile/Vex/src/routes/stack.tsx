@@ -18,6 +18,9 @@ import checklistOperationalServices from "../modules/checklist/screens/checklist
 import driverRegister from "../modules/checklist/screens/checklist/driverRegister";
 import driverEdit from "../modules/checklist/screens/checklist/driverEdit";
 import driverEditOperationalService from "../modules/checklist/screens/checklist/driverEditOperationalService";
+import updateDriverPassword from "../modules/checklist/screens/auth/checklist/updateDriverPassword";
+import driverUpdateData from "../modules/checklist/screens/checklist/driverUpdateData";
+import driverInfo from "../modules/checklist/screens/checklist/driverInfo";
 
 const Stack = createNativeStackNavigator();
 
@@ -76,7 +79,7 @@ export default function Route() {
             component={driverEdit}
             options={{
               headerShown: true,
-              headerTitle: "alterar dados do motorista",
+              headerTitle: "motoristas cadastrados",
             }}
           />
           <Stack.Screen
@@ -85,6 +88,30 @@ export default function Route() {
             options={{
               headerShown: true,
               headerTitle: "configurações do motorista",
+            }}
+          />
+          <Stack.Screen
+            name="driver-update-data"
+            component={driverUpdateData}
+            options={{
+              headerShown: true,
+              headerTitle: "alteração de dados do motorista",
+            }}
+          />
+          <Stack.Screen
+            name="driver-password-update"
+            component={updateDriverPassword}
+            options={{
+              headerShown: true,
+              headerTitle: "alteração da senha do motorista",
+            }}
+          />
+          <Stack.Screen
+            name="driver-info"
+            component={driverInfo}
+            options={{
+              headerShown: true,
+              headerTitle: "informações do motorista",
             }}
           />
         </Stack.Navigator>

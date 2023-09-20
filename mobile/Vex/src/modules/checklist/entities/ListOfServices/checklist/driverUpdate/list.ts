@@ -4,19 +4,19 @@ export const list = [
   {
     id: "1",
     name: "atualizar dados cadastrais",
-    path: "",
+    path: "driver-update-data",
     imageUri: "",
   },
   {
     id: "2",
     name: "atualizar senha",
-    path: "",
+    path: "driver-password-update",
     imageUri: "",
   },
   {
     id: "3",
     name: "visualizar informações do motorista",
-    path: "",
+    path: "driver-info",
     imageUri: "",
   },
 ];

@@ -19,9 +19,7 @@ export default (props: any) => {
       <SafeAreaView style={styles.container}>
         <View style={styles.subcontainer}>
           <View style={styles.driver_photo}>
-            <Pressable
-              onPress={()=>console.warn("user photo pressed")}
-            >
+            <Pressable onPress={() => console.warn("user photo pressed")}>
               <Image
                 source={require("../../../../assets/screens/menu/user_photo.png")}
               />
@@ -91,10 +89,16 @@ export default (props: any) => {
             style={styles.input}
           />
           <Button
-            style={styles.btn}
-            title="Cadastro"
+            style={styles.update}
+            title="Atualizar"
             color="#162226"
-            onPress={() => console.warn("cadastro")}
+            onPress={() => console.warn("atualizar")}
+          />
+          <Button
+            style={styles.delete}
+            title="deletar"
+            color="#FB9F9A"
+            onPress={() => console.warn("deletar")}
           />
         </View>
       </SafeAreaView>
@@ -109,7 +113,7 @@ let styles: any = 0;
 if (height > 720) {
   styles = StyleSheet.create({
     container: {
-      height: height + 100,
+      height: height + 200,
       backgroundColor: "#fff",
       justifyContent: "center",
       alignItems: "center",
@@ -118,23 +122,25 @@ if (height > 720) {
       height,
       width: "70%",
     },
-    driver_photo:{
+    driver_photo: {
       justifyContent: "center",
       alignItems: "center",
       marginBottom: 20,
     },
     input: {
-      margin: 5,
+      marginTop: 10,
     },
-    btn: {
+    update: {
       marginTop: 20,
-      marginBottom: 100,
+    },
+    delete: {
+      marginTop: 10,
     },
   });
 } else {
   styles = StyleSheet.create({
     container: {
-      height: height + 400,
+      height: height + 450,
       backgroundColor: "#fff",
       justifyContent: "center",
       alignItems: "center",
@@ -144,17 +150,19 @@ if (height > 720) {
       height,
       width: "70%",
     },
-    driver_photo:{
+    driver_photo: {
       justifyContent: "center",
       alignItems: "center",
       marginBottom: 20,
     },
     input: {
-      marginTop: 10,
+      margin: 5,
     },
-    btn: {
+    update: {
       marginTop: 20,
-      marginBottom: 100,
+    },
+    delete: {
+      marginTop: 10,
     },
   });
 }
