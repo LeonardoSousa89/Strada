@@ -1,4 +1,4 @@
-import { changeScreen } from "../../../controllers/navigate/navigate";
+import { changeScreen } from "../../../../controllers/navigate/navigate";
 
 export const list = [
     {

@@ -17,6 +17,7 @@ import checklistDriverOperationalServices from "../modules/checklist/screens/che
 import checklistOperationalServices from "../modules/checklist/screens/checklist/checklistOperationalServices";
 import driverRegister from "../modules/checklist/screens/checklist/driverRegister";
 import driverEdit from "../modules/checklist/screens/checklist/driverEdit";
+import driverEditOperationalService from "../modules/checklist/screens/checklist/driverEditOperationalService";
 
 const Stack = createNativeStackNavigator();
 
@@ -76,6 +77,14 @@ export default function Route() {
             options={{
               headerShown: true,
               headerTitle: "alterar dados do motorista",
+            }}
+          />
+          <Stack.Screen
+            name="driver-config"
+            component={driverEditOperationalService}
+            options={{
+              headerShown: true,
+              headerTitle: "configurações do motorista",
             }}
           />
         </Stack.Navigator>

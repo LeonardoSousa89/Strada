@@ -11,7 +11,7 @@ import {
   FlatList,
 } from "react-native";
 import { ServiceList } from "../../props/serviceList";
-import { list } from "../../../../mock/list";
+import { list } from "../../entities/ListOfServices/checklist/driverUpdate/list";
 
 export default (props: any) => {
   return (

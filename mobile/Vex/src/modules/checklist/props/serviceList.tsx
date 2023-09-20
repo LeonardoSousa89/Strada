@@ -8,12 +8,12 @@ import {
 } from "react-native";
 import { navigation } from "../entities/ListOfServices/list";
 
-export const ServiceList = (props: { 
-        props?: any,
-        path?: string,
-        name?: string,
-        imageUri?: string, 
-    }) => {
+export const ServiceList = (props: {
+  props?: any;
+  path?: string;
+  name?: string;
+  imageUri?: string;
+}) => {
   function navigate() {
     navigation(props.props, props.path);
   }
@@ -23,7 +23,7 @@ export const ServiceList = (props: {
       <View style={styles.item}>
         <Text style={styles.text}>{props.name}</Text>
         {/* esse recurso está gerando um erro */}
-        {/* <Image source={require(props.imageUri)}/> */} 
+        {/* <Image source={require(props.imageUri)}/> */}
       </View>
     </Pressable>
   );
@@ -36,15 +36,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 40,
     width,
-    borderWidth:0.4,
+    borderWidth: 0.4,
     marginTop: 2,
-    borderColor: '#162226',
+    borderColor: "#162226",
     justifyContent: "center",
     alignItems: "center",
-  },text: {
+  },
+  text: {
     fontWeight: "bold",
-    color: '#162226',
+    color: "#162226",
     fontSize: 20,
+    textAlign: "center",
     // textDecorationLine: "underline",
-  }
+  },
 });
