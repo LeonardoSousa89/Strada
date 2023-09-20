@@ -33,4 +33,25 @@ export let info: any = {
     imageUri: "",
 }
 
+export let checklist: any = [
+  {
+    id: "1",
+    name: "Alberto Filho",
+    path: "driver-checklist-view",
+    imageUri: "",
+  },
+  {
+    id: "2",
+    name: "Gilson Néris",
+    path: "driver-checklist-view",
+    imageUri: "",
+  },
+  {
+    id: "3",
+    name: "Robson Leitão",
+    path: "driver-checklist-view",
+    imageUri: "",
+  },
+];
+
 export const navigation = (props: any, path: any) => changeScreen(props, path);

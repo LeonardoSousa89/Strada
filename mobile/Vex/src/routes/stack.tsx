@@ -21,6 +21,7 @@ import DriverEditOperationalService from "../modules/checklist/screens/checklist
 import UpdateDriverPassword from "../modules/checklist/screens/auth/checklist/updateDriverPassword";
 import DriverUpdateData from "../modules/checklist/screens/checklist/driverUpdateData";
 import DriverInfo from "../modules/checklist/screens/checklist/driverInfo";
+import DriverChecklistView from "../modules/checklist/screens/checklist/driverChecklistView";
 
 const Stack = createNativeStackNavigator();
 
@@ -112,6 +113,14 @@ export default function Route() {
             options={{
               headerShown: true,
               headerTitle: "informações do motorista",
+            }}
+          />
+          <Stack.Screen
+            name="driver-checklist-view"
+            component={DriverChecklistView}
+            options={{
+              headerShown: true,
+              headerTitle: "checklist do motorista",
             }}
           />
         </Stack.Navigator>
