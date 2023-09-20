@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { list } from "../../entities/ListOfServices/list";
 
-import { ServiceList } from "../../props/serviceList";
+import { ServiceList } from "../../props/navigationMenu/serviceList";
 
 export default (props: any) => {
   return (

@@ -9,10 +9,10 @@ const Tab = createBottomTabNavigator();
 export default function Route() {
   return (
     <SafeAreaView style={styles.container}>
-      <Tab.Navigator 
+      <Tab.Navigator
         initialRouteName="checklist-form"
         screenOptions={{ headerShown: false }}
-        >
+      >
         <Tab.Screen
           name="checklist-form"
           component={ChecklistForm}

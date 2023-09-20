@@ -6,28 +6,21 @@ import {
   Dimensions,
   FlatList,
   ScrollView,
-  Image,
+  Pressable,
+  Image
 } from "react-native";
 import { checklist, midia } from "../../../../mock/list";
 import { CheckList, Midia } from "../../props/information/checklist";
-import { Pressable } from "@react-native-material/core";
 
 export default (props: any) => {
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
-        <View style={styles.checklist}>
+        <View style={styles.midia}>
           <FlatList
-            data={checklist}
+            data={midia}
             renderItem={({ item }) => (
-              <CheckList
-                recordedBy={item.recordedBy}
-                cnh={item.cnh}
-                initialKm={item.initialKm}
-                plate={item.plate}
-                dateFromRecord={item.dateFromRecord}
-                notes={item.notes}
-              />
+              <Midia typeOfFile={item.typeOfFile} size={item.size} />
             )}
             keyExtractor={(item) => item.id}
           />
@@ -63,10 +56,10 @@ if (height > 720) {
       justifyContent: "center",
       backgroundColor: "#fff",
     },
-    checklist: {
+    midia: {
       flex: 6,
+      // backgroundColor: "#f565",
       maxHeight: height,
-      //   backgroundColor: "#f56",
       width,
     },
     operations: {
@@ -82,23 +75,22 @@ if (height > 720) {
 } else {
   styles = StyleSheet.create({
     container: {
-      height: height + 100,
+      height: height,
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: "#fff",
     },
-    checklist: {
-      flex: 6, //não se adapta ao crescimento da tela em função das
-      //    informações como fazem os apps web, tais como:
-      // react, html+css+javascript, angular e etc ...
-      //   backgroundColor: "#f56",
+    midia: {
+      flex: 4, //não se adapta ao crescimento das informações como
+      //   fazem os apps web, tais como: react, html+css+javascript, angular e etc ...
+      // backgroundColor: "#f565",
+      maxHeight: height,
       width,
     },
     operations: {
-      flex: 1, //não se adapta ao crescimento da tela em função das
-      //    informações como fazem os apps web, tais como:
-      // react, html+css+javascript, angular e etc ...
+      flex: 1,
       flexDirection: "row",
+      maxHeight: height,
       width,
       alignItems: "center",
       justifyContent: "space-evenly",

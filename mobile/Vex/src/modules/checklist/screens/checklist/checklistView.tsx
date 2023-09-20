@@ -1,13 +1,13 @@
 import { SafeAreaView, StyleSheet, View, Text, FlatList } from "react-native";
-import { checklist } from "../../../../mock/list";
-import { ServiceList } from "../../props/serviceList";
+import { checklistDriver } from "../../../../mock/list";
+import { ServiceList } from "../../props/navigationMenu/serviceList";
 
 export default (props: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.list}>
         <FlatList
-          data={checklist}
+          data={checklistDriver}
           renderItem={({ item }) => (
             <ServiceList props={props} path={item.path} name={item.name} />
           )}

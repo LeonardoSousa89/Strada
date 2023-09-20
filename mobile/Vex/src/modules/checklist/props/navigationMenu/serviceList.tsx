@@ -6,7 +6,7 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import { navigation } from "../entities/ListOfServices/list";
+import { navigation } from "../../entities/ListOfServices/list";
 
 export const ServiceList = (props: {
   props?: any;

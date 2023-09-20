@@ -10,7 +10,7 @@ import {
   SafeAreaView,
   FlatList,
 } from "react-native";
-import { ServiceList } from "../../props/serviceList";
+import { ServiceList } from "../../props/navigationMenu/serviceList";
 import { list } from "../../../../mock/list";
 
 export default (props: any) => {
