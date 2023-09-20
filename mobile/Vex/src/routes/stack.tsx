@@ -4,7 +4,7 @@ import Toast from "react-native-toast-message";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 
-import { StyleSheet, View } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 
 import Welcome from "../modules/checklist/screens/welcome/welcome";
 import Register from "../modules/checklist/screens/auth/register/signUp";
@@ -13,20 +13,20 @@ import WelcomeOrganization from "../modules/checklist/screens/welcome/welcomeOrg
 import Main from "../modules/checklist/screens/checklist/main";
 import ServicesList from "../modules/checklist/screens/checklist/servicesList";
 import ChecklistOperations from "../modules/checklist/screens/checklist/checklistOperations";
-import checklistDriverOperationalServices from "../modules/checklist/screens/checklist/checklistDriverOperationalServices";
-import checklistOperationalServices from "../modules/checklist/screens/checklist/checklistOperationalServices";
-import driverRegister from "../modules/checklist/screens/checklist/driverRegister";
-import driverEdit from "../modules/checklist/screens/checklist/driverEdit";
-import driverEditOperationalService from "../modules/checklist/screens/checklist/driverEditOperationalService";
-import updateDriverPassword from "../modules/checklist/screens/auth/checklist/updateDriverPassword";
-import driverUpdateData from "../modules/checklist/screens/checklist/driverUpdateData";
-import driverInfo from "../modules/checklist/screens/checklist/driverInfo";
+import ChecklistDriverOperationalServices from "../modules/checklist/screens/checklist/checklistDriverOperationalServices";
+import TabRoute from "./tabs";
+import DriverRegister from "../modules/checklist/screens/checklist/driverRegister";
+import DriverEdit from "../modules/checklist/screens/checklist/driverEdit";
+import DriverEditOperationalService from "../modules/checklist/screens/checklist/driverEditOperationalService";
+import UpdateDriverPassword from "../modules/checklist/screens/auth/checklist/updateDriverPassword";
+import DriverUpdateData from "../modules/checklist/screens/checklist/driverUpdateData";
+import DriverInfo from "../modules/checklist/screens/checklist/driverInfo";
 
 const Stack = createNativeStackNavigator();
 
 export default function Route() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="welcome"
@@ -52,7 +52,7 @@ export default function Route() {
           />
           <Stack.Screen
             name="checklist-driver-operational-services"
-            component={checklistDriverOperationalServices}
+            component={ChecklistDriverOperationalServices}
             options={{
               headerShown: true,
               headerTitle: "serviços do motorista",
@@ -60,15 +60,15 @@ export default function Route() {
           />
           <Stack.Screen
             name="checklist-operational-services"
-            component={checklistOperationalServices}
+            component={TabRoute}
             options={{
               headerShown: true,
-              headerTitle: "serviços do checklist",
+              headerTitle: "checklist",
             }}
           />
           <Stack.Screen
             name="driver-register"
-            component={driverRegister}
+            component={DriverRegister}
             options={{
               headerShown: true,
               headerTitle: "cadastro do motorista",
@@ -76,7 +76,7 @@ export default function Route() {
           />
           <Stack.Screen
             name="driver-edit"
-            component={driverEdit}
+            component={DriverEdit}
             options={{
               headerShown: true,
               headerTitle: "motoristas cadastrados",
@@ -84,7 +84,7 @@ export default function Route() {
           />
           <Stack.Screen
             name="driver-config"
-            component={driverEditOperationalService}
+            component={DriverEditOperationalService}
             options={{
               headerShown: true,
               headerTitle: "configurações do motorista",
@@ -92,7 +92,7 @@ export default function Route() {
           />
           <Stack.Screen
             name="driver-update-data"
-            component={driverUpdateData}
+            component={DriverUpdateData}
             options={{
               headerShown: true,
               headerTitle: "alteração de dados do motorista",
@@ -100,7 +100,7 @@ export default function Route() {
           />
           <Stack.Screen
             name="driver-password-update"
-            component={updateDriverPassword}
+            component={UpdateDriverPassword}
             options={{
               headerShown: true,
               headerTitle: "alteração da senha do motorista",
@@ -108,7 +108,7 @@ export default function Route() {
           />
           <Stack.Screen
             name="driver-info"
-            component={driverInfo}
+            component={DriverInfo}
             options={{
               headerShown: true,
               headerTitle: "informações do motorista",
@@ -116,7 +116,7 @@ export default function Route() {
           />
         </Stack.Navigator>
       </NavigationContainer>
-    </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
