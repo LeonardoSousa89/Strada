@@ -14,22 +14,8 @@ import {
 import { changeScreen } from "../../controllers/navigate/navigate";
 
 export default (props: {
-  props: any;
-  path: string;
   message: string;
-  duration?: number;
 }) => {
-  function go() {
-    if (props.duration) {
-      setTimeout(function () {
-        changeScreen(props.props, props.path);
-      }, props.duration);
-    } else {
-      changeScreen(props.props, props.path);
-    }
-  }
-
-  go();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -49,6 +35,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    marginBottom: 20,
+    marginBottom: 50,
+    fontSize: 15,
+    fontWeight: "bold"
   },
 });
