@@ -11,12 +11,8 @@ import {
   SafeAreaView,
   FlatList,
 } from "react-native";
-import { changeScreen } from "../../controllers/navigate/navigate";
 
-export default (props: {
-  message: string;
-}) => {
-
+export default (props: { message: string }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.text}>{props.message}</Text>
@@ -37,6 +33,6 @@ const styles = StyleSheet.create({
   text: {
     marginBottom: 50,
     fontSize: 15,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
 });
