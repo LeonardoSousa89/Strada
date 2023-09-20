@@ -28,6 +28,10 @@ export default (props: any) => {
     changeScreen(props, "services_list");
   }
 
+  function settings() {
+    changeScreen(props, "settings-list");
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -36,7 +40,7 @@ export default (props: any) => {
             source={require("../../../../assets/screens/menu/user_photo.png")}
           />
           <View style={styles.settings}>
-            <Pressable onPress={test}>
+            <Pressable onPress={settings}>
               <Image
                 style={styles.settings_btn}
                 source={require("../../../../assets/screens/menu/gear.png")}

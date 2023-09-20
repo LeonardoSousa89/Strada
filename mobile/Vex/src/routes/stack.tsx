@@ -25,6 +25,7 @@ import DriverChecklistView from "../modules/checklist/screens/checklist/driverCh
 import DriverDateChecklistView from "../modules/checklist/screens/checklist/driverDateChecklistView";
 import DriverChecklistMidiaView from "../modules/checklist/screens/checklist/driverChecklistMidiaView";
 import ChecklistInfo from "../modules/checklist/screens/checklist/checklistInfo";
+import ConfigurationSettingsList from "../modules/checklist/screens/checklist/configurationSettingsList";
 
 const Stack = createNativeStackNavigator();
 
@@ -148,6 +149,14 @@ export default function Route() {
             options={{
               headerShown: true,
               headerTitle: "dados de checklist",
+            }}
+          />
+          <Stack.Screen
+            name="settings-list"
+            component={ConfigurationSettingsList}
+            options={{
+              headerShown: true,
+              headerTitle: "serviços de configuração",
             }}
           />
         </Stack.Navigator>
