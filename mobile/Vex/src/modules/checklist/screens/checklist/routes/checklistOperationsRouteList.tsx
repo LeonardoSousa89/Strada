@@ -10,7 +10,7 @@ import {
   SafeAreaView,
   FlatList,
 } from "react-native";
-import { navigate } from "../../services/navigate/navigate";
+import { navigate } from "../../../services/navigate/navigate";
 
 export default (props: any) => {
 
@@ -27,14 +27,14 @@ export default (props: any) => {
       <View style={styles.top_level}>
         <Pressable onPress={driverOperationalRoute}>
           <Image
-            source={require("../../../../assets/screens/checklist/chauffeur.png")}
+            source={require("../../../../../assets/screens/checklist/chauffeur.png")}
           />
         </Pressable>
       </View>
       <View style={styles.bottom_level}>
         <Pressable onPress={checklistOperationalRoute}>
           <Image
-            source={require("../../../../assets/screens/checklist/clipboard.png")}
+            source={require("../../../../../assets/screens/checklist/clipboard.png")}
           />
         </Pressable>
       </View>

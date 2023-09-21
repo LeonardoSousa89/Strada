@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SafeAreaView, StyleSheet } from "react-native";
 
 import ChecklistForm from "../modules/checklist/screens/checklist/checklistForm";
-import ChecklistView from "../modules/checklist/screens/checklist/checklistView";
+import ChecklistView from "../modules/checklist/screens/checklist/routes/checklistDriverRouteList";
 
 const Tab = createBottomTabNavigator();
 

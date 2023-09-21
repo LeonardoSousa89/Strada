@@ -10,15 +10,15 @@ import {
   SafeAreaView,
   FlatList,
 } from "react-native";
-import { ServiceList } from "../../../../props/navigationMenu/serviceList";
-import { list } from "../../../../ListOfServices/checklist/driverServices/list";
+import { ServiceList } from "../../../../../props/navigationMenu/serviceList";
+import { list } from "../../../../../ListOfServices/checklist/driverUpdate/list";
 
 export default (props: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.list}>
         <FlatList
-          data={list}
+          data={ list }
           renderItem={({ item }) => (
             <ServiceList props={props} path={item.path} name={item.name} />
           )}
@@ -34,6 +34,7 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height,
     backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",

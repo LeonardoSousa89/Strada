@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import {
   StyleSheet,
   View,
@@ -9,9 +10,8 @@ import {
   SafeAreaView,
   FlatList,
 } from "react-native";
-import { list } from "../../../../ListOfServices/vex/list";
-
-import { ServiceList } from "../../../../props/navigationMenu/serviceList";
+import { ServiceList } from "../../../../../props/navigationMenu/serviceList";
+import { list } from "../../../../../ListOfServices/checklist/driverServices/list";
 
 export default (props: any) => {
   return (
@@ -28,6 +28,8 @@ export default (props: any) => {
     </SafeAreaView>
   );
 };
+
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
