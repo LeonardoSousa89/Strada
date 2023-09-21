@@ -8,7 +8,7 @@ import {
   Pressable,
   SafeAreaView,
 } from "react-native";
-import { signOut } from "../../controllers/auth/logout";
+import { signOut } from "../../../auth/controllers/security/logout";
 import { navigate } from "../../services/navigate/navigate";
 
 export default (props: any) => {

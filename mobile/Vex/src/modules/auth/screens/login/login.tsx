@@ -9,9 +9,9 @@ import {
 } from "react-native";
 
 import { TextInput, Button } from "@react-native-material/core";
-import { navigate } from "../../../services/navigate/navigate";
-import { signIn } from "../../../controllers/auth/login";
-import { privacyPolicy, termsOfUse } from "../../../controllers/termsAndPolicies/termsAndPolicies";
+import { navigate } from "../../../checklist/services/navigate/navigate";
+import { signIn } from "../../controllers/security/login";
+import { privacyPolicy, termsOfUse } from "../../../checklist/controllers/termsAndPolicies/termsAndPolicies";
 
 export default (props: any) => {
   function changeDirectory() {
@@ -36,7 +36,7 @@ export default (props: any) => {
         <View style={styles.header}>
           <Image
             style={styles.image}
-            source={require("../../../../../assets/global/circular_logo.png")}
+            source={require("../../../../assets/global/circular_logo.png")}
           />
         </View>
         <View style={styles.main}>

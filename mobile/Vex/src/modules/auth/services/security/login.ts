@@ -1,4 +1,4 @@
-import { navigate } from '../navigate/navigate'
+import { navigate } from "../navigate/navigate";
 
 export function login(props: any, path: string){
 
