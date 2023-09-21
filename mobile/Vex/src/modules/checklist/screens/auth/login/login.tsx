@@ -9,13 +9,13 @@ import {
 } from "react-native";
 
 import { TextInput, Button } from "@react-native-material/core";
-import { changeScreen } from "../../../controllers/navigate/navigate";
+import { navigate } from "../../../services/navigate/navigate";
 import { signIn } from "../../../controllers/auth/login";
 import { privacyPolicy, termsOfUse } from "../../../controllers/termsAndPolicies/termsAndPolicies";
 
 export default (props: any) => {
   function changeDirectory() {
-    changeScreen(props, "signup");
+    navigate(props, "signup");
   }
 
   function login() {

@@ -9,7 +9,7 @@ import {
   Image,
 } from "react-native";
 import { checklist, midia } from "../../../../mock/list";
-import { CheckList, Midia } from "../../props/information/checklist";
+import { CheckList, Midia } from "../../../../props/information/checklist";
 import { Pressable } from "@react-native-material/core";
 
 export default (props: any) => {

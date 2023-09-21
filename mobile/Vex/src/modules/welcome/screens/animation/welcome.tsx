@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { StyleSheet, View, Image, SafeAreaView } from "react-native";
-import { alterScreen } from "../../controllers/animationController/animation";
+import { alterScreen } from "../../controllers/animation/animation";
 
 export default(props: any) => {
 

@@ -9,7 +9,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { signOut } from "../../controllers/auth/logout";
-import { changeScreen } from "../../controllers/navigate/navigate";
+import { navigate } from "../../services/navigate/navigate";
 
 export default (props: any) => {
   const [orgName, setOrgName]: Array<any> = useState();
@@ -25,11 +25,11 @@ export default (props: any) => {
   }
 
   function changeDirectory() {
-    changeScreen(props, "services_list");
+    navigate(props, "services_list");
   }
 
   function settings() {
-    changeScreen(props, "settings-list");
+    navigate(props, "settings-list");
   }
 
   return (

@@ -1,5 +1,3 @@
-import { changeScreen } from "../../controllers/navigate/navigate";
-
 export const list = [
     {
       id: "1",
@@ -8,5 +6,3 @@ export const list = [
       imageUri: "../../../../assets/screens/list_of_services/checklisty.png"
     },
 ];
-
-export const navigation = (props: any, path: any) => changeScreen(props, path)

@@ -9,10 +9,9 @@ import {
   SafeAreaView,
   FlatList,
 } from "react-native";
-import { signOut } from "../../controllers/auth/logout";
-import { changeScreen } from "../../controllers/navigate/navigate";
-import { ServiceList } from "../../props/navigationMenu/serviceList";
-import { list } from "../../entities/ListOfServices/settings/services/list";
+
+import { ServiceList } from "../../../../props/navigationMenu/serviceList";
+import { list } from "../../../../ListOfServices/settings/services/list";
 
 export default (props: any) => {
   return (

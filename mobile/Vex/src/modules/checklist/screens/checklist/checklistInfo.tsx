@@ -10,15 +10,15 @@ import {
   SafeAreaView,
   FlatList,
 } from "react-native";
-import { changeScreen } from "../../controllers/navigate/navigate";
+import { navigate } from "../../services/navigate/navigate";
 
 export default (props: any) => {
   function driverChecklistView() {
-    changeScreen(props, "driver-checklist-view");
+    navigate(props, "driver-checklist-view");
   }
 
   function driverChecklistMidiaView() {
-    changeScreen(props, "driver-checklist-midia-view");
+    navigate(props, "driver-checklist-midia-view");
   }
 
   return (

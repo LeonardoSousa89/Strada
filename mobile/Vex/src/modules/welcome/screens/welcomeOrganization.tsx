@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@react-native-material/core";
 import { StyleSheet, View, Image, Text, Dimensions, SafeAreaView } from "react-native";
-import { changeScreen } from "../../controllers/navigate/navigate";
+import { navigation } from "../controllers/navigate/navigate";
 
 export default (props: any) => {
   const [org, setOrg]: Array<any> = useState();
@@ -9,14 +9,14 @@ export default (props: any) => {
   useEffect(() => setOrg("nome da organização"), []);
 
   function next(){
-    changeScreen(props, "main-menu")
+    navigation(props, "main-menu")
   }
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.icon}>
         <Image
-          source={require("../../../../assets/global/circular_logo.png")}
+          source={require("../../../assets/global/circular_logo.png")}
         />
       </View>
 

@@ -10,8 +10,8 @@ import {
   SafeAreaView,
   FlatList,
 } from "react-native";
-import { ServiceList } from "../../props/navigationMenu/serviceList";
-import { list } from "../../entities/ListOfServices/checklist/driverUpdate/list";
+import { ServiceList } from "../../../../props/navigationMenu/serviceList";
+import { list } from "../../../../ListOfServices/checklist/driverUpdate/list";
 
 export default (props: any) => {
   return (

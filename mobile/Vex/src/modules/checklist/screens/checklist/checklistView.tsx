@@ -1,6 +1,6 @@
 import { SafeAreaView, StyleSheet, View, Text, FlatList } from "react-native";
 import { checklistDriver } from "../../../../mock/list";
-import { ServiceList } from "../../props/navigationMenu/serviceList";
+import { ServiceList } from "../../../../props/navigationMenu/serviceList";
 
 export default (props: any) => {
   return (

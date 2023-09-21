@@ -6,20 +6,19 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import { navigation } from "../../entities/ListOfServices/list";
 
 export const ServiceList = (props: {
   props?: any;
-  path?: string;
+  path?: any;
   name?: string;
   imageUri?: string;
 }) => {
-  function navigate() {
-    navigation(props.props, props.path);
+  function navigation() {
+    props.props.navigation.navigate(props.path)
   }
 
   return (
-    <Pressable onPress={navigate}>
+    <Pressable onPress={navigation}>
       <View style={styles.item}>
         <Text style={styles.text}>{props.name}</Text>
         {/* esse recurso está gerando um erro */}

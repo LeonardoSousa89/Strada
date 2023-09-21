@@ -10,7 +10,7 @@ import {
   Image
 } from "react-native";
 import { checklist, midia } from "../../../../mock/list";
-import { CheckList, Midia } from "../../props/information/checklist";
+import { CheckList, Midia } from "../../../../props/information/checklist";
 
 export default (props: any) => {
   return (

@@ -6,10 +6,10 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import { SafeAreaView, StyleSheet, View } from "react-native";
 
-import Welcome from "../modules/checklist/screens/welcome/welcome";
+import Welcome from "../modules/welcome/screens/animation/welcome";
 import Register from "../modules/checklist/screens/auth/register/signUp";
 import Login from "../modules/checklist/screens/auth/login/login";
-import WelcomeOrganization from "../modules/checklist/screens/welcome/welcomeOrganization";
+import WelcomeOrganization from "../modules/welcome/screens/welcomeOrganization";
 import Main from "../modules/checklist/screens/checklist/main";
 import ServicesList from "../modules/checklist/screens/checklist/servicesList";
 import ChecklistOperations from "../modules/checklist/screens/checklist/checklistOperations";

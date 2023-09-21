@@ -1,5 +1,3 @@
-import { changeScreen } from "../../../../controllers/navigate/navigate";
-
 export const list = [
     {
       id: "1",
@@ -27,4 +25,4 @@ export const list = [
     },
 ];
 
-export const navigation = (props: any, path: any) => changeScreen(props, path)
+

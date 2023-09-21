@@ -1,5 +1,3 @@
-import { changeScreen } from "../modules/checklist/controllers/navigate/navigate";
-
 export let list: any = [
   {
     id: "1",
@@ -123,4 +121,3 @@ export let midia: any = [
   },
 ];
 
-export const navigation = (props: any, path: any) => changeScreen(props, path);
