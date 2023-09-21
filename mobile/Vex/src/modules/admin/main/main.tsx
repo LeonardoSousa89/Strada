@@ -8,8 +8,8 @@ import {
   Pressable,
   SafeAreaView,
 } from "react-native";
-import { signOut } from "../../../auth/controllers/security/logout";
-import { navigate } from "../../services/navigate/navigate";
+import { signOut } from "../../auth/controllers/security/logout";
+import { navigate } from "../../checklist/services/navigate/navigate";
 
 export default (props: any) => {
   const [orgName, setOrgName]: Array<any> = useState();
@@ -37,13 +37,13 @@ export default (props: any) => {
       <View style={styles.header}>
         <View style={styles.config_area}>
           <Image
-            source={require("../../../../assets/screens/menu/user_photo.png")}
+            source={require("../../../assets/screens/menu/user_photo.png")}
           />
           <View style={styles.settings}>
             <Pressable onPress={settings}>
               <Image
                 style={styles.settings_btn}
-                source={require("../../../../assets/screens/menu/gear.png")}
+                source={require("../../../assets/screens/menu/gear.png")}
               />
             </Pressable>
           </View>
@@ -56,7 +56,7 @@ export default (props: any) => {
       <View style={styles.main}>
         <Pressable onPress={changeDirectory}>
           <Image
-            source={require("../../../../assets/screens/menu/services.png")}
+            source={require("../../../assets/screens/menu/services.png")}
           />
         </Pressable>
       </View>
@@ -64,7 +64,7 @@ export default (props: any) => {
         <View style={styles.footer_subcontainer}>
           <Pressable onPress={logOut}>
             <Image
-              source={require("../../../../assets/screens/menu/logout.png")}
+              source={require("../../../assets/screens/menu/logout.png")}
             />
           </Pressable>
         </View>
