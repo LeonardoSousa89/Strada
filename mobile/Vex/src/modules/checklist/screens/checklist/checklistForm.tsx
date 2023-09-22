@@ -49,6 +49,8 @@ export default (props: any) => {
             variant="outlined"
             label="anotações*"
             color="#162226"
+            multiline={true}
+            numberOfLines={6}
             style={styles.input}
           />
           <Button
@@ -82,7 +84,6 @@ if (height > 720) {
     },
     main: {
       flex: 8,
-
       width: "80%",
       alignItems: "center",
       justifyContent: "center",
@@ -106,13 +107,12 @@ if (height > 720) {
 } else {
   styles = StyleSheet.create({
     container: {
-      height,
+      height: height + 50,
       alignItems: "center",
       justifyContent: "center",
     },
     header: {
       flex: 1,
-
       width: "80%",
       justifyContent: "flex-end",
     },
