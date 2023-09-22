@@ -10,8 +10,10 @@ import {
 
 export default (props: any) => {
   return (
-    <SafeAreaView>
-      <View></View>
+    <SafeAreaView style={styles.container}>
+      <View>
+        <Text>conta</Text>
+      </View>
     </SafeAreaView>
   );
 };
@@ -19,13 +21,8 @@ export default (props: any) => {
 const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
-  item: {
-    backgroundColor: "#fff",
-    padding: 40,
-    width,
-    borderWidth: 0.4,
-    marginTop: 2,
-    borderColor: "#162226",
+  container: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },

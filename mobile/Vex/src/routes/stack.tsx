@@ -25,7 +25,13 @@ import DriverChecklistView from "../modules/checklist/screens/checklist/driverCh
 import DriverDateChecklistView from "../modules/checklist/screens/checklist/routes/driverDateRouteList";
 import DriverChecklistMidiaView from "../modules/checklist/screens/checklist/driverChecklistMidiaView";
 import ChecklistInfo from "../modules/checklist/screens/checklist/routes/checklistInfoRouteList";
-import ConfigurationSettingsList from "../modules/admin/screens/settings/configurationSettingsRouteList";
+import ConfigurationSettingsList from "../modules/admin/screens/settings/routes/configurationSettingsRouteList";
+import Support from "../modules/admin/screens/support/support";
+import AccountRouteList from "../modules/admin/screens/account/route/accountRouteList";
+import Account from "../modules/admin/screens/account/account";
+import Plans from "../modules/payment/screens/plans/plans";
+import TerminateAccount from "../modules/admin/screens/account/terminateAccount";
+import TermsAndPolicies from "../modules/doc/screens/termsAndPolicies";
 
 const Stack = createNativeStackNavigator();
 
@@ -157,6 +163,54 @@ export default function Route() {
             options={{
               headerShown: true,
               headerTitle: "serviços de configuração",
+            }}
+          />
+          <Stack.Screen
+            name="support"
+            component={Support}
+            options={{
+              headerShown: true,
+              headerTitle: "suporte",
+            }}
+          />
+          <Stack.Screen
+            name="account-list"
+            component={AccountRouteList}
+            options={{
+              headerShown: true,
+              headerTitle: "serviços da conta",
+            }}
+          />
+          <Stack.Screen
+            name="account"
+            component={Account}
+            options={{
+              headerShown: true,
+              headerTitle: "conta",
+            }}
+          />
+          <Stack.Screen
+            name="plans"
+            component={Plans}
+            options={{
+              headerShown: true,
+              headerTitle: "planos",
+            }}
+          />
+          <Stack.Screen
+            name="terminate-account"
+            component={TerminateAccount}
+            options={{
+              headerShown: true,
+              headerTitle: "encerrar conta",
+            }}
+          />
+          <Stack.Screen
+            name="terms-and-policies"
+            component={TermsAndPolicies}
+            options={{
+              headerShown: true,
+              headerTitle: "termos de uso e politica de privacidade",
             }}
           />
         </Stack.Navigator>

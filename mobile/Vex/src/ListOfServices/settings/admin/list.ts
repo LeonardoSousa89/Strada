@@ -2,25 +2,25 @@ export const list = [
     {
       id: "1",
       name: "dados da conta",
-      path: "",
+      path: "account",
       imageUri: ""
     },
     {
       id: "2",
       name: "planos",
-      path: "",
+      path: "plans",
       imageUri: ""
     },
     {
       id: "3",
       name: "termos de uso e politica de privacidade",
-      path: "",
+      path: "terms-and-policies",
       imageUri: ""
     },
     {
       id: "4",
       name: "excluir conta",
-      path: "",
+      path: "terminate-account",
       imageUri: ""
     },
 ];

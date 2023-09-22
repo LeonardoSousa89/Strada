@@ -10,8 +10,8 @@ import {
   FlatList,
 } from "react-native";
 
-import { ServiceList } from "../../../../props/navigationMenu/serviceList";
-import { list } from "../../../../ListOfServices/settings/services/list";
+import { ServiceList } from "../../../../../props/navigationMenu/serviceList";
+import { list } from "../../../../../ListOfServices/settings/services/list";
 
 export default (props: any) => {
   return (

@@ -2,13 +2,13 @@ export const list = [
   {
     id: "1",
     name: "conta",
-    path: "user-account",
+    path: "account-list",
     imageUri: ""
   },
   {
     id: "2",
     name: "suporte",
-    path: "vex-support",
+    path: "support",
     imageUri: ""
   },
 ];
