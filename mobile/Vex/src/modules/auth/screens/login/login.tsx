@@ -11,7 +11,7 @@ import {
 import { TextInput, Button } from "@react-native-material/core";
 import { navigate } from "../../../checklist/services/navigate/navigate";
 import { signIn } from "../../controllers/security/login";
-import { privacyPolicy, termsOfUse } from "../../../checklist/controllers/termsAndPolicies/termsAndPolicies";
+import { privacyPolicy, termsOfUse } from "../../../doc/controllers/termsAndPolicies/termsAndPolicies";
 
 export default (props: any) => {
   function changeDirectory() {

@@ -14,7 +14,7 @@ import { register } from "../../controllers/security/signUp";
 import {
   privacyPolicy,
   termsOfUse,
-} from "../../../checklist/controllers/termsAndPolicies/termsAndPolicies";
+} from "../../../doc/controllers/termsAndPolicies/termsAndPolicies";
 
 export default (props: any) => {
   function changeDirectory() {

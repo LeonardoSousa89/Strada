@@ -10,7 +10,7 @@ import Welcome from "../modules/welcome/screens/animation/welcome";
 import Register from "../modules/auth/screens/register/signUp";
 import Login from "../modules/auth/screens/login/login";
 import WelcomeOrganization from "../modules/welcome/screens/welcomeOrganization";
-import Main from "../modules/admin/main/main";
+import Main from "../modules/admin/screens/main/main";
 import ServicesList from "../modules/checklist/screens/checklist/routes/vexRouteList";
 import ChecklistOperations from "../modules/checklist/screens/checklist/routes/checklistOperationsRouteList";
 import ChecklistDriverOperationalServices from "../modules/checklist/screens/checklist/routes/driverRouteList";
