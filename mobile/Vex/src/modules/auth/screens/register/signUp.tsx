@@ -11,10 +11,7 @@ import {
 import { TextInput, Button } from "@react-native-material/core";
 import { navigate } from "../../services/navigate/navigate";
 import { register } from "../../controllers/security/signUp";
-import {
-  privacyPolicy,
-  termsOfUse,
-} from "../../../doc/controllers/termsAndPolicies/termsAndPolicies";
+import { termsOfUse } from "../../../doc/controllers/termsAndPolicies/termsAndPolicies";
 
 export default (props: any) => {
   function changeDirectory() {
@@ -27,10 +24,6 @@ export default (props: any) => {
 
   function terms() {
     termsOfUse();
-  }
-
-  function policies() {
-    privacyPolicy();
   }
 
   return (
@@ -76,9 +69,6 @@ export default (props: any) => {
           </Text>
           <Text style={styles.term} onPress={() => terms()}>
             termos de uso
-          </Text>
-          <Text style={styles.policies} onPress={() => policies()}>
-            política de privacidade
           </Text>
         </View>
       </SafeAreaView>
