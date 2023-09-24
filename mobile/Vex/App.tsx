@@ -1,5 +1,5 @@
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import Routes from "./src/routes/stack";
+import Routes from "./src/routes/stackMainRoute";
 
 export default function App() {
   return (

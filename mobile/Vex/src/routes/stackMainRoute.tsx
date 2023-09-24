@@ -14,7 +14,7 @@ import Main from "../modules/admin/screens/main/main";
 import ServicesList from "../modules/checklist/screens/checklist/routes/vexRouteList";
 import ChecklistOperations from "../modules/checklist/screens/checklist/routes/checklistOperationsRouteList";
 import ChecklistDriverOperationalServices from "../modules/checklist/screens/checklist/routes/driverRouteList";
-import TabRoute from "./tabs";
+import TabRoute from "./tabChecklistRoute";
 import DriverRegister from "../modules/checklist/screens/checklist/driverRegister";
 import DriverEdit from "../modules/checklist/screens/checklist/routes/driverEditRouteList";
 import DriverEditOperationalService from "../modules/checklist/screens/checklist/routes/driverEditOperationalRouteList";
@@ -29,7 +29,7 @@ import ConfigurationSettingsList from "../modules/admin/screens/settings/routes/
 import Support from "../modules/admin/screens/support/support";
 import AccountRouteList from "../modules/admin/screens/account/route/accountRouteList";
 import Account from "../modules/admin/screens/account/account";
-import Plans from "../modules/payment/screens/plans/plans";
+import Plans from "./tabPlansRoute";
 import TerminateAccount from "../modules/admin/screens/account/terminateAccount";
 import TermsAndPolicies from "../modules/doc/screens/termsAndPolicies";
 

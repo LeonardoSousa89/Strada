@@ -2,8 +2,8 @@ import {
   Dimensions,
   StyleSheet,
   View,
-  Image,
   SafeAreaView,
+  Image,
   ScrollView,
 } from "react-native";
 
@@ -13,7 +13,7 @@ export default (props: any) => {
       <SafeAreaView style={styles.container}>
         <View>
           <Image
-            source={require("../../../../assets/screens/admin/support.png")}
+            source={require("../../../../assets/screens/admin/plano_beta.png")}
           />
         </View>
       </SafeAreaView>
@@ -26,8 +26,8 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     height,
-    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#fff",
   },
 });
