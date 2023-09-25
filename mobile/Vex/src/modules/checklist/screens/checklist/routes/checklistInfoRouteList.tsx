@@ -13,27 +13,17 @@ import {
 import { navigate } from "../../../services/navigate/navigate";
 
 export default (props: any) => {
-  function driverChecklistView() {
-    navigate(props, "driver-checklist-view");
-  }
-
-  function driverChecklistMidiaView() {
-    navigate(props, "driver-checklist-midia-view");
+  function drivers() {
+    navigate(props, "drivers");
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.top_level}>
-        <Pressable onPress={driverChecklistView}>
+      <View style={styles.subcontainer}>
+        <Pressable onPress={drivers}>
           <Image
+          style={styles.image}
             source={require("../../../../../assets/screens/checklist/notebook.png")}
-          />
-        </Pressable>
-      </View>
-      <View style={styles.bottom_level}>
-        <Pressable onPress={driverChecklistMidiaView}>
-          <Image
-            source={require("../../../../../assets/screens/checklist/files.png")}
           />
         </Pressable>
       </View>
@@ -50,19 +40,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  top_level: {
+  subcontainer: {
     flex: 1,
     width,
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "center",
     padding: 50,
   },
-  bottom_level: {
-    flex: 1,
-    width,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    padding: 50,
-    backgroundColor: "#2B3640",
-  },
+  image: {
+    height: 229,
+    width: 229
+  }
 });

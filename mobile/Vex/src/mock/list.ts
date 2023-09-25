@@ -50,19 +50,19 @@ export let checklistDriver: any = [
   {
     id: "1",
     name: "Alberto Filho",
-    path: "driver-checklist-date",
+    path: "feed",
     imageUri: "",
   },
   {
     id: "2",
     name: "Gilson Néris",
-    path: "driver-checklist-date",
+    path: "feed",
     imageUri: "",
   },
   {
     id: "3",
     name: "Robson Leitão",
-    path: "driver-checklist-date",
+    path: "feed",
     imageUri: "",
   },
 ];

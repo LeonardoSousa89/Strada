@@ -2,9 +2,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SafeAreaView, StyleSheet } from "react-native";
 
 import ChecklistForm from "../modules/checklist/screens/checklist/checklistForm";
-import ChecklistView from "../modules/checklist/screens/checklist/routes/checklistDriverRouteList";
 
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import ChecklistInfoRouteList from "../modules/checklist/screens/checklist/routes/checklistInfoRouteList";
 
 const Tab = createBottomTabNavigator();
 
@@ -51,7 +51,7 @@ export default function Route() {
         />
         <Tab.Screen
           name="checklist-view"
-          component={ChecklistView}
+          component={ChecklistInfoRouteList}
           options={{
             title: "visualizar checklist",
             tabBarIcon: ({ focused, color, size }) => {

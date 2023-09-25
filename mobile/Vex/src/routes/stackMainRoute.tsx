@@ -21,9 +21,9 @@ import DriverEditOperationalService from "../modules/checklist/screens/checklist
 import UpdateDriverPassword from "../modules/checklist/screens/checklist/auth/updateDriverPassword";
 import DriverUpdateData from "../modules/checklist/screens/checklist/driverUpdateData";
 import DriverInfo from "../modules/checklist/screens/checklist/driverInfo";
-import DriverChecklistView from "../modules/checklist/screens/checklist/driverChecklistView";
+import Checklist from "../modules/checklist/screens/checklist/checklist";
 import DriverDateChecklistView from "../modules/checklist/screens/checklist/routes/driverDateRouteList";
-import DriverChecklistMidiaView from "../modules/checklist/screens/checklist/driverChecklistMidiaView";
+import FeedOfChecklist from "../modules/checklist/screens/checklist/feedOfChecklist";
 import ChecklistInfo from "../modules/checklist/screens/checklist/routes/checklistInfoRouteList";
 import ConfigurationSettingsList from "../modules/admin/screens/settings/routes/configurationSettingsRouteList";
 import Support from "../modules/admin/screens/support/support";
@@ -32,6 +32,7 @@ import Account from "../modules/admin/screens/account/account";
 import Plans from "./tabPlansRoute";
 import TerminateAccount from "../modules/admin/screens/account/terminateAccount";
 import TermsAndPolicies from "../modules/doc/screens/termsAndPolicies";
+import ChecklistDriverRouteList from "../modules/checklist/screens/checklist/routes/checklistDriverRouteList";
 
 const Stack = createNativeStackNavigator();
 
@@ -126,19 +127,27 @@ export default function Route() {
             }}
           />
           <Stack.Screen
-            name="driver-checklist-view"
-            component={DriverChecklistView}
+            name="checklist"
+            component={Checklist}
             options={{
               headerShown: true,
-              headerTitle: "checklist do motorista",
+              headerTitle: "dados do checklist",
             }}
           />
           <Stack.Screen
-            name="driver-checklist-midia-view"
-            component={DriverChecklistMidiaView}
+            name="feed"
+            component={FeedOfChecklist}
             options={{
               headerShown: true,
-              headerTitle: "midias do motorista",
+              headerTitle: "feed do checklist",
+            }}
+          />
+          <Stack.Screen
+            name="drivers"
+            component={ChecklistDriverRouteList}
+            options={{
+              headerShown: true,
+              headerTitle: "motoristas cadastrados",
             }}
           />
           <Stack.Screen
@@ -152,10 +161,6 @@ export default function Route() {
           <Stack.Screen
             name="driver-checklist-info"
             component={ChecklistInfo}
-            options={{
-              headerShown: true,
-              headerTitle: "dados de checklist",
-            }}
           />
           <Stack.Screen
             name="settings-list"
