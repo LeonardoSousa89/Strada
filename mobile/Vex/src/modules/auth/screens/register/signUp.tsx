@@ -11,9 +11,14 @@ import {
 import { TextInput, Button } from "@react-native-material/core";
 import { navigate } from "../../services/navigate/navigate";
 import { register } from "../../controllers/security/signUp";
-import { termsOfUse } from "../../../doc/controllers/termsAndPolicies/termsAndPolicies";
+
+import Dialog from "react-native-dialog";
+import { useState } from "react";
+import TermsAndPolicies from "../../../doc/screens/termsAndPolicies";
 
 export default (props: any) => {
+  const [visible, setVisible] = useState(false);
+
   function changeDirectory() {
     navigate(props, "login");
   }
@@ -22,9 +27,13 @@ export default (props: any) => {
     register(props, "login");
   }
 
-  function terms() {
-    termsOfUse();
-  }
+  const showDialog = () => {
+    setVisible(true);
+  };
+
+  const close = () => {
+    setVisible(false);
+  };
 
   return (
     <ScrollView>
@@ -67,9 +76,22 @@ export default (props: any) => {
           <Text style={styles.getAccount} onPress={() => changeDirectory()}>
             já possui uma conta? faça login
           </Text>
-          <Text style={styles.term} onPress={() => terms()}>
-            termos de uso
-          </Text>
+
+          <Button
+            style={styles.terms}
+            title="termos de uso"
+            color="#fff"
+            onPress={showDialog}
+          />
+          <Dialog.Container visible={visible}>
+            <Dialog.Title>Termos de uso e politica de privacide</Dialog.Title>
+            <ScrollView>
+              <Dialog.Description>
+                <TermsAndPolicies />
+              </Dialog.Description>
+            </ScrollView>
+            <Dialog.Button label="fechar" onPress={close} />
+          </Dialog.Container>
         </View>
       </SafeAreaView>
     </ScrollView>
@@ -109,9 +131,9 @@ if (height > 720) {
       fontSize: 20,
       color: "#162226",
     },
-    term: {
+    terms: {
       fontSize: 20,
-      marginTop: 20,
+      marginTop: 30,
       marginBottom: 5,
       color: "#162226",
     },
@@ -162,9 +184,9 @@ if (height > 720) {
       fontSize: 20,
       color: "#162226",
     },
-    term: {
+    terms: {
       fontSize: 20,
-      marginTop: 20,
+      marginTop: 30,
       marginBottom: 5,
       color: "#162226",
     },
