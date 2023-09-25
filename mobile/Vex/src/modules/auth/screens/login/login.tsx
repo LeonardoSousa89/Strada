@@ -69,22 +69,6 @@ export default (props: any) => {
           <Text style={styles.getAccount} onPress={() => changeDirectory()}>
             não possui uma conta? cadastre-se
           </Text>
-
-          <Button
-            style={styles.terms}
-            title="termos de uso"
-            color="#fff"
-            onPress={showDialog}
-          />
-          <Dialog.Container visible={visible}>
-            <Dialog.Title>Termos de uso e politica de privacide</Dialog.Title>
-            <ScrollView>
-              <Dialog.Description>
-                <TermsAndPolicies />
-              </Dialog.Description>
-            </ScrollView>
-            <Dialog.Button label="fechar" onPress={close} />
-          </Dialog.Container>
         </View>
       </SafeAreaView>
     </ScrollView>

@@ -1,2 +1,6 @@
 https://www.npmjs.com/package/@react-native-community/netinfo
 https://www.npmjs.com/package/react-native-toast-message
+https://www.npmjs.com/package/react-native-dialog
+https://www.npmjs.com/package/@react-native-material/core
+https://www.npmjs.com/package/@react-navigation/bottom-tabs
+https://www.npmjs.com/package/@react-navigation/native-stack

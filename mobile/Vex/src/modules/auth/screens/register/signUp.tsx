@@ -35,6 +35,11 @@ export default (props: any) => {
     setVisible(false);
   };
 
+  const accept = ()=> {
+    setVisible(false);
+    signUp()
+  }
+
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
@@ -69,18 +74,6 @@ export default (props: any) => {
             style={styles.btn}
             title="Cadastro"
             color="#162226"
-            onPress={() => signUp()}
-          />
-        </View>
-        <View style={styles.footer}>
-          <Text style={styles.getAccount} onPress={() => changeDirectory()}>
-            já possui uma conta? faça login
-          </Text>
-
-          <Button
-            style={styles.terms}
-            title="termos de uso"
-            color="#fff"
             onPress={showDialog}
           />
           <Dialog.Container visible={visible}>
@@ -91,7 +84,13 @@ export default (props: any) => {
               </Dialog.Description>
             </ScrollView>
             <Dialog.Button label="fechar" onPress={close} />
+            <Dialog.Button label="aceitar" onPress={accept} />
           </Dialog.Container>
+        </View>
+        <View style={styles.footer}>
+          <Text style={styles.getAccount} onPress={() => changeDirectory()}>
+            já possui uma conta? faça login
+          </Text>
         </View>
       </SafeAreaView>
     </ScrollView>
@@ -105,7 +104,7 @@ let styles: any = 0;
 if (height > 720) {
   styles = StyleSheet.create({
     container: {
-      height: height,
+      height,
       backgroundColor: "#fff",
       justifyContent: "flex-end",
       alignItems: "center",
@@ -158,7 +157,7 @@ if (height > 720) {
 } else {
   styles = StyleSheet.create({
     container: {
-      height: height + 50,
+      height,
       backgroundColor: "#fff",
       justifyContent: "flex-end",
       alignItems: "center",
