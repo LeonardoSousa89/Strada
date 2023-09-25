@@ -27,7 +27,7 @@ export default (props: any) => {
     register(props, "login");
   }
 
-  const showDialog = () => {
+  const terms = () => {
     setVisible(true);
   };
 
@@ -35,10 +35,10 @@ export default (props: any) => {
     setVisible(false);
   };
 
-  const accept = ()=> {
+  const accept = () => {
     setVisible(false);
-    signUp()
-  }
+    signUp();
+  };
 
   return (
     <ScrollView>
@@ -74,17 +74,27 @@ export default (props: any) => {
             style={styles.btn}
             title="Cadastro"
             color="#162226"
-            onPress={showDialog}
+            onPress={terms}
           />
           <Dialog.Container visible={visible}>
-            <Dialog.Title>Termos de uso e politica de privacide</Dialog.Title>
+            <Dialog.Title>Termos de uso e política de privacidade</Dialog.Title>
             <ScrollView>
               <Dialog.Description>
                 <TermsAndPolicies />
               </Dialog.Description>
             </ScrollView>
-            <Dialog.Button label="fechar" onPress={close} />
-            <Dialog.Button label="aceitar" onPress={accept} />
+            <Dialog.Button
+              style={{ fontWeight: "bold" }}
+              label="Cancelar"
+              color="#162226"
+              onPress={close}
+            />
+            <Dialog.Button
+              style={{ fontWeight: "bold" }}
+              label="Aceitar"
+              color="#162226"
+              onPress={accept}
+            />
           </Dialog.Container>
         </View>
         <View style={styles.footer}>
@@ -125,10 +135,6 @@ if (height > 720) {
       color: "#162226",
       marginTop: 10,
       fontWeight: "bold",
-    },
-    policies: {
-      fontSize: 20,
-      color: "#162226",
     },
     terms: {
       fontSize: 20,
@@ -178,10 +184,6 @@ if (height > 720) {
       color: "#162226",
       marginTop: 10,
       fontWeight: "bold",
-    },
-    policies: {
-      fontSize: 20,
-      color: "#162226",
     },
     terms: {
       fontSize: 20,

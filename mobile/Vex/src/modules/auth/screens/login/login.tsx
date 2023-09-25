@@ -104,10 +104,6 @@ if (height > 720) {
       marginTop: 10,
       fontWeight: "bold",
     },
-    policies: {
-      fontSize: 20,
-      color: "#162226",
-    },
     terms: {
       fontSize: 20,
       marginTop: 30,
@@ -156,10 +152,6 @@ if (height > 720) {
       color: "#162226",
       marginTop: 10,
       fontWeight: "bold",
-    },
-    policies: {
-      fontSize: 20,
-      color: "#162226",
     },
     terms: {
       fontSize: 20,
