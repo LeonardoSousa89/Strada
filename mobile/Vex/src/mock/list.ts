@@ -75,7 +75,8 @@ export let checklist: any = [
     initialKm: "24568",
     plate: "ouu-4655",
     dateFromRecord: "1 de julho de 2023, 20:43",
-    notes: "a porta traseira está empenada e o volante solto.",
+    notes: `a porta traseira está empenada e o volante solto.
+    `,
     imageUri: "",
   },
   // {
@@ -120,4 +121,3 @@ export let midia: any = [
     imageUri: "",
   },
 ];
-
