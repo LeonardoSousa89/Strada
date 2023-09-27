@@ -33,6 +33,10 @@ import Plans from "./tabPlansRoute";
 import TerminateAccount from "../modules/admin/screens/account/terminateAccount";
 import TermsAndPolicies from "../modules/doc/screens/termsAndPolicies";
 import ChecklistDriverRouteList from "../modules/checklist/screens/checklist/routes/checklistDriverRouteList";
+import Send from "../modules/auth/screens/passwordRecovery/send";
+import Verify from "../modules/auth/screens/passwordRecovery/verify";
+import Confirm from "../modules/auth/screens/passwordRecovery/confirm";
+import Proceed from "../modules/auth/screens/passwordRecovery/proceed";
 
 const Stack = createNativeStackNavigator();
 
@@ -216,6 +220,38 @@ export default function Route() {
             options={{
               headerShown: true,
               headerTitle: "termos de uso e politica de privacidade",
+            }}
+          />
+          <Stack.Screen
+            name="recovery-send"
+            component={Send}
+            options={{
+              headerShown: true,
+              headerTitle: "recuperação de senha",
+            }}
+          />
+          <Stack.Screen
+            name="recovery-verify"
+            component={Verify}
+            options={{
+              headerShown: true,
+              headerTitle: "recuperação de senha",
+            }}
+          />
+          <Stack.Screen
+            name="recovery-confirm"
+            component={Confirm}
+            options={{
+              headerShown: true,
+              headerTitle: "recuperação de senha",
+            }}
+          />
+          <Stack.Screen
+            name="recovery-proceed"
+            component={Proceed}
+            options={{
+              headerShown: true,
+              headerTitle: "recuperação de senha",
             }}
           />
         </Stack.Navigator>

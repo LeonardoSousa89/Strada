@@ -12,27 +12,18 @@ import { TextInput, Button } from "@react-native-material/core";
 import { navigate } from "../../../checklist/services/navigate/navigate";
 import { signIn } from "../../controllers/security/login";
 
-import Dialog from "react-native-dialog";
-import { useState } from "react";
-import TermsAndPolicies from "../../../doc/screens/termsAndPolicies";
-
 export default (props: any) => {
-  const [visible, setVisible] = useState(false);
 
-  function changeDirectory() {
+  function changeDirectoryFromSignup() {
     navigate(props, "signup");
+  }
+  function changeDirectoryFromPasswordRecovery() {
+    navigate(props, "recovery-send");
   }
 
   function login() {
     signIn(props, "welcome-organization");
   }
-  const showDialog = () => {
-    setVisible(true);
-  };
-
-  const close = () => {
-    setVisible(false);
-  };
 
   return (
     <ScrollView>
@@ -66,7 +57,10 @@ export default (props: any) => {
           />
         </View>
         <View style={styles.footer}>
-          <Text style={styles.getAccount} onPress={() => changeDirectory()}>
+          <Text style={styles.getAccount} onPress={() => changeDirectoryFromPasswordRecovery()}>
+            esqueceu a senha?
+          </Text>
+          <Text style={styles.getAccount} onPress={() => changeDirectoryFromSignup()}>     
             não possui uma conta? cadastre-se
           </Text>
         </View>
