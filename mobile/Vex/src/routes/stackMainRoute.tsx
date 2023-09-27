@@ -22,7 +22,6 @@ import UpdateDriverPassword from "../modules/checklist/screens/checklist/auth/up
 import DriverUpdateData from "../modules/checklist/screens/checklist/driverUpdateData";
 import DriverInfo from "../modules/checklist/screens/checklist/driverInfo";
 import Checklist from "../modules/checklist/screens/checklist/checklist";
-import DriverDateChecklistView from "../modules/checklist/screens/checklist/routes/driverDateRouteList";
 import FeedOfChecklist from "../modules/checklist/screens/checklist/feedOfChecklist";
 import ChecklistInfo from "../modules/checklist/screens/checklist/routes/checklistInfoRouteList";
 import ConfigurationSettingsList from "../modules/admin/screens/settings/routes/configurationSettingsRouteList";
@@ -152,14 +151,6 @@ export default function Route() {
             options={{
               headerShown: true,
               headerTitle: "motoristas cadastrados",
-            }}
-          />
-          <Stack.Screen
-            name="driver-checklist-date"
-            component={DriverDateChecklistView}
-            options={{
-              headerShown: true,
-              headerTitle: "data de anotação do checklist",
             }}
           />
           <Stack.Screen
