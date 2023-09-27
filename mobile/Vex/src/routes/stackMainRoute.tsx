@@ -27,7 +27,7 @@ import ChecklistInfo from "../modules/checklist/screens/checklist/routes/checkli
 import ConfigurationSettingsList from "../modules/admin/screens/settings/routes/configurationSettingsRouteList";
 import Support from "../modules/admin/screens/support/support";
 import AccountRouteList from "../modules/admin/screens/account/route/accountRouteList";
-import Account from "../modules/admin/screens/account/account";
+import AccountOptionsRouteList from "../modules/admin/screens/account/route/accountOptionsRouteList";
 import Plans from "./tabPlansRoute";
 import TerminateAccount from "../modules/admin/screens/account/terminateAccount";
 import TermsAndPolicies from "../modules/doc/screens/termsAndPolicies";
@@ -36,6 +36,9 @@ import Send from "../modules/auth/screens/passwordRecovery/send";
 import Verify from "../modules/auth/screens/passwordRecovery/verify";
 import Confirm from "../modules/auth/screens/passwordRecovery/confirm";
 import Proceed from "../modules/auth/screens/passwordRecovery/proceed";
+import AccountViewer from "../modules/admin/screens/account/accountViewer";
+import AccountEdit from "../modules/admin/screens/account/accountEdit";
+import UpdateOrgPassword from "../modules/admin/screens/account/updateOrgPassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -182,11 +185,11 @@ export default function Route() {
             }}
           />
           <Stack.Screen
-            name="account"
-            component={Account}
+            name="account-options"
+            component={AccountOptionsRouteList}
             options={{
               headerShown: true,
-              headerTitle: "conta",
+              headerTitle: "opções da conta",
             }}
           />
           <Stack.Screen
@@ -243,6 +246,30 @@ export default function Route() {
             options={{
               headerShown: true,
               headerTitle: "recuperação de senha",
+            }}
+          />
+          <Stack.Screen
+            name="account-viewer"
+            component={AccountViewer}
+            options={{
+              headerShown: true,
+              headerTitle: "visualizar dados da conta",
+            }}
+          />
+          <Stack.Screen
+            name="account-edit"
+            component={AccountEdit}
+            options={{
+              headerShown: true,
+              headerTitle: "editar dados da conta",
+            }}
+          />
+          <Stack.Screen
+            name="account-password-update"
+            component={UpdateOrgPassword}
+            options={{
+              headerShown: true,
+              headerTitle: "alterar senha",
             }}
           />
         </Stack.Navigator>
