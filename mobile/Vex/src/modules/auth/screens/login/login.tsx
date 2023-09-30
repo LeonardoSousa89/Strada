@@ -58,7 +58,7 @@ export default (props: any) => {
         </View>
         <View style={styles.footer}>
           <Text style={styles.getAccount} onPress={() => changeDirectoryFromPasswordRecovery()}>
-            esqueceu a senha?
+            esqueceu sua senha?
           </Text>
           <Text style={styles.getAccount} onPress={() => changeDirectoryFromSignup()}>     
             não possui uma conta? cadastre-se
