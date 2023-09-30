@@ -32,9 +32,11 @@ export default (props: any) => {
               Siga estes passos para que possamos, recuperar sua senha!
             </Text>
           </View>
-          <Image
-            source={require("../../../../assets/screens/auth/activity1.png")}
-          />
+          <View style={styles.activity}>
+            <Image
+              source={require("../../../../assets/screens/auth/activity1.png")}
+            />
+          </View>
           <Text style={styles.step}>
             1 - insira seu email(se for motorista) ou cnpj(no caso do
             administrador da conta), um código será enviado para este email e
@@ -73,7 +75,47 @@ if (height > 720) {
       justifyContent: "center",
       alignItems: "center",
     },
-    // falta estilizar o tablet
+    header: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    image: {
+      marginTop:50,
+     height: 250,
+     width: 250
+    },
+    main: {
+      flex: 2,
+      padding: 50,
+    },
+    activity: {
+      justifyContent: "center",
+      alignItems: "center",
+      margin: 20
+    },
+    subcontainer_phrase: {
+      marginBottom: 25,
+    },
+    phrase: {
+      fontWeight: "bold",
+      color: "#162226",
+    },
+    step: {
+      marginTop: 25,
+      fontWeight: "bold",
+      color: "#162226",
+    },
+    subcontainer_form: {
+      overflow: "hidden",
+      justifyContent: "center",
+      alignItems: "center",
+      height: 150,
+    },
+    btn: {
+      width: "100%",
+      marginTop: 10,
+    },
   });
 } else {
   styles = StyleSheet.create({
