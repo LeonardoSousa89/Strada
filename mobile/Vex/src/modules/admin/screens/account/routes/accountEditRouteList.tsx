@@ -5,12 +5,11 @@ import {
   Text,
   Pressable,
   Image,
-  SafeAreaView,
   FlatList,
+  SafeAreaView,
 } from "react-native";
-
-import { list } from "../../../../../ListOfServices/settings/account/options/list";
 import { ServiceList } from "../../../../../props/navigationMenu/serviceList";
+import { list } from "../../../../../ListOfServices/settings/account/options/edit/list";
 
 export default (props: any) => {
   return (
@@ -33,8 +32,11 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
   },
-  list: {},
+  list: {
+    
+  },
 });

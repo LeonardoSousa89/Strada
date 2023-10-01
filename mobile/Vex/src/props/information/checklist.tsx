@@ -1,3 +1,8 @@
+/**
+ * observe: verificar a necessidade deste componente,
+ * visto que o design mudou
+ */
+
 import {
   Dimensions,
   StyleSheet,

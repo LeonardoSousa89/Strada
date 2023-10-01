@@ -26,8 +26,8 @@ import FeedOfChecklist from "../modules/checklist/screens/checklist/feedOfCheckl
 import ChecklistInfo from "../modules/checklist/screens/checklist/routes/checklistInfoRouteList";
 import ConfigurationSettingsList from "../modules/admin/screens/settings/routes/configurationSettingsRouteList";
 import Support from "../modules/admin/screens/support/support";
-import AccountRouteList from "../modules/admin/screens/account/route/accountRouteList";
-import AccountOptionsRouteList from "../modules/admin/screens/account/route/accountOptionsRouteList";
+import AccountRouteList from "../modules/admin/screens/account/routes/accountRouteList";
+import AccountOptionsRouteList from "../modules/admin/screens/account/routes/accountOptionsRouteList";
 import Plans from "./tabPlansRoute";
 import TerminateAccount from "../modules/admin/screens/account/terminateAccount";
 import TermsAndPolicies from "../modules/doc/screens/termsAndPolicies";
@@ -37,9 +37,13 @@ import Verify from "../modules/auth/screens/passwordRecovery/verify";
 import Confirm from "../modules/auth/screens/passwordRecovery/confirm";
 import Proceed from "../modules/auth/screens/passwordRecovery/proceed";
 import AccountViewer from "../modules/admin/screens/account/accountViewer";
-import AccountEdit from "../modules/admin/screens/account/accountEdit";
+import AccountEdit from "../modules/admin/screens/account/routes/accountEditRouteList";
 import UpdateOrgPassword from "../modules/admin/screens/account/updateOrgPassword";
 import TerminateAccountActivityPage from "../modules/admin/screens/account/terminateAccountActivityPage";
+import AccountProfilePhoto from "../modules/admin/screens/account/accountProfilePhoto";
+import AccountProfileData from "../modules/admin/screens/account/routes/accountProfileDataRouteList";
+import AccountEditAddress from "../modules/admin/screens/account/accountEditAddress";
+import AccountEditContact from "../modules/admin/screens/account/accountEditContact";
 
 const Stack = createNativeStackNavigator();
 
@@ -267,6 +271,38 @@ export default function Route() {
             options={{
               headerShown: true,
               headerTitle: "editar dados da conta",
+            }}
+          />
+          <Stack.Screen
+            name="profile-photo"
+            component={AccountProfilePhoto}
+            options={{
+              headerShown: true,
+              headerTitle: "alterar foto do perfil",
+            }}
+          />
+          <Stack.Screen
+            name="user-data"
+            component={AccountProfileData}
+            options={{
+              headerShown: true,
+              headerTitle: "editar dados da conta",
+            }}
+          />
+          <Stack.Screen
+            name="address"
+            component={AccountEditAddress}
+            options={{
+              headerShown: true,
+              headerTitle: "editar endereço",
+            }}
+          />
+          <Stack.Screen
+            name="contact"
+            component={AccountEditContact}
+            options={{
+              headerShown: true,
+              headerTitle: "editar contato",
             }}
           />
           <Stack.Screen
