@@ -39,6 +39,7 @@ import Proceed from "../modules/auth/screens/passwordRecovery/proceed";
 import AccountViewer from "../modules/admin/screens/account/accountViewer";
 import AccountEdit from "../modules/admin/screens/account/accountEdit";
 import UpdateOrgPassword from "../modules/admin/screens/account/updateOrgPassword";
+import TerminateAccountActivityPage from "../modules/admin/screens/account/terminateAccountActivityPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -207,6 +208,10 @@ export default function Route() {
               headerShown: true,
               headerTitle: "encerrar conta",
             }}
+          />
+          <Stack.Screen
+            name="terminate-account-activity-page"
+            component={TerminateAccountActivityPage}
           />
           <Stack.Screen
             name="terms-and-policies"

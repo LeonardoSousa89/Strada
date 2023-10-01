@@ -12,11 +12,11 @@ import {
   FlatList,
 } from "react-native";
 
-export default (props: { message: string }) => {
+export default (props: { message: string; color: string }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.text}>{props.message}</Text>
-      <ActivityIndicator size="large" />
+      <ActivityIndicator size="large" color={props.color} />
     </SafeAreaView>
   );
 };
