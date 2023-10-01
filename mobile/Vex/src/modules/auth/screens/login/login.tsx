@@ -9,16 +9,16 @@ import {
 } from "react-native";
 
 import { TextInput, Button } from "@react-native-material/core";
-import { navigate } from "../../../checklist/services/navigate/navigate";
 import { signIn } from "../../controllers/security/login";
+import { navigator } from "../../controllers/navigate/navigate";
 
 export default (props: any) => {
 
   function changeDirectoryFromSignup() {
-    navigate(props, "signup");
+    navigator(props, "signup");
   }
   function changeDirectoryFromPasswordRecovery() {
-    navigate(props, "recovery-send");
+    navigator(props, "recovery-send");
   }
 
   function login() {

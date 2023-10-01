@@ -9,11 +9,11 @@ import {
 } from "react-native";
 
 import { TextInput, Button } from "@react-native-material/core";
-import { navigate } from "../../../checklist/services/navigate/navigate";
+import { navigator } from "../../controllers/navigate/navigate";
 
 export default (props: any) => {
   function changeDirectoryFromNextStep() {
-    navigate(props, "recovery-verify");
+    navigator(props, "recovery-verify");
   }
 
   return (

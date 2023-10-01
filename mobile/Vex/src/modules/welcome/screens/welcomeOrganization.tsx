@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@react-native-material/core";
 import { StyleSheet, View, Image, Text, Dimensions, SafeAreaView } from "react-native";
-import { navigation } from "../controllers/navigate/navigate";
+import { navigator } from "../controllers/navigate/navigate";
 
 export default (props: any) => {
   const [org, setOrg]: Array<any> = useState();
@@ -9,7 +9,7 @@ export default (props: any) => {
   useEffect(() => setOrg("nome da organização"), []);
 
   function next(){
-    navigation(props, "main-menu")
+    navigator(props, "main-menu")
   }
 
   return (

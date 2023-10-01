@@ -10,16 +10,16 @@ import {
   SafeAreaView,
   FlatList,
 } from "react-native";
-import { navigate } from "../../../services/navigate/navigate";
+import { navigator } from "../../../controllers/navigate/navigate";
 
 export default (props: any) => {
 
   function driverOperationalRoute(){
-    navigate(props, "checklist-driver-operational-services")
+    navigator(props, "checklist-driver-operational-services")
   }
 
   function checklistOperationalRoute(){
-    navigate(props, "checklist-operational-services")
+    navigator(props, "checklist-operational-services")
   }
 
   return (

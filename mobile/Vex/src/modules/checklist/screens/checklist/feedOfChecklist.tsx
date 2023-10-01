@@ -9,11 +9,11 @@ import {
   Image,
 } from "react-native";
 import { checklist, info } from "../../../../mock/list";
-import { navigate } from "../../services/navigate/navigate";
+import { navigator } from "../../controllers/navigate/navigate";
 
 export default (props: any) => {
   function changeDirectory() {
-    navigate(props, "checklist");
+    navigator(props, "checklist");
   }
 
   return (

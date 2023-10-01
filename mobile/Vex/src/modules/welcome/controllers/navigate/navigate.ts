@@ -1,3 +1,3 @@
 import { navigate } from "../../services/navigate/navigate";
 
-export const navigation = (props: any, path: string)=> navigate(props, path) 
+export const navigator = (props: any, path: string)=> navigate(props, path) 

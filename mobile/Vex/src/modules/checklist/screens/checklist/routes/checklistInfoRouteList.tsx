@@ -10,11 +10,11 @@ import {
   SafeAreaView,
   FlatList,
 } from "react-native";
-import { navigate } from "../../../services/navigate/navigate";
+import { navigator } from "../../../controllers/navigate/navigate";
 
 export default (props: any) => {
   function drivers() {
-    navigate(props, "drivers");
+    navigator(props, "drivers");
   }
 
   return (
