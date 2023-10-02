@@ -1,30 +1,43 @@
 import {
-    Dimensions,
-    StyleSheet,
-    View,
-    Text,
-    Pressable,
-    Image,
-    SafeAreaView,
-  } from "react-native";
-  
-  export default (props: any) => {
-    return (
+  Dimensions,
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  Image,
+  SafeAreaView,
+  ScrollView,
+} from "react-native";
+
+export default (props: any) => {
+  return (
+    <ScrollView>
       <SafeAreaView style={styles.container}>
-        <View>
-          <Text>visualizar dados da conta</Text>
+        <View style={styles.subcontainer}>
+          <Image
+            source={require("../../../../assets/screens/menu/user_photo.png")}
+          />
+          <Image
+            source={require("../../../../assets/screens/admin/card_org_mock.png")}
+          />
         </View>
       </SafeAreaView>
-    );
-  };
-  
-  const { width, height } = Dimensions.get("window");
-  
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-  });
-  
+    </ScrollView>
+  );
+};
+
+const { width, height } = Dimensions.get("window");
+
+const styles = StyleSheet.create({
+  container: {
+    height,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  subcontainer: {
+    height: "90%",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+});
