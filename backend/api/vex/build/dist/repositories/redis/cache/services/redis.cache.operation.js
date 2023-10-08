@@ -17,6 +17,7 @@ class RedisOperations {
         this.disconnection = () => __awaiter(this, void 0, void 0, function* () { return yield (0, redis_2.disconnect)(); });
         this.getCache = (key) => __awaiter(this, void 0, void 0, function* () { return yield (0, redis_1.getCacheValue)(key); });
         this.setCache = (key, value, expiration) => __awaiter(this, void 0, void 0, function* () { return yield (0, redis_1.setCacheValue)(key, value, expiration); });
+        this.deleteCache = (key) => __awaiter(this, void 0, void 0, function* () { return yield (0, redis_1.deleteCacheValue)(key); });
     }
 }
 exports.default = RedisOperations;

@@ -12,7 +12,7 @@ dotenv.config();
 
 const err = new HandleError();
 
-export const getCnpj = async(req: any, res: any) => {
+export const getCnpj = async (req: any, res: any) => {
   const Org = { ...req.query };
 
   const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
@@ -35,8 +35,10 @@ export const getCnpj = async(req: any, res: any) => {
   }
 };
 
-export const saveOrg = async(req: any, res: any) => {
+export const saveOrg = async (req: any, res: any) => {
   const Org = { ...req.body };
+
+  const cache = new RedisOperations();
 
   const cryptography = new Cryptography();
 
@@ -120,18 +122,20 @@ export const saveOrg = async(req: any, res: any) => {
 
   let cnpjExistsOnHttpResquest: any = "";
 
-  try {
-    cnpjExistsOnHttpResquest = await axios.get(url);
-  } catch (__) {
-    return res.status(500).json({
-      error: "i am sorry, there is an error to try verify cnpj",
-    });
-  }
+  // essa api gera erros constantemente (substitui-la)
 
-  if (cnpjExistsOnHttpResquest.data.error)
-    return res.status(404).json({
-      error: "cnpj not found",
-    });
+  // try {
+  //   cnpjExistsOnHttpResquest = await axios.get(url);
+  // } catch (__) {
+  //   return res.status(500).json({
+  //     error: "i am sorry, there is an error to try verify cnpj",
+  //   });
+  // }
+
+  // if (cnpjExistsOnHttpResquest.data.error)
+  //   return res.status(404).json({
+  //     error: "cnpj not found",
+  //   });
 
   const verifyCnpj = new OrgService();
 
@@ -174,16 +178,22 @@ export const saveOrg = async(req: any, res: any) => {
 
     await orgService.save();
 
+    const orgFromCache = await cache.getCache(`org`);
+
+    if (orgFromCache) await cache.deleteCache("org");
+
     return res.status(201).json({ msg: "organization created" });
   } catch (__) {
     return res.status(500).json({
-      error: "i am sorry, there is an error with server" + __,
+      error: "i am sorry, there is an error with server",
     });
   }
-}
+};
 
-export const updateOrg = async(req: any, res: any) => {
+export const updateOrg = async (req: any, res: any) => {
   const Org = { ...req.body };
+
+  const cache = new RedisOperations();
 
   const cryptography = new Cryptography();
 
@@ -293,6 +303,10 @@ export const updateOrg = async(req: any, res: any) => {
 
     await orgService.update(req.params.id);
 
+    const orgFromCache = await cache.getCache(`org`);
+
+    if (orgFromCache) await cache.deleteCache("org");
+
     return res.status(201).json({
       msg: "organization updated",
     });
@@ -301,9 +315,9 @@ export const updateOrg = async(req: any, res: any) => {
       error: "i am sorry, there is an error with server",
     });
   }
-}
+};
 
-export const getOrg = async(req: any, res: any) => {
+export const getOrg = async (req: any, res: any) => {
   const Org = { ...req.query };
 
   const orgService = new OrgService();
@@ -336,12 +350,12 @@ export const getOrg = async(req: any, res: any) => {
     });
   } catch (__) {
     return res.status(500).json({
-      error: "i am sorry, there is an error with server"+__,
+      error: "i am sorry, there is an error with server" + __,
     });
   }
-}
+};
 
-export const getOrgById = async(req: any, res: any) => {
+export const getOrgById = async (req: any, res: any) => {
   const Org = { ...req.params };
 
   const orgService = new OrgService();
@@ -377,10 +391,12 @@ export const getOrgById = async(req: any, res: any) => {
       error: "i am sorry, there is an error with server",
     });
   }
-}
+};
 
-export const deleteOrgById = async(req: any, res: any) => {
+export const deleteOrgById = async (req: any, res: any) => {
   const Org = { ...req.params };
+
+  const cache = new RedisOperations();
 
   const orgService = new OrgService();
 
@@ -394,12 +410,14 @@ export const deleteOrgById = async(req: any, res: any) => {
 
     await orgService.deleteById(Org.id);
 
+    const orgFromCache = await cache.getCache(`org`);
+
+    if (orgFromCache) await cache.deleteCache("org");
+
     return res.status(204).json();
   } catch (__) {
     return res.status(500).json({
       error: "i am sorry, there is an error with server",
     });
   }
-}
-
-
+};

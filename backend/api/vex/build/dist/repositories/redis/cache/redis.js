@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCacheValue = exports.setCacheValue = exports.disconnect = exports.connect = void 0;
+exports.deleteCacheValue = exports.getCacheValue = exports.setCacheValue = exports.disconnect = exports.connect = void 0;
 const redis_1 = require("../../../database/cache/redis");
 const connect = () => __awaiter(void 0, void 0, void 0, function* () { return yield redis_1.client.connect(); });
 exports.connect = connect;
@@ -19,3 +19,5 @@ const setCacheValue = (key, value, expiration) => __awaiter(void 0, void 0, void
 exports.setCacheValue = setCacheValue;
 const getCacheValue = (key) => __awaiter(void 0, void 0, void 0, function* () { return yield redis_1.client.get(key); });
 exports.getCacheValue = getCacheValue;
+const deleteCacheValue = (key) => __awaiter(void 0, void 0, void 0, function* () { return yield redis_1.client.del(key); });
+exports.deleteCacheValue = deleteCacheValue;

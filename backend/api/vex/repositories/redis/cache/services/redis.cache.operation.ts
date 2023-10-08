@@ -1,4 +1,4 @@
-import { getCacheValue, setCacheValue } from "./../redis";
+import { getCacheValue, setCacheValue, deleteCacheValue } from "./../redis";
 import { CacheOperations } from "../../../../interface/operations";
 import { connect, disconnect } from "../redis";
 
@@ -11,4 +11,6 @@ export default class RedisOperations implements CacheOperations {
 
   setCache = async (key?: any, value?: any, expiration?: any) =>
     await setCacheValue(key, value, expiration);
+
+  deleteCache = async (key?: any) => await deleteCacheValue(key);
 }

@@ -68,6 +68,7 @@ const getCnpj = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getCnpj = getCnpj;
 const saveOrg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
+    const cache = new redis_cache_operation_1.default();
     const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(Org.fantasy_name, "fantasy name is undefined or null");
@@ -96,18 +97,18 @@ const saveOrg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
     let cnpjExistsOnHttpResquest = "";
-    try {
-        cnpjExistsOnHttpResquest = yield axios_1.default.get(url);
-    }
-    catch (__) {
-        return res.status(500).json({
-            error: "i am sorry, there is an error to try verify cnpj",
-        });
-    }
-    if (cnpjExistsOnHttpResquest.data.error)
-        return res.status(404).json({
-            error: "cnpj not found",
-        });
+    // essa api gera erros constantemente (substitui-la)
+    // try {
+    //   cnpjExistsOnHttpResquest = await axios.get(url);
+    // } catch (__) {
+    //   return res.status(500).json({
+    //     error: "i am sorry, there is an error to try verify cnpj",
+    //   });
+    // }
+    // if (cnpjExistsOnHttpResquest.data.error)
+    //   return res.status(404).json({
+    //     error: "cnpj not found",
+    //   });
     const verifyCnpj = new orgService_1.default();
     const cnpjExixtsOnDb = yield verifyCnpj.verifyCnpj(Org.cnpj);
     if (cnpjExixtsOnDb === true)
@@ -128,17 +129,21 @@ const saveOrg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         Org.created_at = cryptography.encrypt(moment);
         const orgService = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password, Org.cnae_main_description, Org.sector, Org.created_at);
         yield orgService.save();
+        const orgFromCache = yield cache.getCache(`org`);
+        if (orgFromCache)
+            yield cache.deleteCache("org");
         return res.status(201).json({ msg: "organization created" });
     }
     catch (__) {
         return res.status(500).json({
-            error: "i am sorry, there is an error with server" + __,
+            error: "i am sorry, there is an error with server",
         });
     }
 });
 exports.saveOrg = saveOrg;
 const updateOrg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
+    const cache = new redis_cache_operation_1.default();
     const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(Org.fantasy_name, "fantasy name is undefined or null");
@@ -182,6 +187,9 @@ const updateOrg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         Org.sector = cryptography.encrypt(Org.sector);
         const orgService = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password, Org.cnae_main_description, Org.sector);
         yield orgService.update(req.params.id);
+        const orgFromCache = yield cache.getCache(`org`);
+        if (orgFromCache)
+            yield cache.deleteCache("org");
         return res.status(201).json({
             msg: "organization updated",
         });
@@ -255,6 +263,7 @@ const getOrgById = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.getOrgById = getOrgById;
 const deleteOrgById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.params);
+    const cache = new redis_cache_operation_1.default();
     const orgService = new orgService_1.default();
     try {
         const verifyId = yield orgService.verifyId(Org.id);
@@ -263,6 +272,9 @@ const deleteOrgById = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 error: "organization not found",
             });
         yield orgService.deleteById(Org.id);
+        const orgFromCache = yield cache.getCache(`org`);
+        if (orgFromCache)
+            yield cache.deleteCache("org");
         return res.status(204).json();
     }
     catch (__) {
