@@ -100,9 +100,9 @@ export const saveOrgAddress = async (req: any, res: any) => {
 
     await orgAddressService.save();
 
-    const orgFromCache = await cache.getCache(`org`);
+    const orgFromCache = await cache.getCache(`orgAddress`);
 
-    if (orgFromCache) await cache.deleteCache("org");
+    if (orgFromCache) await cache.deleteCache("orgAddress");
 
     return res.status(201).json({
       msg: "organization address saved",
@@ -115,6 +115,8 @@ export const saveOrgAddress = async (req: any, res: any) => {
 };
 export const updateOrgAddress = async (req: any, res: any) => {
   const OrgAddress = { ...req.body };
+
+  const cache = new RedisOperations();
 
   const cryptography = new Cryptography();
 
@@ -212,6 +214,14 @@ export const updateOrgAddress = async (req: any, res: any) => {
 
     await orgAddressService.update(req.params.id);
 
+    const orgFromCache = await cache.getCache(`orgAddress`);
+
+    if (orgFromCache) await cache.deleteCache("orgAddress");
+
+    const orgFromCacheById = await cache.getCache(`orgAddress_${req.params.id}`);
+
+    if (orgFromCacheById) await cache.deleteCache(`orgAddress_${req.params.id}`);
+
     return res.status(201).json({
       msg: "organization address updated",
     });
@@ -258,7 +268,7 @@ export const getOrgAddress = async (req: any, res: any) => {
     });
   } catch (__) {
     return res.status(500).json({
-      error: "i am sorry, there is an error with server" + __,
+      error: "i am sorry, there is an error with server",
     });
   }
 };
@@ -310,6 +320,8 @@ export const getOrgAddressById = async (req: any, res: any) => {
 export const deleteOrgAddressById = async (req: any, res: any) => {
   const OrgAddress = { ...req.params };
 
+  const cache = new RedisOperations();
+
   const orgAddressService = new OrgAddressService();
 
   try {
@@ -321,6 +333,15 @@ export const deleteOrgAddressById = async (req: any, res: any) => {
       });
 
     orgAddressService.deleteById(OrgAddress.id);
+
+    const orgFromCache = await cache.getCache(`orgAddress`);
+
+    if (orgFromCache) await cache.deleteCache("orgAddress");
+
+    const orgFromCacheById = await cache.getCache(`orgAddress_${req.params.id}`);
+
+    if (orgFromCacheById) await cache.deleteCache(`orgAddress_${req.params.id}`);
+
 
     return res.status(204).json({});
   } catch (__) {

@@ -55,9 +55,9 @@ const saveOrgAddress = (req, res) => __awaiter(void 0, void 0, void 0, function*
         OrgAddress.country = cryptography.encrypt(OrgAddress.country);
         const orgAddressService = new orgAddressService_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country);
         yield orgAddressService.save();
-        const orgFromCache = yield cache.getCache(`org`);
+        const orgFromCache = yield cache.getCache(`orgAddress`);
         if (orgFromCache)
-            yield cache.deleteCache("org");
+            yield cache.deleteCache("orgAddress");
         return res.status(201).json({
             msg: "organization address saved",
         });
@@ -71,6 +71,7 @@ const saveOrgAddress = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.saveOrgAddress = saveOrgAddress;
 const updateOrgAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgAddress = Object.assign({}, req.body);
+    const cache = new redis_cache_operation_1.default();
     const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(OrgAddress.zip_code, "zip code is undefined or null");
@@ -108,6 +109,12 @@ const updateOrgAddress = (req, res) => __awaiter(void 0, void 0, void 0, functio
         OrgAddress.country = cryptography.encrypt(OrgAddress.country);
         const orgAddressService = new orgAddressService_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country);
         yield orgAddressService.update(req.params.id);
+        const orgFromCache = yield cache.getCache(`orgAddress`);
+        if (orgFromCache)
+            yield cache.deleteCache("orgAddress");
+        const orgFromCacheById = yield cache.getCache(`orgAddress_${req.params.id}`);
+        if (orgFromCacheById)
+            yield cache.deleteCache(`orgAddress_${req.params.id}`);
         return res.status(201).json({
             msg: "organization address updated",
         });
@@ -144,7 +151,7 @@ const getOrgAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     catch (__) {
         return res.status(500).json({
-            error: "i am sorry, there is an error with server" + __,
+            error: "i am sorry, there is an error with server",
         });
     }
 });
@@ -181,6 +188,7 @@ const getOrgAddressById = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.getOrgAddressById = getOrgAddressById;
 const deleteOrgAddressById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgAddress = Object.assign({}, req.params);
+    const cache = new redis_cache_operation_1.default();
     const orgAddressService = new orgAddressService_1.default();
     try {
         const verifyId = yield orgAddressService.verifyId(OrgAddress.id);
@@ -189,6 +197,12 @@ const deleteOrgAddressById = (req, res) => __awaiter(void 0, void 0, void 0, fun
                 error: "organization address not found",
             });
         orgAddressService.deleteById(OrgAddress.id);
+        const orgFromCache = yield cache.getCache(`orgAddress`);
+        if (orgFromCache)
+            yield cache.deleteCache("orgAddress");
+        const orgFromCacheById = yield cache.getCache(`orgAddress_${req.params.id}`);
+        if (orgFromCacheById)
+            yield cache.deleteCache(`orgAddress_${req.params.id}`);
         return res.status(204).json({});
     }
     catch (__) {
