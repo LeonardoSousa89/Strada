@@ -11,6 +11,8 @@ const err = new HandleError();
 export const saveOrgAddress = async (req: any, res: any) => {
   const OrgAddress = { ...req.body };
 
+  const cache = new RedisOperations();
+
   const cryptography = new Cryptography();
 
   try {
@@ -97,6 +99,10 @@ export const saveOrgAddress = async (req: any, res: any) => {
     );
 
     await orgAddressService.save();
+
+    const orgFromCache = await cache.getCache(`org`);
+
+    if (orgFromCache) await cache.deleteCache("org");
 
     return res.status(201).json({
       msg: "organization address saved",

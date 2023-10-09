@@ -311,9 +311,20 @@ export const updateOrg = async (req: any, res: any) => {
 
     await orgService.update(req.params.id);
 
+    /**
+     * visto que esta funcionalidade é responsável
+     * por alterar um determinado elemento por id,
+     * além de eliminar o cache por busca geral,
+     * ele também deve ser responável por deletar o cache correspondente
+     * por id.
+     */
     const orgFromCache = await cache.getCache(`org`);
 
     if (orgFromCache) await cache.deleteCache("org");
+
+    const orgFromCacheById = await cache.getCache(`org_${req.params.id}`);
+
+    if (orgFromCacheById) await cache.deleteCache(`org_${req.params.id}`);
 
     return res.status(201).json({
       msg: "organization updated",

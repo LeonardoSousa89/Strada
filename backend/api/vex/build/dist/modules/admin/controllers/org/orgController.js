@@ -195,9 +195,19 @@ const updateOrg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         Org.sector = cryptography.encrypt(Org.sector);
         const orgService = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password, Org.cnae_main_description, Org.sector);
         yield orgService.update(req.params.id);
+        /**
+         * visto que esta funcionalidade é responsável
+         * por alterar um determinado elemento por id,
+         * além de eliminar o cache por busca geral,
+         * ele também deve ser responável por deletar o cache correspondente
+         * por id.
+         */
         const orgFromCache = yield cache.getCache(`org`);
         if (orgFromCache)
             yield cache.deleteCache("org");
+        const orgFromCacheById = yield cache.getCache(`org_${req.params.id}`);
+        if (orgFromCacheById)
+            yield cache.deleteCache(`org_${req.params.id}`);
         return res.status(201).json({
             msg: "organization updated",
         });

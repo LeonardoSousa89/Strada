@@ -23,6 +23,7 @@ exports.orgAddressController = orgAddressController;
 const err = new handleError_1.default();
 const saveOrgAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgAddress = Object.assign({}, req.body);
+    const cache = new redis_cache_operation_1.default();
     const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(OrgAddress.zip_code, "zip code is undefined or null");
@@ -54,6 +55,9 @@ const saveOrgAddress = (req, res) => __awaiter(void 0, void 0, void 0, function*
         OrgAddress.country = cryptography.encrypt(OrgAddress.country);
         const orgAddressService = new orgAddressService_1.default(OrgAddress.zip_code, OrgAddress.street_type, OrgAddress.public_place, OrgAddress.org_number, OrgAddress.complement, OrgAddress.neighborhood, OrgAddress.county, OrgAddress.country);
         yield orgAddressService.save();
+        const orgFromCache = yield cache.getCache(`org`);
+        if (orgFromCache)
+            yield cache.deleteCache("org");
         return res.status(201).json({
             msg: "organization address saved",
         });
