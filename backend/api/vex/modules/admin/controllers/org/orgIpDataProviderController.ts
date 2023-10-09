@@ -13,6 +13,8 @@ const err = new HandleError();
 export const saveOrgIpDataProvider = async (req: any, res: any) => {
   const OrgMachineAndDataProvider = { ...req.body };
 
+  const cache = new RedisOperations();
+
   const cryptography = new Cryptography();
 
   try {
@@ -146,6 +148,10 @@ export const saveOrgIpDataProvider = async (req: any, res: any) => {
       OrgMachineAndDataProvider.readme
     ).save();
 
+    const orgFromCache = await cache.getCache(`orgIpDataProvider`);
+
+    if (orgFromCache) await cache.deleteCache("orgIpDataProvider");
+
     return res.status(201).json({
       msg: "organization data machine and provider saved",
     });
@@ -246,6 +252,8 @@ export const getOrgIpDataProviderById = async (req: any, res: any) => {
 export const deleteOrgIpDataProviderById = async (req: any, res: any) => {
   const OrgIpDataProvider = { ...req.params };
 
+  const cache = new RedisOperations();
+
   const orgIpDataProviderService = new OrgIpDataProviderService();
 
   try {
@@ -259,6 +267,17 @@ export const deleteOrgIpDataProviderById = async (req: any, res: any) => {
       });
 
     await orgIpDataProviderService.deleteById(OrgIpDataProvider.id);
+
+    const orgFromCache = await cache.getCache(`orgIpDataProvider`);
+
+    if (orgFromCache) await cache.deleteCache("orgIpDataProvider");
+
+    const orgFromCacheById = await cache.getCache(
+      `orgIpDataProvider_${OrgIpDataProvider.id}`
+    );
+
+    if (orgFromCacheById)
+      await cache.deleteCache(`orgIpDataProvider_${OrgIpDataProvider.id}`);
 
     return res.status(204).json();
   } catch (__) {

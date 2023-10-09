@@ -45,6 +45,7 @@ dotenv.config();
 const err = new handleError_1.default();
 const saveOrgIpDataProvider = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgMachineAndDataProvider = Object.assign({}, req.body);
+    const cache = new redis_cache_operation_1.default();
     const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(OrgMachineAndDataProvider.ip, "ip is undefined or null");
@@ -83,6 +84,9 @@ const saveOrgIpDataProvider = (req, res) => __awaiter(void 0, void 0, void 0, fu
         OrgMachineAndDataProvider.timezone = cryptography.encrypt(OrgMachineAndDataProvider.timezone);
         OrgMachineAndDataProvider.readme = cryptography.encrypt(OrgMachineAndDataProvider.readme);
         new OrgIpDataProviderService_1.default(OrgMachineAndDataProvider.ip, OrgMachineAndDataProvider.hostname, OrgMachineAndDataProvider.city, OrgMachineAndDataProvider.region, OrgMachineAndDataProvider.country, OrgMachineAndDataProvider.loc, OrgMachineAndDataProvider.org, OrgMachineAndDataProvider.postal, OrgMachineAndDataProvider.timezone, OrgMachineAndDataProvider.readme).save();
+        const orgFromCache = yield cache.getCache(`orgIpDataProvider`);
+        if (orgFromCache)
+            yield cache.deleteCache("orgIpDataProvider");
         return res.status(201).json({
             msg: "organization data machine and provider saved",
         });
@@ -156,6 +160,7 @@ const getOrgIpDataProviderById = (req, res) => __awaiter(void 0, void 0, void 0,
 exports.getOrgIpDataProviderById = getOrgIpDataProviderById;
 const deleteOrgIpDataProviderById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgIpDataProvider = Object.assign({}, req.params);
+    const cache = new redis_cache_operation_1.default();
     const orgIpDataProviderService = new OrgIpDataProviderService_1.default();
     try {
         const verifyId = yield orgIpDataProviderService.verifyId(OrgIpDataProvider.id);
@@ -164,6 +169,12 @@ const deleteOrgIpDataProviderById = (req, res) => __awaiter(void 0, void 0, void
                 error: "organization data machine not found",
             });
         yield orgIpDataProviderService.deleteById(OrgIpDataProvider.id);
+        const orgFromCache = yield cache.getCache(`orgIpDataProvider`);
+        if (orgFromCache)
+            yield cache.deleteCache("orgIpDataProvider");
+        const orgFromCacheById = yield cache.getCache(`orgIpDataProvider_${OrgIpDataProvider.id}`);
+        if (orgFromCacheById)
+            yield cache.deleteCache(`orgIpDataProvider_${OrgIpDataProvider.id}`);
         return res.status(204).json();
     }
     catch (__) {
