@@ -200,9 +200,9 @@ const deleteOrgAddressById = (req, res) => __awaiter(void 0, void 0, void 0, fun
         const orgFromCache = yield cache.getCache(`orgAddress`);
         if (orgFromCache)
             yield cache.deleteCache("orgAddress");
-        const orgFromCacheById = yield cache.getCache(`orgAddress_${req.params.id}`);
+        const orgFromCacheById = yield cache.getCache(`orgAddress_${OrgAddress.id}`);
         if (orgFromCacheById)
-            yield cache.deleteCache(`orgAddress_${req.params.id}`);
+            yield cache.deleteCache(`orgAddress_${OrgAddress.id}`);
         return res.status(204).json({});
     }
     catch (__) {

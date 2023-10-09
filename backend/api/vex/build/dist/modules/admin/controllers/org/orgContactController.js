@@ -20,6 +20,7 @@ const cryptography_1 = __importDefault(require("../../../security/controllers/cr
 const err = new handleError_1.default();
 const saveOrgContact = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgContact = Object.assign({}, req.body);
+    const cache = new redis_cache_operation_1.default();
     const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(OrgContact.telephone, "telephone is undefined or null");
@@ -38,6 +39,9 @@ const saveOrgContact = (req, res) => __awaiter(void 0, void 0, void 0, function*
         OrgContact.email = cryptography.encrypt(OrgContact.email);
         const orgContactService = new orgContactService_1.default(OrgContact.telephone, OrgContact.ddd, OrgContact.email);
         yield orgContactService.save();
+        const orgFromCache = yield cache.getCache(`orgContact`);
+        if (orgFromCache)
+            yield cache.deleteCache("orgContact");
         return res.status(201).json({
             msg: "organization contact saved",
         });
@@ -51,6 +55,7 @@ const saveOrgContact = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.saveOrgContact = saveOrgContact;
 const updateOrgContact = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgContact = Object.assign({}, req.body);
+    const cache = new redis_cache_operation_1.default();
     const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(OrgContact.telephone, "telephone is undefined or null");
@@ -75,6 +80,12 @@ const updateOrgContact = (req, res) => __awaiter(void 0, void 0, void 0, functio
         OrgContact.email = cryptography.encrypt(OrgContact.email);
         const orgContactService = new orgContactService_1.default(OrgContact.telephone, OrgContact.ddd, OrgContact.email);
         yield orgContactService.update(req.params.id);
+        const orgFromCache = yield cache.getCache(`orgContact`);
+        if (orgFromCache)
+            yield cache.deleteCache("orgContact");
+        const orgFromCacheById = yield cache.getCache(`orgContact_${req.params.id}`);
+        if (orgFromCacheById)
+            yield cache.deleteCache(`orgContact_${req.params.id}`);
         return res.status(201).json({
             msg: "organization contact updated",
         });
@@ -111,7 +122,7 @@ const getOrgContact = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     catch (__) {
         return res.status(500).json({
-            error: "i am sorry, there is an error with server" + __,
+            error: "i am sorry, there is an error with server",
         });
     }
 });
@@ -148,6 +159,7 @@ const getOrgContactById = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.getOrgContactById = getOrgContactById;
 const deleteOrgContactById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const OrgContact = Object.assign({}, req.params);
+    const cache = new redis_cache_operation_1.default();
     const orgContactService = new orgContactService_1.default();
     try {
         const verifyId = new orgContactService_1.default();
@@ -157,6 +169,12 @@ const deleteOrgContactById = (req, res) => __awaiter(void 0, void 0, void 0, fun
                 error: "organization contact not found",
             });
         yield orgContactService.deleteById(OrgContact.id);
+        const orgFromCache = yield cache.getCache(`orgContact`);
+        if (orgFromCache)
+            yield cache.deleteCache("orgContact");
+        const orgFromCacheById = yield cache.getCache(`orgContact_${OrgContact.id}`);
+        if (orgFromCacheById)
+            yield cache.deleteCache(`orgContact_${OrgContact.id}`);
         return res.status(204).json({});
     }
     catch (__) {

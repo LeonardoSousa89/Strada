@@ -338,9 +338,9 @@ export const deleteOrgAddressById = async (req: any, res: any) => {
 
     if (orgFromCache) await cache.deleteCache("orgAddress");
 
-    const orgFromCacheById = await cache.getCache(`orgAddress_${req.params.id}`);
+    const orgFromCacheById = await cache.getCache(`orgAddress_${OrgAddress.id}`);
 
-    if (orgFromCacheById) await cache.deleteCache(`orgAddress_${req.params.id}`);
+    if (orgFromCacheById) await cache.deleteCache(`orgAddress_${OrgAddress.id}`);
 
 
     return res.status(204).json({});

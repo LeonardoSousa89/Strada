@@ -8,6 +8,8 @@ const err = new HandleError();
 export const saveOrgContact = async (req: any, res: any) => {
   const OrgContact = { ...req.body };
 
+  const cache = new RedisOperations();
+
   const cryptography = new Cryptography();
 
   try {
@@ -50,6 +52,10 @@ export const saveOrgContact = async (req: any, res: any) => {
 
     await orgContactService.save();
 
+    const orgFromCache = await cache.getCache(`orgContact`);
+
+    if (orgFromCache) await cache.deleteCache("orgContact");
+
     return res.status(201).json({
       msg: "organization contact saved",
     });
@@ -62,6 +68,8 @@ export const saveOrgContact = async (req: any, res: any) => {
 
 export const updateOrgContact = async (req: any, res: any) => {
   const OrgContact = { ...req.body };
+
+  const cache = new RedisOperations();
 
   const cryptography = new Cryptography();
 
@@ -114,6 +122,17 @@ export const updateOrgContact = async (req: any, res: any) => {
 
     await orgContactService.update(req.params.id);
 
+    const orgFromCache = await cache.getCache(`orgContact`);
+
+    if (orgFromCache) await cache.deleteCache("orgContact");
+
+    const orgFromCacheById = await cache.getCache(
+      `orgContact_${req.params.id}`
+    );
+
+    if (orgFromCacheById)
+      await cache.deleteCache(`orgContact_${req.params.id}`);
+
     return res.status(201).json({
       msg: "organization contact updated",
     });
@@ -160,7 +179,7 @@ export const getOrgContact = async (req: any, res: any) => {
     });
   } catch (__) {
     return res.status(500).json({
-      error: "i am sorry, there is an error with server" + __,
+      error: "i am sorry, there is an error with server",
     });
   }
 };
@@ -212,6 +231,8 @@ export const getOrgContactById = async (req: any, res: any) => {
 export const deleteOrgContactById = async (req: any, res: any) => {
   const OrgContact = { ...req.params };
 
+  const cache = new RedisOperations();
+
   const orgContactService = new OrgContactService();
 
   try {
@@ -225,6 +246,17 @@ export const deleteOrgContactById = async (req: any, res: any) => {
       });
 
     await orgContactService.deleteById(OrgContact.id);
+
+    const orgFromCache = await cache.getCache(`orgContact`);
+
+    if (orgFromCache) await cache.deleteCache("orgContact");
+
+    const orgFromCacheById = await cache.getCache(
+      `orgContact_${OrgContact.id}`
+    );
+
+    if (orgFromCacheById)
+      await cache.deleteCache(`orgContact_${OrgContact.id}`);
 
     return res.status(204).json({});
   } catch (__) {
