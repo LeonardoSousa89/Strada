@@ -178,6 +178,14 @@ export const saveOrg = async (req: any, res: any) => {
 
     await orgService.save();
 
+    /**
+     * visto que esta funcionalidade é responsável
+     * por inserir um determinado elemento,
+     * ele não deve ser responável por deletar o cache correspondente
+     * por id e sim eliminar o cache por busca geral,
+     * tendo em vista que a cada consulta por id,
+     * a respectiva funcionalidade inseri o elemento em cache
+     */
     const orgFromCache = await cache.getCache(`org`);
 
     if (orgFromCache) await cache.deleteCache("org");
@@ -350,7 +358,7 @@ export const getOrg = async (req: any, res: any) => {
     });
   } catch (__) {
     return res.status(500).json({
-      error: "i am sorry, there is an error with server" + __,
+      error: "i am sorry, there is an error with server",
     });
   }
 };
@@ -410,9 +418,20 @@ export const deleteOrgById = async (req: any, res: any) => {
 
     await orgService.deleteById(Org.id);
 
+    /**
+     * visto que esta funcionalidade é responsável
+     * por eliminar um determinado elemento por id,
+     * além de eliminar o cache por busca geral,
+     * ele também deve ser responável por deletar o cache correspondente
+     * por id.
+     */
     const orgFromCache = await cache.getCache(`org`);
 
     if (orgFromCache) await cache.deleteCache("org");
+
+    const orgFromCacheById = await cache.getCache(`org_${Org.id}`);
+
+    if (orgFromCacheById) await cache.deleteCache(`org_${Org.id}`);
 
     return res.status(204).json();
   } catch (__) {

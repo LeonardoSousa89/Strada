@@ -252,7 +252,7 @@ export const getOrgAddress = async (req: any, res: any) => {
     });
   } catch (__) {
     return res.status(500).json({
-      error: "i am sorry, there is an error with server"+__,
+      error: "i am sorry, there is an error with server" + __,
     });
   }
 };

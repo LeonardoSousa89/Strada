@@ -129,6 +129,14 @@ const saveOrg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         Org.created_at = cryptography.encrypt(moment);
         const orgService = new orgService_1.default(Org.fantasy_name, Org.corporate_name, Org.cnpj, Org.org_status, Org.cnae_main_code, Org.open_date, Org.password, Org.cnae_main_description, Org.sector, Org.created_at);
         yield orgService.save();
+        /**
+         * visto que esta funcionalidade é responsável
+         * por inserir um determinado elemento,
+         * ele não deve ser responável por deletar o cache correspondente
+         * por id e sim eliminar o cache por busca geral,
+         * tendo em vista que a cada consulta por id,
+         * a respectiva funcionalidade inseri o elemento em cache
+         */
         const orgFromCache = yield cache.getCache(`org`);
         if (orgFromCache)
             yield cache.deleteCache("org");
@@ -226,7 +234,7 @@ const getOrg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (__) {
         return res.status(500).json({
-            error: "i am sorry, there is an error with server" + __,
+            error: "i am sorry, there is an error with server",
         });
     }
 });
@@ -272,9 +280,19 @@ const deleteOrgById = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 error: "organization not found",
             });
         yield orgService.deleteById(Org.id);
+        /**
+         * visto que esta funcionalidade é responsável
+         * por eliminar um determinado elemento por id,
+         * além de eliminar o cache por busca geral,
+         * ele também deve ser responável por deletar o cache correspondente
+         * por id.
+         */
         const orgFromCache = yield cache.getCache(`org`);
         if (orgFromCache)
             yield cache.deleteCache("org");
+        const orgFromCacheById = yield cache.getCache(`org_${Org.id}`);
+        if (orgFromCacheById)
+            yield cache.deleteCache(`org_${Org.id}`);
         return res.status(204).json();
     }
     catch (__) {
