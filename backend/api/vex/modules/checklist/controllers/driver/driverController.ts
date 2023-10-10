@@ -9,6 +9,8 @@ const err = new HandleError();
 export const saveDriver = async (req: any, res: any) => {
   const Driver = { ...req.body };
 
+  const cache = new RedisOperations();
+
   const cryptography = new Cryptography();
 
   try {
@@ -77,16 +79,22 @@ export const saveDriver = async (req: any, res: any) => {
 
     await driverService.save();
 
+    const driverFromCache = await cache.getCache(`driver`);
+
+    if (driverFromCache) await cache.deleteCache("driver");
+
     return res.status(201).json({ msg: "driver saved" });
   } catch (e) {
     return res
       .status(500)
       .json({ error: "i am sorry, there is an error with server" });
   }
-}
+};
 
 export const updateDriver = async (req: any, res: any) => {
   const Driver = { ...req.body };
+
+  const cache = new RedisOperations();
 
   const cryptography = new Cryptography();
 
@@ -133,6 +141,8 @@ export const updateDriver = async (req: any, res: any) => {
     return res.status(400).json({ error: e });
   }
 
+  //verificar se ao atualizar o email já existe e tratar, pois está retornando 500
+
   const driverIdExistsOnDb = await new DriverService().verifyId(req.params.id);
 
   if (driverIdExistsOnDb === false)
@@ -156,13 +166,21 @@ export const updateDriver = async (req: any, res: any) => {
 
     await driverService.update(req.params.id);
 
+    const driverFromCache = await cache.getCache(`driver`);
+
+    if (driverFromCache) await cache.deleteCache("driver");
+
+    const driverFromCacheById = await cache.getCache(`driver_${req.params.id}`);
+
+    if (driverFromCacheById) await cache.deleteCache(`driver_${req.params.id}`);
+
     return res.status(201).json({ msg: "driver updated" });
   } catch (e) {
     return res
       .status(500)
       .json({ error: "i am sorry, there is an error with server" });
   }
-}
+};
 
 export const getDriver = async (req: any, res: any) => {
   const Driver = { ...req.query };
@@ -200,7 +218,7 @@ export const getDriver = async (req: any, res: any) => {
       .status(500)
       .json({ error: "i am sorry, there is an error with server" });
   }
-}
+};
 
 export const getDriverById = async (req: any, res: any) => {
   const Driver = { ...req.params };
@@ -238,11 +256,12 @@ export const getDriverById = async (req: any, res: any) => {
       error: "i am sorry, there is an error with server",
     });
   }
-}
-
+};
 
 export const deleteAllDriver = async (req: any, res: any) => {
   const driverService = new DriverService();
+
+  const cache = new RedisOperations();
 
   try {
     const driverIdExistsOnDb = await driverService.getAll();
@@ -254,34 +273,49 @@ export const deleteAllDriver = async (req: any, res: any) => {
 
     await driverService.deleteAll();
 
+    const driverFromCache = await cache.getCache(`driver`);
+
+    if (driverFromCache) await cache.deleteCache("driver");
+
+    //código para deletar também todas as keys por id
+
     return res.status(204).json({});
   } catch (e) {
     return res
       .status(500)
       .json({ error: "i am sorry, there is an error with server" });
   }
-}
+};
 
 export const deleteDriverById = async (req: any, res: any) => {
-    const driverService = new DriverService();
+  const driverService = new DriverService();
 
-    const Driver = { ...req.params };
+  const cache = new RedisOperations();
 
-    try {
-      const driverIdExistsOnDb = await driverService.getById(Driver.id);
+  const Driver = { ...req.params };
 
-      if (driverIdExistsOnDb === "driver not found")
-        return res.status(404).json({
-          error: driverIdExistsOnDb,
-        });
+  try {
+    const driverIdExistsOnDb = await driverService.getById(Driver.id);
 
-      await driverService.deleteById(Driver.id);
+    if (driverIdExistsOnDb === "driver not found")
+      return res.status(404).json({
+        error: driverIdExistsOnDb,
+      });
 
-      return res.status(204).json({});
-    } catch (e) {
-      return res
-        .status(500)
-        .json({ error: "i am sorry, there is an error with server" });
-    }
+    await driverService.deleteById(Driver.id);
+
+    const driverFromCache = await cache.getCache(`driver`);
+
+    if (driverFromCache) await cache.deleteCache("driver");
+
+    const driverFromCacheById = await cache.getCache(`driver_${Driver.id}`);
+
+    if (driverFromCacheById) await cache.deleteCache(`driver_${Driver.id}`);
+
+    return res.status(204).json({});
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ error: "i am sorry, there is an error with server" });
   }
-
+};

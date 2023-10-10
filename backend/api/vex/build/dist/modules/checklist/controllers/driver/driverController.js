@@ -20,6 +20,7 @@ const cryptography_1 = __importDefault(require("../../../security/controllers/cr
 const err = new handleError_1.default();
 const saveDriver = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Driver = Object.assign({}, req.body);
+    const cache = new redis_cache_operation_1.default();
     const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(Driver.first_name, "first name is undefined or null");
@@ -47,6 +48,9 @@ const saveDriver = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         Driver.password = cryptography.hash(Driver.password);
         const driverService = new driverService_1.default(Driver.first_name, Driver.last_name, Driver.email, Driver.password);
         yield driverService.save();
+        const driverFromCache = yield cache.getCache(`driver`);
+        if (driverFromCache)
+            yield cache.deleteCache("driver");
         return res.status(201).json({ msg: "driver saved" });
     }
     catch (e) {
@@ -58,6 +62,7 @@ const saveDriver = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.saveDriver = saveDriver;
 const updateDriver = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Driver = Object.assign({}, req.body);
+    const cache = new redis_cache_operation_1.default();
     const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(Driver.first_name, "first name is undefined or null");
@@ -85,6 +90,12 @@ const updateDriver = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         Driver.password = cryptography.hash(Driver.password);
         const driverService = new driverService_1.default(Driver.first_name, Driver.last_name, Driver.email, Driver.password);
         yield driverService.update(req.params.id);
+        const driverFromCache = yield cache.getCache(`driver`);
+        if (driverFromCache)
+            yield cache.deleteCache("driver");
+        const driverFromCacheById = yield cache.getCache(`driver_${req.params.id}`);
+        if (driverFromCacheById)
+            yield cache.deleteCache(`driver_${req.params.id}`);
         return res.status(201).json({ msg: "driver updated" });
     }
     catch (e) {
@@ -156,6 +167,7 @@ const getDriverById = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.getDriverById = getDriverById;
 const deleteAllDriver = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const driverService = new driverService_1.default();
+    const cache = new redis_cache_operation_1.default();
     try {
         const driverIdExistsOnDb = yield driverService.getAll();
         if (driverIdExistsOnDb === "no data")
@@ -163,6 +175,10 @@ const deleteAllDriver = (req, res) => __awaiter(void 0, void 0, void 0, function
                 error: driverIdExistsOnDb,
             });
         yield driverService.deleteAll();
+        const driverFromCache = yield cache.getCache(`driver`);
+        if (driverFromCache)
+            yield cache.deleteCache("driver");
+        //código para deletar também todas as keys por id
         return res.status(204).json({});
     }
     catch (e) {
@@ -174,6 +190,7 @@ const deleteAllDriver = (req, res) => __awaiter(void 0, void 0, void 0, function
 exports.deleteAllDriver = deleteAllDriver;
 const deleteDriverById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const driverService = new driverService_1.default();
+    const cache = new redis_cache_operation_1.default();
     const Driver = Object.assign({}, req.params);
     try {
         const driverIdExistsOnDb = yield driverService.getById(Driver.id);
@@ -182,6 +199,12 @@ const deleteDriverById = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 error: driverIdExistsOnDb,
             });
         yield driverService.deleteById(Driver.id);
+        const driverFromCache = yield cache.getCache(`driver`);
+        if (driverFromCache)
+            yield cache.deleteCache("driver");
+        const driverFromCacheById = yield cache.getCache(`driver_${Driver.id}`);
+        if (driverFromCacheById)
+            yield cache.deleteCache(`driver_${Driver.id}`);
         return res.status(204).json({});
     }
     catch (e) {
