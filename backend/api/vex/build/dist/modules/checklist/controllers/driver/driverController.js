@@ -78,6 +78,7 @@ const updateDriver = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (e) {
         return res.status(400).json({ error: e });
     }
+    //verificar se ao atualizar o email já existe e tratar, pois está retornando 500
     const driverIdExistsOnDb = yield new driverService_1.default().verifyId(req.params.id);
     if (driverIdExistsOnDb === false)
         return res.status(404).json({
@@ -174,11 +175,18 @@ const deleteAllDriver = (req, res) => __awaiter(void 0, void 0, void 0, function
             return res.status(404).json({
                 error: driverIdExistsOnDb,
             });
+        //código para deletar também todas as keys por id
+        const allDrivers = yield driverService.getAll();
+        for (let id in allDrivers) {
+            const driverId = allDrivers[id].driver_id;
+            const driverFromCacheById = yield cache.getCache(`driver_${driverId}`);
+            if (driverFromCacheById)
+                yield cache.deleteCache(`driver_${driverId}`);
+        }
         yield driverService.deleteAll();
         const driverFromCache = yield cache.getCache(`driver`);
         if (driverFromCache)
             yield cache.deleteCache("driver");
-        //código para deletar também todas as keys por id
         return res.status(204).json({});
     }
     catch (e) {

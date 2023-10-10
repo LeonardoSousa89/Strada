@@ -1,6 +1,23 @@
 version: '3.7'
 
 services: 
+  sonarqube:
+    container_name: sonarqube
+    image: sonarqube:8-community
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 128M
+      restart_policy:
+        condition: on-failure  
+      ports: 
+      - 9001:9000
+      - 9092:9092
+      networks:
+        proxy:
+          ipv4_address: 172.16.238.2
+
   nginx:
     container_name: nginx
     image: nginx
@@ -19,7 +36,7 @@ services:
       - 80:80
     networks:
       proxy:
-        ipv4_address: 172.16.238.2
+        ipv4_address: 172.16.238.3
 
   postgres:
     container_name: postgres
@@ -41,7 +58,7 @@ services:
       - 5432:5432
     networks:
       proxy:
-        ipv4_address: 172.16.238.3
+        ipv4_address: 172.16.238.4
 
   redis:
     container_name: redis
@@ -58,11 +75,11 @@ services:
       - 6379:6379
     networks:
       proxy:
-        ipv4_address: 172.16.238.4
+        ipv4_address: 172.16.238.5
 
-  vex_account:
-    container_name: vex_account
-    image: leozin89/vex_account
+  vex:
+    container_name: vex
+    image: leozin89/vex
     deploy:
       resources:
         limits:
@@ -78,7 +95,7 @@ services:
       - ./app/.env
     networks:
       proxy:
-        ipv4_address: 172.16.238.5
+        ipv4_address: 172.16.238.6
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -100,7 +117,7 @@ services:
       - 15672:15672
     networks:
       proxy:
-        ipv4_address: 172.16.238.6
+        ipv4_address: 172.16.238.8
 
 networks:
   proxy:
