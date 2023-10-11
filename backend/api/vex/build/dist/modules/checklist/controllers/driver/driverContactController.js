@@ -20,6 +20,7 @@ const cryptography_1 = __importDefault(require("../../../security/controllers/cr
 const err = new handleError_1.default();
 const saveDriverContact = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverContact = Object.assign({}, req.body);
+    const cache = new redis_cache_operation_1.default();
     const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(DriverContact.telephone, "telephone is undefined or null");
@@ -32,6 +33,9 @@ const saveDriverContact = (req, res) => __awaiter(void 0, void 0, void 0, functi
         DriverContact.telephone = cryptography.encrypt(DriverContact.telephone);
         const driverContactService = new driverContactService_1.default(DriverContact.telephone);
         yield driverContactService.save();
+        const driverContactFromCache = yield cache.getCache(`driverContact`);
+        if (driverContactFromCache)
+            yield cache.deleteCache("driverContact");
         return res.status(201).json({ msg: "driver telephone save" });
     }
     catch (__) {
@@ -43,6 +47,7 @@ const saveDriverContact = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.saveDriverContact = saveDriverContact;
 const updateDriverContact = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverContact = Object.assign({}, req.body);
+    const cache = new redis_cache_operation_1.default();
     const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(DriverContact.telephone, "telephone is undefined or null");
@@ -60,6 +65,12 @@ const updateDriverContact = (req, res) => __awaiter(void 0, void 0, void 0, func
         DriverContact.telephone = cryptography.encrypt(DriverContact.telephone);
         const driverContactService = new driverContactService_1.default(DriverContact.telephone);
         yield driverContactService.update(req.params.id);
+        const driverContactFromCache = yield cache.getCache(`driverContact`);
+        if (driverContactFromCache)
+            yield cache.deleteCache("driverContact");
+        const driverContactFromCacheById = yield cache.getCache(`driverContact_${req.params.id}`);
+        if (driverContactFromCacheById)
+            yield cache.deleteCache(`driverContact_${req.params.id}`);
         return res.status(201).json({ msg: "driver telephone update" });
     }
     catch (__) {
@@ -131,13 +142,24 @@ const getDriverContactById = (req, res) => __awaiter(void 0, void 0, void 0, fun
 exports.getDriverContactById = getDriverContactById;
 const deleteAllDriverContact = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const driverContactService = new driverContactService_1.default();
+    const cache = new redis_cache_operation_1.default();
     try {
         const driverContactExistsOrNotExists = yield driverContactService.getAll();
         if (driverContactExistsOrNotExists === "no data")
             return res.status(404).json({
                 error: driverContactExistsOrNotExists,
             });
+        const allDriverContact = yield driverContactService.getAll();
+        for (let id in allDriverContact) {
+            const driverContactId = allDriverContact[id].driver_id;
+            const driverContactFromCacheById = yield cache.getCache(`driverContact_${driverContactId}`);
+            if (driverContactFromCacheById)
+                yield cache.deleteCache(`driverContact_${driverContactId}`);
+        }
         yield driverContactService.deleteAll();
+        const driverContactFromCache = yield cache.getCache(`driverContact`);
+        if (driverContactFromCache)
+            yield cache.deleteCache("driverContact");
         return res.status(204).json({});
     }
     catch (__) {
@@ -149,6 +171,7 @@ const deleteAllDriverContact = (req, res) => __awaiter(void 0, void 0, void 0, f
 exports.deleteAllDriverContact = deleteAllDriverContact;
 const deleteDriverContactById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverContact = Object.assign({}, req.params);
+    const cache = new redis_cache_operation_1.default();
     const driverContactService = new driverContactService_1.default();
     try {
         const driverExistsOrNotExists = yield driverContactService.getById(DriverContact.id);
@@ -157,6 +180,12 @@ const deleteDriverContactById = (req, res) => __awaiter(void 0, void 0, void 0, 
                 error: driverExistsOrNotExists,
             });
         yield driverContactService.deleteById(DriverContact.id);
+        const driverContactFromCache = yield cache.getCache(`driverContact`);
+        if (driverContactFromCache)
+            yield cache.deleteCache("driverContact");
+        const driverContactFromCacheById = yield cache.getCache(`driverContact_${DriverContact.id}`);
+        if (driverContactFromCacheById)
+            yield cache.deleteCache(`driverContact_${DriverContact.id}`);
         return res.status(204).json({});
     }
     catch (__) {

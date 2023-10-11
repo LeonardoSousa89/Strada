@@ -8,6 +8,8 @@ const err = new HandleError();
 export const saveDriverContact = async (req: any, res: any) => {
   const DriverContact = { ...req.body };
 
+  const cache = new RedisOperations();
+
   const cryptography = new Cryptography();
 
   try {
@@ -33,6 +35,10 @@ export const saveDriverContact = async (req: any, res: any) => {
 
     await driverContactService.save();
 
+    const driverContactFromCache = await cache.getCache(`driverContact`);
+
+    if (driverContactFromCache) await cache.deleteCache("driverContact");
+
     return res.status(201).json({ msg: "driver telephone save" });
   } catch (__) {
     return res
@@ -42,6 +48,8 @@ export const saveDriverContact = async (req: any, res: any) => {
 };
 export const updateDriverContact = async (req: any, res: any) => {
   const DriverContact = { ...req.body };
+
+  const cache = new RedisOperations();
 
   const cryptography = new Cryptography();
 
@@ -75,6 +83,17 @@ export const updateDriverContact = async (req: any, res: any) => {
     );
 
     await driverContactService.update(req.params.id);
+
+    const driverContactFromCache = await cache.getCache(`driverContact`);
+
+    if (driverContactFromCache) await cache.deleteCache("driverContact");
+
+    const driverContactFromCacheById = await cache.getCache(
+      `driverContact_${req.params.id}`
+    );
+
+    if (driverContactFromCacheById)
+      await cache.deleteCache(`driverContact_${req.params.id}`);
 
     return res.status(201).json({ msg: "driver telephone update" });
   } catch (__) {
@@ -172,6 +191,8 @@ export const getDriverContactById = async (req: any, res: any) => {
 export const deleteAllDriverContact = async (req: any, res: any) => {
   const driverContactService = new DriverContactService();
 
+  const cache = new RedisOperations();
+
   try {
     const driverContactExistsOrNotExists = await driverContactService.getAll();
 
@@ -180,7 +201,22 @@ export const deleteAllDriverContact = async (req: any, res: any) => {
         error: driverContactExistsOrNotExists,
       });
 
+    const allDriverContact: any = await driverContactService.getAll();
+
+    for (let id in allDriverContact) {
+      const driverContactId: any = allDriverContact[id].driver_id;
+      const driverContactFromCacheById = await cache.getCache(
+        `driverContact_${driverContactId}`
+      );
+      if (driverContactFromCacheById)
+        await cache.deleteCache(`driverContact_${driverContactId}`);
+    }
+
     await driverContactService.deleteAll();
+
+    const driverContactFromCache = await cache.getCache(`driverContact`);
+
+    if (driverContactFromCache) await cache.deleteCache("driverContact");
 
     return res.status(204).json({});
   } catch (__) {
@@ -192,6 +228,8 @@ export const deleteAllDriverContact = async (req: any, res: any) => {
 
 export const deleteDriverContactById = async (req: any, res: any) => {
   const DriverContact = { ...req.params };
+
+  const cache = new RedisOperations();
 
   const driverContactService = new DriverContactService();
 
@@ -206,6 +244,17 @@ export const deleteDriverContactById = async (req: any, res: any) => {
       });
 
     await driverContactService.deleteById(DriverContact.id);
+
+    const driverContactFromCache = await cache.getCache(`driverContact`);
+
+    if (driverContactFromCache) await cache.deleteCache("driverContact");
+
+    const driverContactFromCacheById = await cache.getCache(
+      `driverContact_${DriverContact.id}`
+    );
+
+    if (driverContactFromCacheById)
+      await cache.deleteCache(`driverContact_${DriverContact.id}`);
 
     return res.status(204).json({});
   } catch (__) {
