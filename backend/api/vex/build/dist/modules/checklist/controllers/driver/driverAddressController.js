@@ -65,6 +65,7 @@ const getZipCode = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.getZipCode = getZipCode;
 const saveDriverAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverAddress = Object.assign({}, req.body);
+    const cache = new redis_cache_operation_1.default();
     const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(DriverAddress.zip_code, "zip code is undefined or null");
@@ -83,6 +84,9 @@ const saveDriverAddress = (req, res) => __awaiter(void 0, void 0, void 0, functi
         DriverAddress.city = cryptography.encrypt(DriverAddress.city);
         const driverAddressService = new driverAddressService_1.default(DriverAddress.zip_code, DriverAddress.state, DriverAddress.city);
         yield driverAddressService.save();
+        const driverAddressFromCache = yield cache.getCache(`driverAddress`);
+        if (driverAddressFromCache)
+            yield cache.deleteCache("driverAddress");
         return res.status(201).json({ msg: "driver address saved" });
     }
     catch (__) {
@@ -94,6 +98,7 @@ const saveDriverAddress = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.saveDriverAddress = saveDriverAddress;
 const updateDriverAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverAddress = Object.assign({}, req.body);
+    const cache = new redis_cache_operation_1.default();
     const cryptography = new cryptography_1.default();
     try {
         err.exceptionFieldNullOrUndefined(DriverAddress.zip_code, "zip code is undefined or null");
@@ -117,6 +122,12 @@ const updateDriverAddress = (req, res) => __awaiter(void 0, void 0, void 0, func
         DriverAddress.city = cryptography.encrypt(DriverAddress.city);
         const driverAddressService = new driverAddressService_1.default(DriverAddress.zip_code, DriverAddress.state, DriverAddress.city);
         yield driverAddressService.update(req.params.id);
+        const driverAddressFromCache = yield cache.getCache(`driverAddress`);
+        if (driverAddressFromCache)
+            yield cache.deleteCache("driverAddress");
+        const driverAddressFromCacheById = yield cache.getCache(`driverAddress_${req.params.id}`);
+        if (driverAddressFromCacheById)
+            yield cache.deleteCache(`driverAddress_${req.params.id}`);
         return res.status(201).json({ msg: "driver address updated" });
     }
     catch (__) {
@@ -188,13 +199,24 @@ const getDriverAddressById = (req, res) => __awaiter(void 0, void 0, void 0, fun
 exports.getDriverAddressById = getDriverAddressById;
 const deleteAllDriverAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const driverAddressService = new driverAddressService_1.default();
+    const cache = new redis_cache_operation_1.default();
     try {
         const driverAddressExistsOrNotExists = yield driverAddressService.getAll();
         if (driverAddressExistsOrNotExists === "no data")
             return res.status(404).json({
                 error: driverAddressExistsOrNotExists,
             });
+        const allDriverAddress = yield driverAddressService.getAll();
+        for (let id in allDriverAddress) {
+            const driverAddressId = allDriverAddress[id].driver_id;
+            const driverFromCacheById = yield cache.getCache(`driverAddress_${driverAddressId}`);
+            if (driverFromCacheById)
+                yield cache.deleteCache(`driverAddress_${driverAddressId}`);
+        }
         yield driverAddressService.deleteAll();
+        const driverAddressFromCache = yield cache.getCache(`driverAddress`);
+        if (driverAddressFromCache)
+            yield cache.deleteCache("driverAddress");
         return res.status(204).json({});
     }
     catch (__) {
@@ -206,6 +228,7 @@ const deleteAllDriverAddress = (req, res) => __awaiter(void 0, void 0, void 0, f
 exports.deleteAllDriverAddress = deleteAllDriverAddress;
 const deleteDriverAddressById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const DriverAddress = Object.assign({}, req.params);
+    const cache = new redis_cache_operation_1.default();
     const driverAddressService = new driverAddressService_1.default();
     try {
         const driverExistsOrNotExists = yield driverAddressService.getById(DriverAddress.id);
@@ -214,6 +237,12 @@ const deleteDriverAddressById = (req, res) => __awaiter(void 0, void 0, void 0, 
                 error: driverExistsOrNotExists,
             });
         yield driverAddressService.deleteById(DriverAddress.id);
+        const driverAddressFromCache = yield cache.getCache(`driverAddress`);
+        if (driverAddressFromCache)
+            yield cache.deleteCache("driverAddress");
+        const driverAddressFromCacheById = yield cache.getCache(`driverAddress_${DriverAddress.id}`);
+        if (driverAddressFromCacheById)
+            yield cache.deleteCache(`driverAddress_${DriverAddress.id}`);
         return res.status(204).json({});
     }
     catch (__) {

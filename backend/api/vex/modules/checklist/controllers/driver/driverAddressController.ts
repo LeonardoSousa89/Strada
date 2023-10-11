@@ -35,6 +35,8 @@ export const getZipCode = async (req: any, res: any) => {
 export const saveDriverAddress = async (req: any, res: any) => {
   const DriverAddress = { ...req.body };
 
+  const cache = new RedisOperations();
+
   const cryptography = new Cryptography();
 
   try {
@@ -80,6 +82,10 @@ export const saveDriverAddress = async (req: any, res: any) => {
 
     await driverAddressService.save();
 
+    const driverAddressFromCache = await cache.getCache(`driverAddress`);
+
+    if (driverAddressFromCache) await cache.deleteCache("driverAddress");
+
     return res.status(201).json({ msg: "driver address saved" });
   } catch (__) {
     return res
@@ -90,6 +96,8 @@ export const saveDriverAddress = async (req: any, res: any) => {
 
 export const updateDriverAddress = async (req: any, res: any) => {
   const DriverAddress = { ...req.body };
+
+  const cache = new RedisOperations();
 
   const cryptography = new Cryptography();
 
@@ -144,6 +152,17 @@ export const updateDriverAddress = async (req: any, res: any) => {
     );
 
     await driverAddressService.update(req.params.id);
+
+    const driverAddressFromCache = await cache.getCache(`driverAddress`);
+
+    if (driverAddressFromCache) await cache.deleteCache("driverAddress");
+
+    const driverAddressFromCacheById = await cache.getCache(
+      `driverAddress_${req.params.id}`
+    );
+
+    if (driverAddressFromCacheById)
+      await cache.deleteCache(`driverAddress_${req.params.id}`);
 
     return res.status(201).json({ msg: "driver address updated" });
   } catch (__) {
@@ -241,6 +260,8 @@ export const getDriverAddressById = async (req: any, res: any) => {
 export const deleteAllDriverAddress = async (req: any, res: any) => {
   const driverAddressService = new DriverAddressService();
 
+  const cache = new RedisOperations();
+
   try {
     const driverAddressExistsOrNotExists = await driverAddressService.getAll();
 
@@ -249,7 +270,22 @@ export const deleteAllDriverAddress = async (req: any, res: any) => {
         error: driverAddressExistsOrNotExists,
       });
 
+    const allDriverAddress: any = await driverAddressService.getAll();
+
+    for (let id in allDriverAddress) {
+      const driverAddressId: any = allDriverAddress[id].driver_id;
+      const driverFromCacheById = await cache.getCache(
+        `driverAddress_${driverAddressId}`
+      );
+      if (driverFromCacheById)
+        await cache.deleteCache(`driverAddress_${driverAddressId}`);
+    }
+
     await driverAddressService.deleteAll();
+
+    const driverAddressFromCache = await cache.getCache(`driverAddress`);
+
+    if (driverAddressFromCache) await cache.deleteCache("driverAddress");
 
     return res.status(204).json({});
   } catch (__) {
@@ -261,6 +297,8 @@ export const deleteAllDriverAddress = async (req: any, res: any) => {
 
 export const deleteDriverAddressById = async (req: any, res: any) => {
   const DriverAddress = { ...req.params };
+
+  const cache = new RedisOperations();
 
   const driverAddressService = new DriverAddressService();
 
@@ -275,6 +313,17 @@ export const deleteDriverAddressById = async (req: any, res: any) => {
       });
 
     await driverAddressService.deleteById(DriverAddress.id);
+
+    const driverAddressFromCache = await cache.getCache(`driverAddress`);
+
+    if (driverAddressFromCache) await cache.deleteCache("driverAddress");
+
+    const driverAddressFromCacheById = await cache.getCache(
+      `driverAddress_${DriverAddress.id}`
+    );
+
+    if (driverAddressFromCacheById)
+      await cache.deleteCache(`driverAddress_${DriverAddress.id}`);
 
     return res.status(204).json({});
   } catch (__) {

@@ -175,7 +175,20 @@ const deleteAllDriver = (req, res) => __awaiter(void 0, void 0, void 0, function
             return res.status(404).json({
                 error: driverIdExistsOnDb,
             });
-        //código para deletar também todas as keys por id
+        /**
+         * Vasculhas-se a existência de dados em
+         * cache comparando os ids correspondentes
+         * vindos do banco de dados permanente,
+         * "antes" de deletar estes dados,
+         * pois estes servirão de atributo para
+         * comparação na consulta com o banco de cache,
+         * visto que o id vem do database. Caso a tentativa
+         * de comparação seja feita após a eliminação dos dados,
+         * se faz evidência a impossibilidade de comparar um
+         * elemento ao outro(por estar deletado este elemento será igual a nulo).
+         * Diferente da deleção por id que o id é passado como parâmetro
+         * para a função manualmente este depende dos dados armazenados!
+         */
         const allDrivers = yield driverService.getAll();
         for (let id in allDrivers) {
             const driverId = allDrivers[id].driver_id;
