@@ -8,6 +8,8 @@ const err = new HandleError();
 export const saveDriverDocument = async (req: any, res: any) => {
   const DriverDocument = { ...req.body };
 
+  const cache = new RedisOperations();
+
   const cryptography = new Cryptography();
 
   try {
@@ -39,6 +41,10 @@ export const saveDriverDocument = async (req: any, res: any) => {
 
     await driverDocumentService.save();
 
+    const driverDocumentFromCache = await cache.getCache(`driverDocument`);
+
+    if (driverDocumentFromCache) await cache.deleteCache("driverDocument");
+
     return res.status(201).json({ msg: "driver document saved" });
   } catch (__) {
     return res
@@ -49,6 +55,8 @@ export const saveDriverDocument = async (req: any, res: any) => {
 
 export const updateDriverDocument = async (req: any, res: any) => {
   const DriverDocument = { ...req.body };
+
+  const cache = new RedisOperations();
 
   const cryptography = new Cryptography();
 
@@ -80,6 +88,17 @@ export const updateDriverDocument = async (req: any, res: any) => {
     const driverDocumentService = new DriverDocumentService(DriverDocument.cnh);
 
     await driverDocumentService.update(req.params.id);
+
+    const driverDocumentFromCache = await cache.getCache(`driverDocument`);
+
+    if (driverDocumentFromCache) await cache.deleteCache("driverDocument");
+
+    const driverDocumentFromCacheById = await cache.getCache(
+      `driverDocument_${req.params.id}`
+    );
+
+    if (driverDocumentFromCacheById)
+      await cache.deleteCache(`driverDocument_${req.params.id}`);
 
     return res.status(201).json({ msg: "driver document updated" });
   } catch (__) {
@@ -178,6 +197,8 @@ export const deleteAllDriverDocument = async (req: any, res: any) => {
   try {
     const driverDocumentService = new DriverDocumentService();
 
+    const cache = new RedisOperations();
+
     const driverDocumentExistsOrNotExists =
       await driverDocumentService.getAll();
 
@@ -186,7 +207,22 @@ export const deleteAllDriverDocument = async (req: any, res: any) => {
         error: driverDocumentExistsOrNotExists,
       });
 
+    const allDriverDocument: any = await driverDocumentService.getAll();
+
+    for (let id in allDriverDocument) {
+      const driverDocumentId: any = allDriverDocument[id].driver_document_id;
+      const driverDocumentFromCacheById = await cache.getCache(
+        `driverDocument_${driverDocumentId}`
+      );
+      if (driverDocumentFromCacheById)
+        await cache.deleteCache(`driverDocument_${driverDocumentId}`);
+    }
+
     await driverDocumentService.deleteAll();
+
+    const driverDocumentFromCache = await cache.getCache(`driverDocument`);
+
+    if (driverDocumentFromCache) await cache.deleteCache("driverDocument");
 
     return res.status(204).json({});
   } catch (__) {
@@ -198,6 +234,8 @@ export const deleteAllDriverDocument = async (req: any, res: any) => {
 
 export const deleteDriverDocumentById = async (req: any, res: any) => {
   const DriverDocument = { ...req.params };
+
+  const cache = new RedisOperations();
 
   const driverDocumentService = new DriverDocumentService();
 
@@ -212,6 +250,17 @@ export const deleteDriverDocumentById = async (req: any, res: any) => {
       });
 
     await driverDocumentService.deleteById(DriverDocument.id);
+
+    const driverDocumentFromCache = await cache.getCache(`driverDocument`);
+
+    if (driverDocumentFromCache) await cache.deleteCache("driverDocument");
+
+    const driverDocumentFromCacheById = await cache.getCache(
+      `driverDocument_${DriverDocument.id}`
+    );
+
+    if (driverDocumentFromCacheById)
+      await cache.deleteCache(`driverDocument_${DriverDocument.id}`);
 
     return res.status(204).json({});
   } catch (__) {

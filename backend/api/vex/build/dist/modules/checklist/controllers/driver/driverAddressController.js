@@ -208,7 +208,7 @@ const deleteAllDriverAddress = (req, res) => __awaiter(void 0, void 0, void 0, f
             });
         const allDriverAddress = yield driverAddressService.getAll();
         for (let id in allDriverAddress) {
-            const driverAddressId = allDriverAddress[id].driver_id;
+            const driverAddressId = allDriverAddress[id].driver_address_id;
             const driverFromCacheById = yield cache.getCache(`driverAddress_${driverAddressId}`);
             if (driverFromCacheById)
                 yield cache.deleteCache(`driverAddress_${driverAddressId}`);

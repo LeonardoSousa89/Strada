@@ -204,7 +204,7 @@ export const deleteAllDriverContact = async (req: any, res: any) => {
     const allDriverContact: any = await driverContactService.getAll();
 
     for (let id in allDriverContact) {
-      const driverContactId: any = allDriverContact[id].driver_id;
+      const driverContactId: any = allDriverContact[id].driver_contact_id;
       const driverContactFromCacheById = await cache.getCache(
         `driverContact_${driverContactId}`
       );

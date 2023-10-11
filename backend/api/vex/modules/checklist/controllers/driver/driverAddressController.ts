@@ -273,7 +273,7 @@ export const deleteAllDriverAddress = async (req: any, res: any) => {
     const allDriverAddress: any = await driverAddressService.getAll();
 
     for (let id in allDriverAddress) {
-      const driverAddressId: any = allDriverAddress[id].driver_id;
+      const driverAddressId: any = allDriverAddress[id].driver_address_id;
       const driverFromCacheById = await cache.getCache(
         `driverAddress_${driverAddressId}`
       );

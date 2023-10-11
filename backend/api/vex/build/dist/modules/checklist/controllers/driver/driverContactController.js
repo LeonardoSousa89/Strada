@@ -151,7 +151,7 @@ const deleteAllDriverContact = (req, res) => __awaiter(void 0, void 0, void 0, f
             });
         const allDriverContact = yield driverContactService.getAll();
         for (let id in allDriverContact) {
-            const driverContactId = allDriverContact[id].driver_id;
+            const driverContactId = allDriverContact[id].driver_contact_id;
             const driverContactFromCacheById = yield cache.getCache(`driverContact_${driverContactId}`);
             if (driverContactFromCacheById)
                 yield cache.deleteCache(`driverContact_${driverContactId}`);
