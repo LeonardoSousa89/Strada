@@ -122,20 +122,19 @@ export const saveOrg = async (req: any, res: any) => {
 
   let cnpjExistsOnHttpResquest: any = "";
 
-  // essa api gera erros constantemente (substitui-la)
+  // essa api gera erros constantemente, então se fará necessário substitui-la
+  try {
+    cnpjExistsOnHttpResquest = await axios.get(url);
+  } catch (__) {
+    return res.status(500).json({
+      error: "i am sorry, there is an error to try verify cnpj",
+    });
+  }
 
-  // try {
-  //   cnpjExistsOnHttpResquest = await axios.get(url);
-  // } catch (__) {
-  //   return res.status(500).json({
-  //     error: "i am sorry, there is an error to try verify cnpj",
-  //   });
-  // }
-
-  // if (cnpjExistsOnHttpResquest.data.error)
-  //   return res.status(404).json({
-  //     error: "cnpj not found",
-  //   });
+  if (cnpjExistsOnHttpResquest.data.error)
+    return res.status(404).json({
+      error: "cnpj not found",
+    });
 
   const verifyCnpj = new OrgService();
 
