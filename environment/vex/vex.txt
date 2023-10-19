@@ -1,5 +1,0 @@
-mobile:
-EXPO_PUBLIC_VEX_API=http://192.168.100.33:8765
-EXPO_PUBLIC_CNPJ_API=https://api-publica.speedio.com.br
-EXPO_PUBLIC_GEO_IP_API_URL=http://ipinfo.io
-EXPO_PUBLIC_USER_IP_API_URL=http://meuip.com/api/meuip.php
