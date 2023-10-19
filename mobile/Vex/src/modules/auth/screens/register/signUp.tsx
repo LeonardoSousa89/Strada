@@ -13,18 +13,25 @@ import { navigate } from "../../services/navigate/navigate";
 import { register } from "../../controllers/security/signUp";
 
 import Dialog from "react-native-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TermsAndPolicies from "../../../doc/screens/termsAndPolicies";
+import Msg from "../../../../interface/response/class/message";
 
 export default (props: any) => {
   const [visible, setVisible] = useState(false);
+  const [cnpj, setCnpj] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  
+  useEffect(()=>{},[])
+  useEffect(() => {}, [cnpj, password, confirmPassword]);
 
   function changeDirectory() {
     navigate(props, "login");
   }
 
   function signUp() {
-    register(props, "login");
+    register(cnpj, password, props, "login");
   }
 
   const terms = () => {
@@ -36,8 +43,14 @@ export default (props: any) => {
   };
 
   const accept = () => {
-    setVisible(false);
-    signUp();
+    if(password === confirmPassword){
+
+      setVisible(false);
+      signUp();
+    }else{
+      setVisible(false);
+      alert(new Msg().message("as senhas não conferem"))
+    }
   };
 
   return (
@@ -55,6 +68,8 @@ export default (props: any) => {
             label="cnpj"
             color="#162226"
             style={styles.input}
+            value={cnpj}
+            onChangeText={(e: any) => setCnpj(e)}
           />
           <TextInput
             variant="outlined"
@@ -62,6 +77,8 @@ export default (props: any) => {
             color="#162226"
             secureTextEntry
             style={styles.input}
+            value={password}
+            onChangeText={(e: any) => setPassword(e)}
           />
           <TextInput
             variant="outlined"
@@ -69,6 +86,8 @@ export default (props: any) => {
             color="#162226"
             secureTextEntry
             style={styles.input}
+            value={confirmPassword}
+            onChangeText={(e: any) => setConfirmPassword(e)}
           />
           <Button
             style={styles.btn}

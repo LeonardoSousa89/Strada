@@ -97,7 +97,7 @@ const saveOrg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
     let cnpjExistsOnHttpResquest = "";
-    // essa api gera erros constantemente (substitui-la)
+    // essa api gera erros constantemente, então se fará necessário substitui-la
     try {
         cnpjExistsOnHttpResquest = yield axios_1.default.get(url);
     }

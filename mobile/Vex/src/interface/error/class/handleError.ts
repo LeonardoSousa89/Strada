@@ -1,4 +1,4 @@
-import { Err } from "./error";
+import { Err } from "../error";
 
 export default class HandleError implements Err {
   constructor() {}

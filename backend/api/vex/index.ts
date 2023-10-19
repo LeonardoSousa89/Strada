@@ -73,7 +73,7 @@ const server = async () => {
   
   console.table({
     port_range: port,
-    port_in_use: port[3],
+    port_in_use: port[0],
     network: serve.address(),
     maxListeners: serve.getMaxListeners(),
   });

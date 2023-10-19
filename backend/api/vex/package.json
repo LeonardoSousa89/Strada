@@ -5,6 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "jest --verbose --coverage --forceExit --runInBand",
+    "swagger-autogen": "node ./docs/api/swagger/swagger.js",
+    "swagger-doc-server": "node ./swagger_doc.js",
     "tscinit": "npx tsc --init",
     "tsc": "npx tsc",
     "dev": "nodemon ./build/dist/index.js",
@@ -43,6 +45,8 @@
     "knex-paginate": "^3.1.1",
     "pg": "^8.11.1",
     "pm2": "^5.3.0",
-    "redis": "^4.6.7"
+    "redis": "^4.6.7",
+    "swagger-autogen": "^2.23.6",
+    "swagger-ui-express": "^5.0.0"
   }
 }

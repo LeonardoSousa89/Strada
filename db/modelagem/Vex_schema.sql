@@ -277,6 +277,7 @@ DELETE FROM vex_schema.org;
 DELETE FROM vex_schema.org_address;
 DELETE FROM vex_schema.org_contact;
 DELETE FROM vex_schema.org_ip_data_provider;
+DELETE FROM vex_schema.org_ip_data_provider_relation_table;
 DELETE FROM vex_schema.org_address_relation_table;
 DELETE FROM vex_schema.org_contact_relation_table;
 DELETE FROM vex_schema.org_driver_relation_table;

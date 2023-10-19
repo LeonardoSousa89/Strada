@@ -73,7 +73,7 @@ const server = () => __awaiter(void 0, void 0, void 0, function* () {
     // desabilitar a tabela de rede durante os testes[gera bugs]
     console.table({
         port_range: port,
-        port_in_use: port[3],
+        port_in_use: port[0],
         network: serve.address(),
         maxListeners: serve.getMaxListeners(),
     });
