@@ -25,6 +25,7 @@ import { driverInformationRelationTableRoute } from "./modules/checklist/routes/
 import { orgIpDataProviderRoute } from "./modules/admin/routes/orgIpDataProviderRoute";
 import { orgAndOrgIpDataProviderRelationTableRoute } from "./modules/admin/routes/relations/orgAndOrgIpDataProviderRelationTableRoute";
 import { informationMidiaUriRelationTableRoute } from "./modules/checklist/routes/information/relations/InformationMidiaUriRelationTableRoute";
+import { networkRoute } from "./modules/comunication/routes/networkRoute";
 
 import RedisOperations from "./repositories/redis/cache/services/redis.cache.operation";
 
@@ -55,7 +56,8 @@ app.use("/", [
   driverContactRelationTableRoute,
   driverDocumentRelationTableRoute,
   driverInformationRelationTableRoute,
-  informationMidiaUriRelationTableRoute
+  informationMidiaUriRelationTableRoute,
+  networkRoute
 ]);
 
 const server = async () => {

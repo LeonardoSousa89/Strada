@@ -36,6 +36,7 @@ const driverInformationRelationTableRoute_1 = require("./modules/checklist/route
 const orgIpDataProviderRoute_1 = require("./modules/admin/routes/orgIpDataProviderRoute");
 const orgAndOrgIpDataProviderRelationTableRoute_1 = require("./modules/admin/routes/relations/orgAndOrgIpDataProviderRelationTableRoute");
 const InformationMidiaUriRelationTableRoute_1 = require("./modules/checklist/routes/information/relations/InformationMidiaUriRelationTableRoute");
+const networkRoute_1 = require("./modules/comunication/routes/networkRoute");
 const redis_cache_operation_1 = __importDefault(require("./repositories/redis/cache/services/redis.cache.operation"));
 const app = (0, express_1.default)();
 app.use((0, morgan_1.default)("dev"));
@@ -62,7 +63,8 @@ app.use("/", [
     driverContactRelationTableRoute_1.driverContactRelationTableRoute,
     driverDocumentRelationTableRoute_1.driverDocumentRelationTableRoute,
     driverInformationRelationTableRoute_1.driverInformationRelationTableRoute,
-    InformationMidiaUriRelationTableRoute_1.informationMidiaUriRelationTableRoute
+    InformationMidiaUriRelationTableRoute_1.informationMidiaUriRelationTableRoute,
+    networkRoute_1.networkRoute
 ]);
 const server = () => __awaiter(void 0, void 0, void 0, function* () {
     yield new redis_cache_operation_1.default().connection();

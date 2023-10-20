@@ -3,7 +3,6 @@ import { orgAddress } from "../../../../interface/types/org/orgAddress";
 import { orgContact } from "../../../../interface/types/org/orgContact";
 import { orgDataMachine } from "../../../../interface/types/org/orgIpDataProvider";
 import Http from "../../../../interface/web/class/httpRequest";
-import { ip, ipDataResponse } from "../../../web/services/network";
 import { navigate } from "../navigate/navigate";
 
 export async function signUp(
@@ -93,14 +92,9 @@ export async function signUp(
       }
     );
 
-    /**este serviço deve ser responsabilidade de vex api */
-    const ipApiUrl = `${process.env.EXPO_PUBLIC_USER_IP_API_URL}`;
-    const userIp = await ip(ipApiUrl);
-    /**este serviço deve ser responsabilidade de vex api */
-    const geoIpApiUrl = `${process.env.EXPO_PUBLIC_GEO_IP_API_URL}/${userIp}/json`;
-    const ipData: any = await ipDataResponse(geoIpApiUrl);
-
-    const dataMachine: any = ipData.ip_client_data_provider;
+    let dataMachine: any = await new Http().Get(
+      `${process.env.EXPO_PUBLIC_VEX_API}/get/client/machine/ip`
+    );
 
     const orgDataMachine: orgDataMachine = {
       ip: dataMachine.ip,
@@ -124,11 +118,9 @@ export async function signUp(
       `${process.env.EXPO_PUBLIC_VEX_API}/org/client/machine/data/provider/get/all`
     );
 
-    orgDataMachineCreated =
-      orgDataMachineCreated.data.data[
-        orgDataMachineCreated.data.data.length - 1
-      ].org_ip_data_provider_id;
-
+    orgDataMachineCreated = orgDataMachineCreated.data.data[orgDataMachineCreated.data.data.length - 1]
+      .org_ip_data_provider_id;
+ 
     await new Http().Post(
       `${process.env.EXPO_PUBLIC_VEX_API}/org/machine/client/ip/and/provider/relation-table/save`,
       {
