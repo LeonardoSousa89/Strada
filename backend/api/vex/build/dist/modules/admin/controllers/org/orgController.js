@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrgById = exports.getOrgById = exports.getOrg = exports.updateOrg = exports.saveOrg = exports.getCnpj = void 0;
+exports.deleteOrgById = exports.getOrgById = exports.getOrg = exports.updateOrg = exports.saveOrg = exports.verifyCnpj = void 0;
 const orgService_1 = __importDefault(require("../../services/org/orgService"));
 const handleError_1 = __importDefault(require("../../../../interface/error/handleError"));
 const axios_1 = __importDefault(require("axios"));
@@ -45,7 +45,7 @@ const cryptography_1 = __importDefault(require("../../../security/controllers/cr
 const time_1 = __importDefault(require("../../../../config/tools/time"));
 dotenv.config();
 const err = new handleError_1.default();
-const getCnpj = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const verifyCnpj = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.query);
     const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
     try {
@@ -65,7 +65,7 @@ const getCnpj = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
 });
-exports.getCnpj = getCnpj;
+exports.verifyCnpj = verifyCnpj;
 const saveOrg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const Org = Object.assign({}, req.body);
     const cache = new redis_cache_operation_1.default();

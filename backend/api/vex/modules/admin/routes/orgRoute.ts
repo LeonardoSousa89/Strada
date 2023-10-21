@@ -1,17 +1,21 @@
 import express from "express";
 import {
   deleteOrgById,
-  getCnpj,
+  verifyCnpj,
   getOrg,
   getOrgById,
   saveOrg,
   updateOrg,
 } from "../controllers/org/orgController";
+import { getCnpj } from "../controllers/org/cnpj/cnpjController";
 
 const orgRoute = express.Router();
 
 orgRoute.route("/org/verify-cnpj").get(async (req, res) => {
-  getCnpj(req, res);
+  verifyCnpj(req, res);
+});
+orgRoute.route("/org/get/data/cnpj").get(async (req, res) => {
+  getCnpj(req, res, req.query.cnpj);
 });
 
 orgRoute.route("/org/save").post(async (req, res) => {

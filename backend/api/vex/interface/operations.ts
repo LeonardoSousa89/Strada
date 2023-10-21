@@ -17,3 +17,10 @@ export interface CacheOperations {
   setCache(key?: any, value?: any, expiration?: any): any;
   getCache(key?: any): any;
 }
+
+export interface RestOperations {
+  GET(): any;
+  POST(): any;
+  PUT(): any;
+  DELETE(): any;
+}

@@ -12,7 +12,7 @@ dotenv.config();
 
 const err = new HandleError();
 
-export const getCnpj = async (req: any, res: any) => {
+export const verifyCnpj = async (req: any, res: any) => {
   const Org = { ...req.query };
 
   const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
@@ -122,7 +122,6 @@ export const saveOrg = async (req: any, res: any) => {
 
   let cnpjExistsOnHttpResquest: any = "";
 
-  // essa api gera erros constantemente, então se fará necessário substitui-la
   try {
     cnpjExistsOnHttpResquest = await axios.get(url);
   } catch (__) {
