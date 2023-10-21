@@ -8,11 +8,18 @@ import {
   SafeAreaView,
 } from "react-native";
 
+import { useState, useEffect } from "react";
+
 import { TextInput, Button } from "@react-native-material/core";
 import { signIn } from "../../controllers/security/login";
 import { navigator } from "../../controllers/navigate/navigate";
 
 export default (props: any) => {
+  const [cnpj, setCnpj] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {}, [cnpj, email, password]);
 
   function changeDirectoryFromSignup() {
     navigator(props, "signup");
@@ -22,7 +29,12 @@ export default (props: any) => {
   }
 
   function login() {
-    signIn(props, "welcome-organization");
+    const orgAuth = {
+      cnpj,
+      password,
+    };
+
+    signIn(props, "welcome-organization", orgAuth);
   }
 
   return (
@@ -40,6 +52,8 @@ export default (props: any) => {
             label="cnpj ou email"
             color="#162226"
             style={styles.input}
+            value={cnpj}
+            onChangeText={(e)=>setCnpj(e)}
           />
           <TextInput
             variant="outlined"
@@ -47,6 +61,8 @@ export default (props: any) => {
             color="#162226"
             secureTextEntry
             style={styles.input}
+            value={password}
+            onChangeText={(e)=>setPassword(e)}
           />
 
           <Button
@@ -57,10 +73,16 @@ export default (props: any) => {
           />
         </View>
         <View style={styles.footer}>
-          <Text style={styles.getAccount} onPress={() => changeDirectoryFromPasswordRecovery()}>
+          <Text
+            style={styles.getAccount}
+            onPress={() => changeDirectoryFromPasswordRecovery()}
+          >
             esqueceu sua senha?
           </Text>
-          <Text style={styles.getAccount} onPress={() => changeDirectoryFromSignup()}>     
+          <Text
+            style={styles.getAccount}
+            onPress={() => changeDirectoryFromSignup()}
+          >
             não possui uma conta? cadastre-se
           </Text>
         </View>

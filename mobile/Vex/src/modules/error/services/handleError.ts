@@ -1,4 +1,4 @@
-import { Err } from "../error";
+import { Err } from "../../../interface/error/error";
 
 export default class HandleError implements Err {
   constructor() {}
@@ -19,8 +19,5 @@ export default class HandleError implements Err {
     if (args.length < 4) throw error;
   }
 
-  //aqui por observações em testes, este valor está equivalendo[valor relativo] a varchar(250) no banco [verificar por quê]
-  exceptionFieldValueMoreThanToType(args: any, error: any) {
-    if (args.length > 120) throw error;
-  }
+  exceptionFieldValueMoreThanToType(args: any, error: any) {}
 }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { HTTP } from "../http";
+import { HTTP } from "../../../../../interface/web/http";
 
 export default class Http implements HTTP {
   async Get(url: string) {

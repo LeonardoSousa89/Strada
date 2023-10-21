@@ -15,7 +15,7 @@ import { register } from "../../controllers/security/signUp";
 import Dialog from "react-native-dialog";
 import { useEffect, useState } from "react";
 import TermsAndPolicies from "../../../doc/screens/termsAndPolicies";
-import Msg from "../../../../interface/response/class/message";
+import Msg from "../../../comunication/services/message/message";
 
 export default (props: any) => {
   const [visible, setVisible] = useState(false);

@@ -20,7 +20,7 @@ const getCnpj = (req, res, cnpj) => __awaiter(void 0, void 0, void 0, function* 
     }
     catch (__) {
         return res
-            .status(500)
+            .status(503)
             .json({ error: "there's an error to access api endpoint" });
     }
 });

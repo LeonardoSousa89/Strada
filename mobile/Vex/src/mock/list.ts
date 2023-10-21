@@ -1,3 +1,5 @@
+import { orgId } from "../interface/types/org/identifier";
+
 export let list: any = [
   {
     id: "1",
@@ -121,3 +123,4 @@ export let midia: any = [
     imageUri: "",
   },
 ];
+

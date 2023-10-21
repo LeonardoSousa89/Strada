@@ -2,7 +2,7 @@ import { org } from "../../../../interface/types/org/org";
 import { orgAddress } from "../../../../interface/types/org/orgAddress";
 import { orgContact } from "../../../../interface/types/org/orgContact";
 import { orgDataMachine } from "../../../../interface/types/org/orgIpDataProvider";
-import Http from "../../../../interface/web/class/httpRequest";
+import Http from "../../../comunication/services/web/rest/rest";
 import { navigate } from "../navigate/navigate";
 
 export async function signUp(
