@@ -118,22 +118,22 @@ export const saveOrg = async (req: any, res: any) => {
     return res.status(400).json({ error: e });
   }
 
-  // const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
+  const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
 
-  // let cnpjExistsOnHttpResquest: any = "";
+  let cnpjExistsOnHttpResquest: any = "";
 
-  // try {
-  //   cnpjExistsOnHttpResquest = await axios.get(url);
-  // } catch (__) {
-  //   return res.status(500).json({
-  //     error: "i am sorry, there is an error to try verify cnpj",
-  //   });
-  // }
+  try {
+    cnpjExistsOnHttpResquest = await axios.get(url);
+  } catch (__) {
+    return res.status(500).json({
+      error: "i am sorry, there is an error to try verify cnpj",
+    });
+  }
 
-  // if (cnpjExistsOnHttpResquest.data.error)
-  //   return res.status(404).json({
-  //     error: "cnpj not found",
-  //   });
+  if (cnpjExistsOnHttpResquest.data.error)
+    return res.status(404).json({
+      error: "cnpj not found",
+    });
 
   const verifyCnpj = new OrgService();
 

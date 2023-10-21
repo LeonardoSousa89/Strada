@@ -95,19 +95,20 @@ const saveOrg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (e) {
         return res.status(400).json({ error: e });
     }
-    // const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
-    // let cnpjExistsOnHttpResquest: any = "";
-    // try {
-    //   cnpjExistsOnHttpResquest = await axios.get(url);
-    // } catch (__) {
-    //   return res.status(500).json({
-    //     error: "i am sorry, there is an error to try verify cnpj",
-    //   });
-    // }
-    // if (cnpjExistsOnHttpResquest.data.error)
-    //   return res.status(404).json({
-    //     error: "cnpj not found",
-    //   });
+    const url = `${process.env.CNPJ_API_URL_BASE}/buscarcnpj?cnpj=${Org.cnpj}`;
+    let cnpjExistsOnHttpResquest = "";
+    try {
+        cnpjExistsOnHttpResquest = yield axios_1.default.get(url);
+    }
+    catch (__) {
+        return res.status(500).json({
+            error: "i am sorry, there is an error to try verify cnpj",
+        });
+    }
+    if (cnpjExistsOnHttpResquest.data.error)
+        return res.status(404).json({
+            error: "cnpj not found",
+        });
     const verifyCnpj = new orgService_1.default();
     const cnpjExixtsOnDb = yield verifyCnpj.verifyCnpj(Org.cnpj);
     if (cnpjExixtsOnDb === true)

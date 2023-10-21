@@ -10,15 +10,14 @@ import {
 } from "react-native";
 import { signOut } from "../../../auth/controllers/security/logout";
 import { navigate } from "../../../checklist/services/navigate/navigate";
+import { getOrgData } from "../../controllers/title/title";
 
 export default (props: any) => {
   const [orgName, setOrgName]: Array<any> = useState();
 
-  useEffect(() => setOrgName("Log cargo"), []);
-
-  function test() {
-    console.warn("pressed");
-  }
+  useEffect(() =>{
+     getOrgName()
+    }, [orgName]);
 
   function logOut() {
     signOut(props, "login");
@@ -31,6 +30,11 @@ export default (props: any) => {
   function settings() {
     navigate(props, "settings-list");
   }
+
+  async function getOrgName(){
+    const organization = await getOrgData()
+    setOrgName(organization.data.data.data.organization.organization[0].corporate_name.substring(0,21))
+  } 
 
   return (
     <SafeAreaView style={styles.container}>

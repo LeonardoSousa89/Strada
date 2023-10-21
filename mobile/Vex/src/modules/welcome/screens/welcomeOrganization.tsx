@@ -14,7 +14,6 @@ import OrgTitle from "../services/title/title";
 
 export default (props: any) => {
   const [org, setOrg]: Array<any> = useState();
-
   useEffect(() => {
     organizationName();
   }, [org]);
@@ -23,8 +22,10 @@ export default (props: any) => {
     navigator(props, "main-menu");
   }
   async function organizationName() {
-    let organization = await getOrgData()
-    setOrg(organization.data.data.data.organization.organization[0].corporate_name);
+    let organization = await getOrgData();
+    setOrg(
+      organization.data.data.data.organization.organization[0].corporate_name
+    );
   }
 
   return (
