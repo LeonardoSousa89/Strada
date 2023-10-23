@@ -6,7 +6,7 @@ export default class OrgTitle implements ApiOperations {
   getAll() {}
   async getById() {
     const response = await new Http().Get(
-      `${process.env.EXPO_PUBLIC_VEX_API}/org/join/data?org_id=307`
+      `${process.env.EXPO_PUBLIC_VEX_API}/org/join/data?org_id=316`
     );
     return response
   }

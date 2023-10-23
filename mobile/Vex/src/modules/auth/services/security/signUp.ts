@@ -28,7 +28,7 @@ export async function signUp(
         response["CNAE PRINCIPAL DESCRICAO"].substring(0, 100) || "***",
       sector: response["SETOR"] || "***",
     };
-  
+
     //qnd se inseri 2 objetos iguais ele retorna 500 ao invés de 400, corrigir este erro
     await new Http().Post(`${process.env.EXPO_PUBLIC_VEX_API}/org/save`, Org);
 
@@ -74,7 +74,7 @@ export async function signUp(
       ddd: response["DDD"] || "***",
       email: response["EMAIL"] || "***",
     };
-   
+
     await new Http().Post(
       `${process.env.EXPO_PUBLIC_VEX_API}/org/contact/save`,
       OrgContact
@@ -112,11 +112,12 @@ export async function signUp(
       timezone: dataMachine.timezone || "***",
       readme: dataMachine.readme || "***",
     };
- 
-    const res = await new Http().Post(
+  
+    await new Http().Post(
       `${process.env.EXPO_PUBLIC_VEX_API}/org/client/machine/data/provider/save`,
       OrgDataMachine
     );
+   
 
     let orgDataMachineCreated = await new Http().Get(
       `${process.env.EXPO_PUBLIC_VEX_API}/org/client/machine/data/provider/get/all`
@@ -127,6 +128,7 @@ export async function signUp(
         orgDataMachineCreated.data.data.length - 1
       ].org_ip_data_provider_id;
 
+   
     await new Http().Post(
       `${process.env.EXPO_PUBLIC_VEX_API}/org/machine/client/ip/and/provider/relation-table/save`,
       {
